@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/kubolab" />
+
+    <TextView
+        android:id="@+id/register_location_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:text="GNSS Register"
+        android:textStyle="bold" />
+
+    <Switch
+        android:id="@+id/register_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:text="@string/location_label"
+        tools:text="Register" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Carrier Phase" />
+
+    <Switch
+        android:id="@+id/register_sensor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Android Sensor" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_weight="0.65" />
+
+    <Button
+        android:id="@+id/rstbutton"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="Rset GNSSClock" />
+
+    <Button
+        android:id="@+id/exit"
+        android:layout_width="179dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:singleLine="true"
+        android:text="@string/exit" />
+
+    <TextView
+        android:id="@+id/sw_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:gravity="bottom"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end|bottom"
+        android:textStyle="italic|bold"
+        android:text="@string/app_version"/>
+
+</LinearLayout>
