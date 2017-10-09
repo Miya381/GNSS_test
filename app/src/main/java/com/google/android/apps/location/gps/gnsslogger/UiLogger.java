@@ -256,7 +256,7 @@ public class UiLogger implements GnssListener {
 
     private String gnssClockToString(GnssClock gnssClock){
         String ClockStr = "";
-        if(gnssClock.getHardwareClockDiscontinuityCount() == 0){
+        if(gnssClock.getHardwareClockDiscontinuityCount() == -1){
             ClockStr = "WARING!! HARDWARE Clock may broken";
         }else{
             double tRxSeconds;
