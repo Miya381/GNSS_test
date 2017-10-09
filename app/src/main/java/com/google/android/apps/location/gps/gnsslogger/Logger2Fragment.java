@@ -2,7 +2,12 @@ package com.google.android.apps.location.gps.gnsslogger;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -12,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +84,7 @@ public class Logger2Fragment extends Fragment {
             if (activity == null) {
                 return;
             }
+            final TestView testview = new TestView(activity);
             activity.runOnUiThread(
                     new Runnable() {
                         @Override
