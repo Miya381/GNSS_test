@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/app/src/main/java/com/google/android/apps/location/gps/gnsslogger" vcs="Git" />
+    <mapping directory="C:\Users\KuboLab\Desktop\gps-measurement-tools-master\GNSSLogger\GNSSLoggerR" vcs="Git" />
   </component>
 </project>
