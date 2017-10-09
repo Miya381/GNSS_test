@@ -37,7 +37,27 @@ public class Logger2Fragment extends Fragment {
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View newView = inflater.inflate(R.layout.fragment_log2, container, false /* attachToRoot */);
+        FrameLayout frameLayout = (FrameLayout) newView.findViewById(R.id.fragment);
+        frameLayout.addView(new TestView(this.getActivity()));
         return newView;
+    }
+    
+    public class TestView extends View{
+        Paint paint = new Paint();
+        public TestView(Context context) {
+            super(context);
+        }
+
+        public void RefreshView(){
+            invalidate();
+        }
+
+        protected void onDraw(Canvas canvas){
+            paint.setColor(Color.BLACK);
+            Rect rect = new Rect(100, 200, 300, 400);
+            canvas.drawRect(rect, paint);
+
+        }
     }
 
     public class UIFragmentComponent {
@@ -62,12 +82,7 @@ public class Logger2Fragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            mLogView.append(builder);
-                            Editable editable = mLogView.getEditableText();
-                            int length = editable.length();
-                            if (length > MAX_LENGTH) {
-                                editable.delete(0, length - LOWER_THRESHOLD);
-                            }
+                            testview.RefreshView();
                         }
                     });
         }
@@ -77,6 +92,7 @@ public class Logger2Fragment extends Fragment {
             if (activity == null) {
                 return;
             }
+            final TestView testview = new TestView(activity);
             activity.runOnUiThread(
                     new Runnable() {
                         @Override
