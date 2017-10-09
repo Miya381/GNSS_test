@@ -4,6 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <TextView
+        android:id="@+id/GNSSClockView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.21" />
+
     <TableLayout
         android:id="@+id/TableLayout"
         android:layout_width="match_parent"
@@ -458,12 +464,6 @@
         </TableRow>
 
     </TableLayout>
-
-    <TextView
-        android:id="@+id/GNSSClockView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.21" />
 
     <LinearLayout
         android:orientation="horizontal"
