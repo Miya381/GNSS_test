@@ -25,10 +25,12 @@ import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.os.Build;
 import android.os.Bundle;
 import android.renderscript.Sampler;
 import android.util.Log;
 import com.google.android.apps.location.gps.gnsslogger.LoggerFragment.UIFragmentComponent;
+import com.google.android.apps.location.gps.gnsslogger.Logger2Fragment.UIFragment2Component;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -62,6 +64,16 @@ public class UiLogger implements GnssListener {
 
     public synchronized void setUiFragmentComponent(UIFragmentComponent value) {
         mUiFragmentComponent = value;
+    }
+
+    private UIFragment2Component mUiFragment2Component;
+
+    public synchronized UIFragment2Component getUiFragment2Component() {
+        return mUiFragment2Component;
+    }
+
+    public synchronized void setUiFragment2Component(UIFragment2Component value) {
+        mUiFragment2Component = value;
     }
 
 
@@ -130,6 +142,23 @@ public class UiLogger implements GnssListener {
 
     @Override
     public void onGnssStatusChanged(GnssStatus gnssStatus) {
+        UIFragment2Component component2 = getUiFragment2Component();
+        String[] SVID = new String[30];
+        float[][] pos = new float[30][2];
+        int maxSat = gnssStatus.getSatelliteCount();
+        for(int i = 0;i < maxSat;i++){
+            if(gnssStatus.getConstellationType(i + 1) == GnssStatus.CONSTELLATION_GPS) {
+                SVID[i] ="G" + String.valueOf(gnssStatus.getSvid(i + 1));
+                pos[i][0] = gnssStatus.getAzimuthDegrees(i + 1);
+                pos[i][1] = gnssStatus.getElevationDegrees(i + 1);
+            }else if(gnssStatus.getConstellationType(i + 1) == GnssStatus.CONSTELLATION_QZSS){
+                SVID[i] ="Q" + String.valueOf(gnssStatus.getSvid(i + 1));
+                pos[i][0] = gnssStatus.getAzimuthDegrees(i + 1);
+                pos[i][1] = gnssStatus.getElevationDegrees(i + 1);
+            }
+        }
+        int satNumber = maxSat;
+        component2.log2TextFragment(SVID,pos,satNumber);
         //logStatusEvent("onGnssStatusChanged: " + gnssStatusToString(gnssStatus));
     }
 
@@ -271,7 +300,7 @@ public class UiLogger implements GnssListener {
             }
             FileLogger.GPSWStoGPST gpswStoGPST = new FileLogger.GPSWStoGPST();
             FileLogger.ReturnValue value = gpswStoGPST.method(weekNumber,tRxSeconds);
-            ClockStr = String.format("GPST = %d / %d / %d / %d : %d : %f \n TimeNanos: %f, FullBiasNanos: %f, BiasNanos: %f", value.Y,value.M,value.D,value.h,value.m,value.s,TimeNanos,FullBiasNanos,BiasNanos);
+            ClockStr = String.format("DEVICE NAME: %s\nGPST = %d / %d / %d / %d : %d : %f \n", Build.DEVICE,value.Y,value.M,value.D,value.h,value.m,value.s);
         }
         return ClockStr;
     }
@@ -309,19 +338,28 @@ public class UiLogger implements GnssListener {
             }
             double tTxSeconds = measurement.getReceivedSvTimeNanos();
             /*急場の変更！！*/
-            String tRxStr = String.valueOf(-gnssClock.getFullBiasNanos());
-            String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
-            tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
-            tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
+            String DeviceName = Build.DEVICE;
+            //Log.d("DEVICE",DeviceName);
+            if(DeviceName.indexOf("shamu") != -1) {
+                String tRxStr = String.valueOf(-gnssClock.getFullBiasNanos());
+                String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
+                tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
+                tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
+            }
             /*急場の変更！！*/
             //GPS週のロールオーバーチェック
-            Log.d("tRxSeconds",tRxStr);
-            Log.d("tTxSeconds",tTxStr);
+            //Log.d("tRxSeconds",tRxStr);
+            //Log.d("tTxSeconds",tTxStr);
             //Log.d("Prm",String.valueOf(-gnssClock.getFullBiasNanos() - measurement.getReceivedSvTimeNanos()));
             double prSeconds = (tRxSeconds - tTxSeconds)*1e-9;
             double prm = prSeconds * 2.99792458e8;
             array[arrayRow][0] = "G" + String.valueOf(measurement.getSvid());
-            array[arrayRow][1] = String.format("%14.3f",prm);
+            //Log.d("STATE",String.valueOf(measurement.getState());
+            if(measurement.getState() == 15) {
+                array[arrayRow][1] = String.format("%14.3f", prm);
+            }else {
+                array[arrayRow][1] = getStateName(measurement.getState());
+            }
             /*builder.append("GNSSClock = ").append(event.getClock().getTimeNanos()).append("\n");
             builder.append("Svid = ").append(measurement.getSvid()).append(", ");
             builder.append("Cn0DbHz = ").append(measurement.getCn0DbHz()).append(", ");
@@ -347,6 +385,27 @@ public class UiLogger implements GnssListener {
 
     private void logLocationEvent(String event) {
         logEvent("Location", event, USED_COLOR);
+    }
+
+    private String getStateName(int id){
+        switch (id){
+            case GnssMeasurement.STATE_BIT_SYNC:
+                return "STATE_BIT_SYNC";
+            case GnssMeasurement.STATE_SUBFRAME_SYNC:
+                return "STATE_SUBFRAME_SYNC";
+            case GnssMeasurement.STATE_SYMBOL_SYNC:
+                return "STATE_SYMBOL_SYNC";
+            case GnssMeasurement.STATE_MSEC_AMBIGUOUS:
+                return "STATE_MSEC_AMBIGUOUS";
+            case GnssMeasurement.STATE_CODE_LOCK:
+                return "STATE_CODE_LOCK";
+            case GnssMeasurement.STATE_UNKNOWN:
+                return "STATE_UNKNOWN";
+            case GnssMeasurement.STATE_TOW_DECODED:
+                return "STATE_TOW_DECODED";
+            default:
+                return "UNKNOWN";
+        }
     }
 
     private String getConstellationName(int id) {
