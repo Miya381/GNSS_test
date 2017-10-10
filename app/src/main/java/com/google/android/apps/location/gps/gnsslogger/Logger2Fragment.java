@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -58,15 +60,50 @@ public class Logger2Fragment extends Fragment {
         }
         return newView;
     }
-    
+
+    public class SampleHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            final TestView testview = new TestView((Context) activity);
+            testview.invalidate();
+        }
+
+        public void sleep(long delayMills) {
+            //使用済みメッセージの削除
+            removeMessages(0);
+            sendMessageDelayed(obtainMessage(0), delayMills);
+        }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        SampleHandler sampleHandler = new SampleHandler();
+        sampleHandler.sleep(0);
+    }
+
     public class TestView extends View{
         Paint paint = new Paint();
+        private boolean isAttached;
         public TestView(Context context) {
             super(context);
         }
-
-        public void RefreshView(){
-            invalidate();
+        protected void onAttachedToWindow(){
+            Handler handler = new Handler(){
+                public void handleMessage(Message msg){
+                    if(isAttached) {
+                        invalidate();
+                        sendEmptyMessageDelayed(0, 1);
+                    }
+                }
+            };
+            isAttached = true;
+            handler.sendEmptyMessageDelayed(0,1);
+            super.onAttachedToWindow();
         }
 
         protected void onDraw(Canvas canvas){
@@ -118,15 +155,15 @@ public class Logger2Fragment extends Fragment {
                             for(int i = 0;i < satnumber;i++){
                                 //まずは仰角を変換
                                 double Altitude = Math.cos(pos[i][1]);
-                                Log.d("Altitude",String.valueOf(Altitude));
+                                //Log.d("Altitude",String.valueOf(Altitude));
                                 Altitude = Altitude * (MaxCanvusWidth/2);
                                 SkyPlotPos[i][0] = (float) (Altitude * Math.cos(pos[i][0]));
                                 SkyPlotPos[i][1] = (float) (Altitude * Math.sin(pos[i][0]));
-                                Log.d("SkyPlotPos",SkyPlotPos[i][0] + "," + SkyPlotPos[i][1]);
+                                //Log.d("SkyPlotPos",SkyPlotPos[i][0] + "," + SkyPlotPos[i][1]);
                                 SkyPlotSvid[i] = svid[i];
                             }
                             satNumber = satnumber;
-                            testview.RefreshView();
+                            testview.invalidate();
                         }
                     });
         }
