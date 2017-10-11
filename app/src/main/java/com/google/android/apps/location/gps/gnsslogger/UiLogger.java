@@ -300,6 +300,16 @@ public class UiLogger implements GnssListener {
             } else {
                 tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos()) * 1e-9;
             }
+            String DeviceName = Build.DEVICE;
+            if(DeviceName.indexOf("RAIJIN") != -1) {
+                //double tRxTime = gnssClock.getTimeNanos() + gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
+                //String tRxStr = String.valueOf(tRxTime);
+                //String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
+                //tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
+                //tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
+                //tRxSeconds = tRxTime;
+                //weekNumber = 0;
+            }
             FileLogger.GPSWStoGPST gpswStoGPST = new FileLogger.GPSWStoGPST();
             FileLogger.ReturnValue value = gpswStoGPST.method(weekNumber,tRxSeconds);
             ClockStr = String.format("DEVICE NAME: %s\nGPST = %d / %d / %d / %d : %d : %f \n", Build.DEVICE,value.Y,value.M,value.D,value.h,value.m,value.s);
@@ -348,6 +358,13 @@ public class UiLogger implements GnssListener {
                 String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
                 tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
                 tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
+            }
+            if(DeviceName.indexOf("RAIJIN") != -1) {
+                //double tRxTime = gnssClock.getTimeNanos() + gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
+                //String tRxStr = String.valueOf(tRxTime);
+                //String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
+                //tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
+                //tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
             }
             /*急場の変更！！*/
             //GPS週のロールオーバーチェック
