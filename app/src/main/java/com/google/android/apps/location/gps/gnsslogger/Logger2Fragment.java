@@ -97,12 +97,12 @@ public class Logger2Fragment extends Fragment {
                 public void handleMessage(Message msg){
                     if(isAttached) {
                         invalidate();
-                        sendEmptyMessageDelayed(0, 1);
+                        sendEmptyMessageDelayed(0, 1000);
                     }
                 }
             };
             isAttached = true;
-            handler.sendEmptyMessageDelayed(0,1);
+            handler.sendEmptyMessageDelayed(0,1000);
             super.onAttachedToWindow();
         }
 

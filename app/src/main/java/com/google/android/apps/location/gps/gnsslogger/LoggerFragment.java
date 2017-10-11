@@ -142,9 +142,9 @@ public class LoggerFragment extends Fragment {
                                         if(array[i][j] == "0") {
                                             mTextView[i][j].setTextColor(Color.YELLOW);
                                             mTextView[i][j].setText("Carrier Phase OFF");
-                                        }else if(array[i][j] == "-1"){
+                                        }else if(array[i][j] == "ADR_STATE_CYCLE_SLIP"){
                                             mTextView[i][j].setTextColor(Color.RED);
-                                            mTextView[i][j].setText("Cycle Slip Detected");
+                                            mTextView[i][j].setText("ADR_STATE_CYCLE_SLIP");
                                         }else {
                                             mTextView[i][j].setTextColor(Color.BLACK);
                                             mTextView[i][j].setText(array[i][j]);

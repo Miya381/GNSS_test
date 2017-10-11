@@ -29,6 +29,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.renderscript.Sampler;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.android.apps.location.gps.gnsslogger.LoggerFragment.UIFragmentComponent;
 import com.google.android.apps.location.gps.gnsslogger.Logger2Fragment.UIFragment2Component;
 
@@ -301,6 +303,7 @@ public class UiLogger implements GnssListener {
             FileLogger.GPSWStoGPST gpswStoGPST = new FileLogger.GPSWStoGPST();
             FileLogger.ReturnValue value = gpswStoGPST.method(weekNumber,tRxSeconds);
             ClockStr = String.format("DEVICE NAME: %s\nGPST = %d / %d / %d / %d : %d : %f \n", Build.DEVICE,value.Y,value.M,value.D,value.h,value.m,value.s);
+            Log.d("GNSSClock",gnssClock.toString());
         }
         return ClockStr;
     }
@@ -328,7 +331,7 @@ public class UiLogger implements GnssListener {
     // kfleavfesthoszdeoxdgilojfgytd((double)(gnssClock.getBiasNanos()* 1e-9)).append("\n");
         int arrayRow = 0;
         for (GnssMeasurement measurement : event.getMeasurements()) {
-        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
+        if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS)) {
             double tRxSeconds;
             //double weekNumber = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
             if (gnssClock.hasBiasNanos() == false) {
@@ -353,9 +356,14 @@ public class UiLogger implements GnssListener {
             //Log.d("Prm",String.valueOf(-gnssClock.getFullBiasNanos() - measurement.getReceivedSvTimeNanos()));
             double prSeconds = (tRxSeconds - tTxSeconds)*1e-9;
             double prm = prSeconds * 2.99792458e8;
-            array[arrayRow][0] = "G" + String.valueOf(measurement.getSvid());
+            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
+                Log.d("QZSS","QZSS Detected");
+                array[arrayRow][0] = "Q" + String.valueOf(measurement.getSvid());
+            }else {
+                array[arrayRow][0] = "G" + String.valueOf(measurement.getSvid());
+            }
             //Log.d("STATE",String.valueOf(measurement.getState());
-            if(measurement.getState() == 15) {
+            if(getStateName(measurement.getState()) == "1") {
                 array[arrayRow][1] = String.format("%14.3f", prm);
             }else {
                 array[arrayRow][1] = getStateName(measurement.getState());
@@ -369,7 +377,7 @@ public class UiLogger implements GnssListener {
             //builder.append("FullCarrierCycles = ").append(measurement.getCarrierCycles() + measurement.getCarrierPhase()).append("\n");
             if(SettingsFragment.CarrierPhase == true) {
                 if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
-                    array[arrayRow][2] = "-1";
+                    array[arrayRow][2] = "ADR_STATE_CYCLE_SLIP";
                 }else {
                     array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
                 }
@@ -404,7 +412,7 @@ public class UiLogger implements GnssListener {
             case GnssMeasurement.STATE_TOW_DECODED:
                 return "STATE_TOW_DECODED";
             default:
-                return "UNKNOWN";
+                return "1";
         }
     }
 
