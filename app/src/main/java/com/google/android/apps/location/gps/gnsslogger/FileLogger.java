@@ -26,6 +26,7 @@ import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -286,28 +287,28 @@ public class FileLogger implements GnssListener {
                 currentFileWriter.write(PGM + RUNBY + DATE +  "PGM / RUN BY / DATE");
                 currentFileWriter.newLine();
                 //COMMENT
-                String COMMENT = String.format("%-60s","Android Ver7.0 Nougat");
-                currentFileWriter.write( COMMENT +  "COMMENT");
-                currentFileWriter.newLine();
+                //String COMMENT = String.format("%-60s","Android Ver7.0 Nougat");
+                //currentFileWriter.write( COMMENT +  "COMMENT");
+                //currentFileWriter.newLine();
                 //MARKER NAME
-                String MARKERNAME = String.format("%-60s","NEXUS 6");
+                String MARKERNAME = String.format("%-60s",Build.DEVICE);
                 currentFileWriter.write(MARKERNAME +  "MARKER NAME");
                 currentFileWriter.newLine();
                 //MARKER NUMBER
                 //OBSERVER AGENCY
-                String OBSERVER = String.format("%-20s","NISHIURA");
+                String OBSERVER = String.format("%-20s","GNSSLogger+R");
                 String AGENCY = String.format("%-40s","KUBOLAB");
                 currentFileWriter.write(OBSERVER + AGENCY +  "OBSERVER / AGENCY");
                 currentFileWriter.newLine();
                 //REC TYPE VERS
                 String REC = String.format("%-20s","0");
-                String TYPE = String.format("%-20s","Qualcomm IZat");
-                String VERS = String.format("%-20s","Gen8B");
+                String TYPE = String.format("%-20s","Android Receiver");
+                String VERS = String.format("%-20s", Build.VERSION.BASE_OS);
                 currentFileWriter.write(REC + TYPE + VERS + "REC # / TYPE / VERS");
                 currentFileWriter.newLine();
                 //ANT TYPE
                 String ANT = String.format("%-20s","0");
-                String ANTTYPE = String.format("%-40s","Qualcomm IZat");
+                String ANTTYPE = String.format("%-40s","Android Anttena");
                 currentFileWriter.write(ANT + ANTTYPE + "ANT # / TYPE");
                 currentFileWriter.newLine();
                 //APPROX POSITION XYZ
@@ -327,10 +328,17 @@ public class FileLogger implements GnssListener {
                 currentFileWriter.write(WAVELENGTH + "WAVELENGTH FACT L1/2");
                 currentFileWriter.newLine();
                 //# / TYPES OF OBSERV
-                String NUMBEROFOBS = String.format("%-6d",2);
-                String OBSERV = String.format("%-48s","    L1    C1    S1");
-                currentFileWriter.write(NUMBEROFOBS + OBSERV +  "# / TYPES OF OBSERV");
-                currentFileWriter.newLine();
+                if(SettingsFragment.CarrierPhase == true) {
+                    String NUMBEROFOBS = String.format("%-6d", 3);
+                    String OBSERV = String.format("%-54s", "    L1    C1    S1");
+                    currentFileWriter.write(NUMBEROFOBS + OBSERV + "# / TYPES OF OBSERV");
+                    currentFileWriter.newLine();
+                }else {
+                    String NUMBEROFOBS = String.format("%-6d", 2);
+                    String OBSERV = String.format("%-48s", "    L1    S1");
+                    currentFileWriter.write(NUMBEROFOBS + OBSERV + "# / TYPES OF OBSERV");
+                    currentFileWriter.newLine();
+                }
                 //INTERVAL
                 String INTERVAL = String.format("%-60.3f",1.0);
                 currentFileWriter.write(INTERVAL + "INTERVAL");
@@ -402,7 +410,7 @@ public class FileLogger implements GnssListener {
         emailIntent.putExtra(Intent.EXTRA_TEXT, "");
         // attach the file
         emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFile));
-        getUiComponent().startActivity(Intent.createChooser(emailIntent, "Send log.."));
+        getUiComponent().startActivity(Intent.createChooser(emailIntent, "Send RINEX.."));
 
         Intent emailIntentSub = new Intent(Intent.ACTION_SEND);
         emailIntentSub.setType("*/*");
@@ -410,7 +418,7 @@ public class FileLogger implements GnssListener {
         emailIntentSub.putExtra(Intent.EXTRA_TEXT, "");
         // attach the file
         emailIntentSub.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFileSub));
-        getUiComponent().startActivity(Intent.createChooser(emailIntentSub, "Send Sublog.."));
+        getUiComponent().startActivity(Intent.createChooser(emailIntentSub, "Send KML.."));
 
         Intent emailIntentAccAzi = new Intent(Intent.ACTION_SEND);
         emailIntentAccAzi.setType("*/*");
@@ -418,7 +426,7 @@ public class FileLogger implements GnssListener {
         emailIntentAccAzi.putExtra(Intent.EXTRA_TEXT, "");
         // attach the file
         emailIntentAccAzi.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFileAccAzi));
-        getUiComponent().startActivity(Intent.createChooser(emailIntentAccAzi, "Send SensorAccAziLog ..."));
+        getUiComponent().startActivity(Intent.createChooser(emailIntentAccAzi, "Send SensorLog ..."));
 
         if (mFileWriter != null) {
             try {

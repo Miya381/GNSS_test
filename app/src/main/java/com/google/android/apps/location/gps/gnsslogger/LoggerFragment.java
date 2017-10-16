@@ -191,6 +191,10 @@ public class LoggerFragment extends Fragment {
                         @Override
                         public void run() {
                             mGNSSClockView.setText(builder);
+                            if(SettingsFragment.GNSSClockSync == false) {
+                                builder.append("GNSS Clock Syncronizing... Please Standby");
+                                builder.append("\n");
+                            }
                             /*Editable editable = mLogView.getEditableText();
                             int length = editable.length();
                             if (length > MAX_LENGTH) {

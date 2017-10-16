@@ -293,6 +293,9 @@ public class UiLogger implements GnssListener {
             double tRxSeconds;
             double TimeNanos = gnssClock.getTimeNanos();
             double FullBiasNanos = gnssClock.getFullBiasNanos();
+            if(FullBiasNanos != 0){
+                SettingsFragment.GNSSClockSync = true;
+            }
             double BiasNanos = gnssClock.getBiasNanos();
             double weekNumber = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
             if (gnssClock.hasBiasNanos() == false) {
@@ -302,6 +305,7 @@ public class UiLogger implements GnssListener {
             }
             String DeviceName = Build.DEVICE;
             if(DeviceName.indexOf("RAIJIN") != -1) {
+                weekNumber = weekNumber - 1970;
                 //double tRxTime = gnssClock.getTimeNanos() + gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
                 //String tRxStr = String.valueOf(tRxTime);
                 //String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
@@ -360,11 +364,14 @@ public class UiLogger implements GnssListener {
                 tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
             }
             if(DeviceName.indexOf("RAIJIN") != -1) {
-                //double tRxTime = gnssClock.getTimeNanos() + gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
-                //String tRxStr = String.valueOf(tRxTime);
-                //String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
-                //tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
-                //tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
+                double tRxTime = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
+                String tRxStr = String.valueOf(tRxTime);
+                String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
+                if(tTxStr.length() > 10 && tRxStr.length() > 10) {
+                    tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
+                    tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
+                    Log.d("prm",tTxSeconds + "," + tRxSeconds);
+                }
             }
             /*急場の変更！！*/
             //GPS週のロールオーバーチェック

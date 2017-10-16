@@ -44,6 +44,7 @@ public class SettingsFragment extends Fragment {
 
     public static final String TAG = ":SettingsFragment";
     public static boolean CarrierPhase = false;
+    public static boolean GNSSClockSync = false;
     private GnssContainer mGpsContainer;
     private SensorContainer mSensorContainer;
     private HelpDialog helpDialog;

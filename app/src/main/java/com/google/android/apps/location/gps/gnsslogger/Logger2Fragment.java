@@ -121,16 +121,29 @@ public class Logger2Fragment extends Fragment {
             canvas.drawLine(MaxCanvusWidth,MaxCanvusHeight/2,0,MaxCanvusHeight/2,paint);
             canvas.drawLine(MaxCanvusWidth/2,MaxCanvusHeight/2 - MaxCanvusWidth/2,MaxCanvusWidth/2,MaxCanvusHeight/2 + MaxCanvusWidth/2,paint);
             for(int i = 0;i < satNumber;i++){
-                paint.setColor(Color.BLACK);
-                paint.setStyle(Paint.Style.FILL);
-                paint.setAntiAlias(true);
-                canvas.drawCircle(MaxCanvusWidth/2 + SkyPlotPos[i][0],MaxCanvusHeight/2 + SkyPlotPos[i][1],10.0f, paint);
                 if(SkyPlotSvid[i] != null) {
-                    paint.setStyle(Paint.Style.FILL_AND_STROKE);
-                    paint.setStrokeWidth(5);
-                    paint.setTextSize(50);
-                    paint.setColor(Color.BLACK);
-                    canvas.drawText(SkyPlotSvid[i], MaxCanvusWidth / 2 + SkyPlotPos[i][0] - 100.0f, MaxCanvusHeight / 2 + SkyPlotPos[i][1] + 50.0f, paint);
+                    if(SkyPlotSvid[i].indexOf("G") != -1) {
+                        paint.setColor(Color.BLUE);
+                        paint.setStyle(Paint.Style.FILL);
+                        paint.setAntiAlias(true);
+                        canvas.drawRect(MaxCanvusWidth/2 + SkyPlotPos[i][0] - 10,MaxCanvusHeight/2 + SkyPlotPos[i][1] - 10 , MaxCanvusWidth/2 + SkyPlotPos[i][0] + 10 ,MaxCanvusHeight/2 + SkyPlotPos[i][1] + 10, paint);
+                        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+                        paint.setStrokeWidth(5);
+                        paint.setTextSize(50);
+                        paint.setColor(Color.BLUE);
+                        canvas.drawText(SkyPlotSvid[i], MaxCanvusWidth / 2 + SkyPlotPos[i][0] - 100.0f, MaxCanvusHeight / 2 + SkyPlotPos[i][1] + 50.0f, paint);
+                    }
+                    else if(SkyPlotSvid[i].indexOf("Q") != -1){
+                        paint.setColor(Color.MAGENTA);
+                        paint.setStyle(Paint.Style.FILL) ;
+                        paint.setAntiAlias(true);
+                        canvas.drawRect(MaxCanvusWidth/2 + SkyPlotPos[i][0] - 10,MaxCanvusHeight/2 + SkyPlotPos[i][1] - 10 , MaxCanvusWidth/2 + SkyPlotPos[i][0] + 10 ,MaxCanvusHeight/2 + SkyPlotPos[i][1] + 10, paint);
+                        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+                        paint.setStrokeWidth(5);
+                        paint.setTextSize(50);
+                        paint.setColor(Color.MAGENTA);
+                        canvas.drawText(SkyPlotSvid[i], MaxCanvusWidth / 2 + SkyPlotPos[i][0] - 100.0f, MaxCanvusHeight / 2 + SkyPlotPos[i][1] + 50.0f, paint);
+                    }
                 }
             }
 
