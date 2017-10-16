@@ -335,7 +335,7 @@ public class FileLogger implements GnssListener {
                     currentFileWriter.newLine();
                 }else {
                     String NUMBEROFOBS = String.format("%-6d", 2);
-                    String OBSERV = String.format("%-54s", "    L1    S1");
+                    String OBSERV = String.format("%-54s", "    C1    S1");
                     currentFileWriter.write(NUMBEROFOBS + OBSERV + "# / TYPES OF OBSERV");
                     currentFileWriter.newLine();
                 }
