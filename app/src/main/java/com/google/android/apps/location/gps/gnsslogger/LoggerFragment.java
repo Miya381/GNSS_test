@@ -44,6 +44,9 @@ public class LoggerFragment extends Fragment {
     private FileLogger mFileLogger;
     private UiLogger mUiLogger;
     private ViewGroup mTable;
+    private Button startLog;
+    private Button sendFile;
+    private boolean FileLogging;
 
     //表用ID
     int Rid[][]={{R.id.textView1_1,R.id.textView1_2,R.id.textView1_3,R.id.textView1_4},{R.id.textView2_1,R.id.textView2_2,R.id.textView2_3,R.id.textView2_4},
@@ -90,10 +93,16 @@ public class LoggerFragment extends Fragment {
             currentFileLogger.setUiComponent(mUiComponent);
         }
 
-        final Button startLog = (Button) newView.findViewById(R.id.start_logs);
-        final Button sendFile = (Button) newView.findViewById(R.id.send_file);
+        startLog = (Button) newView.findViewById(R.id.start_logs);
+        sendFile = (Button) newView.findViewById(R.id.send_file);
+
+        startLog.setText("ClockSync...");
+        startLog.setEnabled(false);
+        sendFile.setEnabled(false);
 
         mGNSSClockView = (TextView) newView.findViewById(R.id.GNSSClockView);
+
+        FileLogging = false;
 
         startLog.setOnClickListener(
                 new OnClickListener() {
@@ -103,6 +112,7 @@ public class LoggerFragment extends Fragment {
                         sendFile.setEnabled(true);
                         Toast.makeText(getContext(), "Starting log...", Toast.LENGTH_LONG).show();
                         mFileLogger.startNewLog();
+                        FileLogging = true;
                     }
                 });
 
@@ -114,6 +124,7 @@ public class LoggerFragment extends Fragment {
                         sendFile.setEnabled(false);
                         Toast.makeText(getContext(), "Sending file...", Toast.LENGTH_LONG).show();
                         mFileLogger.send();
+                        FileLogging = false;
                     }
                 });
         return newView;
@@ -136,6 +147,15 @@ public class LoggerFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
+                            if(FileLogging == false) {
+                                if (SettingsFragment.GNSSClockSync == true) {
+                                    startLog.setEnabled(true);
+                                    startLog.setText("START LOG");
+                                } else {
+                                    startLog.setEnabled(false);
+                                    startLog.setText("ClockSync...");
+                                }
+                            }
                             for(int i = 0;i < 12;i++){
                                 for(int j = 0;j < 4;j++){
                                     if(j == 2){

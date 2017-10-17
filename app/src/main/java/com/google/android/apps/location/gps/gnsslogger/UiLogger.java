@@ -39,6 +39,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -293,9 +295,6 @@ public class UiLogger implements GnssListener {
             double tRxSeconds;
             double TimeNanos = gnssClock.getTimeNanos();
             double FullBiasNanos = gnssClock.getFullBiasNanos();
-            if(FullBiasNanos != 0){
-                SettingsFragment.GNSSClockSync = true;
-            }
             double BiasNanos = gnssClock.getBiasNanos();
             double weekNumber = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
             if (gnssClock.hasBiasNanos() == false) {
@@ -317,6 +316,12 @@ public class UiLogger implements GnssListener {
             FileLogger.GPSWStoGPST gpswStoGPST = new FileLogger.GPSWStoGPST();
             FileLogger.ReturnValue value = gpswStoGPST.method(weekNumber,tRxSeconds);
             ClockStr = String.format("DEVICE NAME: %s\nGPST = %d / %d / %d / %d : %d : %f \n", Build.DEVICE,value.Y,value.M,value.D,value.h,value.m,value.s);
+            final Calendar calendar = Calendar.getInstance();
+            if(String.valueOf(value.Y).indexOf(String.valueOf(calendar.YEAR)) != -1){
+                SettingsFragment.GNSSClockSync = true;
+            }else{
+                SettingsFragment.GNSSClockSync = false;
+            }
             Log.d("GNSSClock",gnssClock.toString());
         }
         return ClockStr;
@@ -370,8 +375,8 @@ public class UiLogger implements GnssListener {
                 String tRxStr = String.valueOf(tRxTime);
                 String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
                 if(tTxStr.length() > 10 && tRxStr.length() > 10) {
-                    tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 9));
-                    tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 9));
+                    tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 7));
+                    tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 7));
                     //Log.d("prm",tTxSeconds + "," + tRxSeconds);
                 }
             }
