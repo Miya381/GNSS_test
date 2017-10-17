@@ -354,23 +354,25 @@ public class UiLogger implements GnssListener {
                 tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos());
             }
             double tTxSeconds = measurement.getReceivedSvTimeNanos();
+            //Log.d("tRxSeconds",String.valueOf(tRxSeconds));
+            //Log.d("tTxSeconds",String.valueOf(measurement.getReceivedSvTimeNanos()));
             /*急場の変更！！*/
             String DeviceName = Build.DEVICE;
             //Log.d("DEVICE",DeviceName);
             if(DeviceName.indexOf("shamu") != -1) {
                 String tRxStr = String.valueOf(-gnssClock.getFullBiasNanos());
                 String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
-                tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
-                tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
+                tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 9));
+                tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 9));
             }
             if(DeviceName.indexOf("RAIJIN") != -1) {
                 double tRxTime = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
                 String tRxStr = String.valueOf(tRxTime);
                 String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
                 if(tTxStr.length() > 10 && tRxStr.length() > 10) {
-                    tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
-                    tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
-                    Log.d("prm",tTxSeconds + "," + tRxSeconds);
+                    tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 9));
+                    tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 9));
+                    //Log.d("prm",tTxSeconds + "," + tRxSeconds);
                 }
             }
             /*急場の変更！！*/
@@ -402,7 +404,11 @@ public class UiLogger implements GnssListener {
             if(SettingsFragment.CarrierPhase == true) {
                 if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
                     array[arrayRow][2] = "ADR_STATE_CYCLE_SLIP";
-                }else {
+                }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_RESET) {
+                    array[arrayRow][2] = "ADR_STATE_RESET";
+                }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_UNKNOWN) {
+                    array[arrayRow][2] = "ADR_STATE_UNKNOWN";
+                }else{
                     array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
                 }
             }else{
@@ -435,6 +441,22 @@ public class UiLogger implements GnssListener {
                 return "STATE_UNKNOWN";
             case GnssMeasurement.STATE_TOW_DECODED:
                 return "STATE_TOW_DECODED";
+            case GnssMeasurement.STATE_BDS_D2_BIT_SYNC:
+                return "STATE_BDS_D2_BIT_SYNC";
+            case GnssMeasurement.STATE_GAL_E1B_PAGE_SYNC:
+                return "STATE_GAL_E1B_PAGE_SYNC";
+            case GnssMeasurement.STATE_BDS_D2_SUBFRAME_SYNC:
+                return "STATE_BDS_D2_SUBFRAME_SYNC";
+            case GnssMeasurement.STATE_GAL_E1BC_CODE_LOCK:
+                return "STATE_GAL_E1BC_CODE_LOCK";
+            case GnssMeasurement.STATE_GAL_E1C_2ND_CODE_LOCK:
+                return "STATE_GAL_E1C_2ND_CODE_LOCK";
+            case GnssMeasurement.STATE_GLO_STRING_SYNC:
+                return "STATE_GLO_STRING_SYNC";
+            case GnssMeasurement.STATE_GLO_TOD_DECODED:
+                return "STATE_GLO_TOD_DECODED";
+            case GnssMeasurement.STATE_SBAS_SYNC:
+                return "STATE_SBAS_SYNC";
             default:
                 return "1";
         }

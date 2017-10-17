@@ -328,7 +328,7 @@ public class FileLogger implements GnssListener {
                 currentFileWriter.write(WAVELENGTH + "WAVELENGTH FACT L1/2");
                 currentFileWriter.newLine();
                 //# / TYPES OF OBSERV
-                if(SettingsFragment.CarrierPhase == true) {
+                if(SettingsFragment.CarrierPhase) {
                     String NUMBEROFOBS = String.format("%-6d", 3);
                     String OBSERV = String.format("%-54s", "    L1    C1    S1");
                     currentFileWriter.write(NUMBEROFOBS + OBSERV + "# / TYPES OF OBSERV");
