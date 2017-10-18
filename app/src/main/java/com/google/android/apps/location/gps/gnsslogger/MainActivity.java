@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -32,6 +33,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ImageSpan;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -99,19 +105,37 @@ public class MainActivity extends AppCompatActivity {
             return 3;
         }
 
+        Drawable myDrawable;
+        String title;
+
         @Override
         public CharSequence getPageTitle(int position) {
-            Locale locale = Locale.getDefault();
+            //Locale locale = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_settings).toUpperCase(locale);
+                    title =  "Setting";
+                    myDrawable = getResources().getDrawable(R.drawable.icon_101930_256);
+                    break;
                 case 1:
-                    return getString(R.string.title_log).toUpperCase(locale);
+                    title = "Monitor&Log";
+                    myDrawable = getResources().getDrawable(R.drawable.icon_160240_256);
+                    break;
                 case 2:
-                    return "Log2".toLowerCase(locale);
+                    title = "SkyPlot";
+                    myDrawable = getResources().getDrawable(R.drawable.icon_146290_256);
+                    break;
                 default:
-                    return super.getPageTitle(position);
+                    break;
             }
+            SpannableStringBuilder sb = new SpannableStringBuilder("   " + title);
+            try {
+                myDrawable.setBounds(2, 2, myDrawable.getIntrinsicWidth()/10, myDrawable.getIntrinsicHeight()/10);
+                ImageSpan span = new ImageSpan(myDrawable, DynamicDrawableSpan.ALIGN_BASELINE);
+                sb.setSpan(span, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } catch (Exception e) {
+                Log.e("Drawable Error","Span Draw Error");
+            }
+            return sb;
         }
     }
 
