@@ -155,8 +155,12 @@ public class UiLogger implements GnssListener {
                 SVID[i] ="G" + String.valueOf(gnssStatus.getSvid(i + 1));
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i + 1);
                 pos[i][1] = gnssStatus.getElevationDegrees(i + 1);
-            }else if(gnssStatus.getConstellationType(i + 1) == GnssStatus.CONSTELLATION_QZSS){
+            }else if(gnssStatus.getConstellationType(i + 1) == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ){
                 SVID[i] ="Q" + String.valueOf(gnssStatus.getSvid(i + 1));
+                pos[i][0] = gnssStatus.getAzimuthDegrees(i + 1);
+                pos[i][1] = gnssStatus.getElevationDegrees(i + 1);
+            }else if(gnssStatus.getConstellationType(i + 1) == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL){
+                SVID[i] ="GL" + String.valueOf(gnssStatus.getSvid(i + 1));
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i + 1);
                 pos[i][1] = gnssStatus.getElevationDegrees(i + 1);
             }
@@ -350,7 +354,7 @@ public class UiLogger implements GnssListener {
     // kfleavfesthoszdeoxdgilojfgytd((double)(gnssClock.getBiasNanos()* 1e-9)).append("\n");
         int arrayRow = 0;
         for (GnssMeasurement measurement : event.getMeasurements()) {
-        if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS)) {
+        if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true))) {
             double tRxSeconds;
             //double weekNumber = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
             if (gnssClock.hasBiasNanos() == false) {
@@ -390,6 +394,8 @@ public class UiLogger implements GnssListener {
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
                 Log.d("QZSS","QZSS Detected");
                 array[arrayRow][0] = "Q" + String.valueOf(measurement.getSvid());
+            }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
+                array[arrayRow][0] = "GL" + String.valueOf(measurement.getSvid());
             }else {
                 array[arrayRow][0] = "G" + String.valueOf(measurement.getSvid());
             }

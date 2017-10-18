@@ -44,6 +44,8 @@ public class SettingsFragment extends Fragment {
 
     public static final String TAG = ":SettingsFragment";
     public static boolean CarrierPhase = false;
+    public static boolean useQZ = false;
+    public static boolean useGL = false;
     public static boolean GNSSClockSync = false;
     private GnssContainer mGpsContainer;
     private SensorContainer mSensorContainer;
@@ -91,11 +93,31 @@ public class SettingsFragment extends Fragment {
                 });
 
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
+        final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
+        final CheckBox useGLO = (CheckBox) view.findViewById(R.id.useGLO);
         CarrierPhaseChkBox.setChecked(false);
         CarrierPhaseChkBox.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 CarrierPhase = CarrierPhaseChkBox.isChecked();
+            }
+
+        });
+
+        useQZSS.setChecked(false);
+        useQZSS.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                useQZ = useQZSS.isChecked();
+            }
+
+        });
+
+        useGLO.setChecked(false);
+        useGLO.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                useGL = useGLO.isChecked();
             }
 
         });

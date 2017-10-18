@@ -122,7 +122,7 @@ public class Logger2Fragment extends Fragment {
             canvas.drawLine(MaxCanvusWidth/2,MaxCanvusHeight/2 - MaxCanvusWidth/2,MaxCanvusWidth/2,MaxCanvusHeight/2 + MaxCanvusWidth/2,paint);
             for(int i = 0;i < satNumber;i++){
                 if(SkyPlotSvid[i] != null) {
-                    if(SkyPlotSvid[i].indexOf("G") != -1) {
+                    if(SkyPlotSvid[i].indexOf("GL") != -1) {
                         paint.setColor(Color.BLUE);
                         paint.setStyle(Paint.Style.FILL);
                         paint.setAntiAlias(true);
@@ -142,6 +142,16 @@ public class Logger2Fragment extends Fragment {
                         paint.setStrokeWidth(5);
                         paint.setTextSize(50);
                         paint.setColor(Color.MAGENTA);
+                        canvas.drawText(SkyPlotSvid[i], MaxCanvusWidth / 2 + SkyPlotPos[i][0] - 100.0f, MaxCanvusHeight / 2 + SkyPlotPos[i][1] + 50.0f, paint);
+                    }else if(SkyPlotSvid[i].indexOf("G") != -1){
+                        paint.setColor(Color.GREEN);
+                        paint.setStyle(Paint.Style.FILL) ;
+                        paint.setAntiAlias(true);
+                        canvas.drawRect(MaxCanvusWidth/2 + SkyPlotPos[i][0] - 10,MaxCanvusHeight/2 + SkyPlotPos[i][1] - 10 , MaxCanvusWidth/2 + SkyPlotPos[i][0] + 10 ,MaxCanvusHeight/2 + SkyPlotPos[i][1] + 10, paint);
+                        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+                        paint.setStrokeWidth(5);
+                        paint.setTextSize(50);
+                        paint.setColor(Color.GREEN);
                         canvas.drawText(SkyPlotSvid[i], MaxCanvusWidth / 2 + SkyPlotPos[i][0] - 100.0f, MaxCanvusHeight / 2 + SkyPlotPos[i][1] + 50.0f, paint);
                     }
                 }
