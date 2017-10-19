@@ -181,10 +181,12 @@ public class UiLogger implements GnssListener {
     }
 
     public void onSensorListener(String listener,double azimuth,float accZ , float altitude){
+        UIFragment2Component component2 = getUiFragment2Component();
         double TrueAzimuth = azimuth + Declination;
         if(TrueAzimuth >= 360){
             TrueAzimuth = 360 - TrueAzimuth;
         }
+        component2.log2SensorFragment(azimuth);
         logText("Sensor", listener + "\n Declination : " + Declination + "\n TrueAzimuth : " + Math.abs(TrueAzimuth), USED_COLOR);
     }
 

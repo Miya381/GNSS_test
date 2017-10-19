@@ -170,14 +170,14 @@ public class Logger2Fragment extends Fragment {
             if (activity == null) {
                 return;
             }
-            final TestView testview = new TestView((Context)activity);
+            //final TestView testview = new TestView((Context)activity);
             activity.runOnUiThread(
                     new Runnable() {
                         @Override
                         public void run() {
                             for(int i = 0;i < satnumber;i++){
                                 //まずは仰角を変換
-                                double Altitude = 1/Math.tan(pos[i][1]);
+                                double Altitude = Math.cos(pos[i][1]);
                                 //Log.d("Altitude",String.valueOf(Altitude));
                                 Altitude = Altitude * (MaxCanvusWidth/2);
                                 float azimuth = pos[i][0];
@@ -191,7 +191,25 @@ public class Logger2Fragment extends Fragment {
                                 SkyPlotSvid[i] = svid[i];
                             }
                             satNumber = satnumber;
-                            testview.invalidate();
+                        }
+                    });
+        }
+
+        public synchronized void log2SensorFragment(final double azimuth) {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            //final TestView testview = new TestView((Context)activity);
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            int satnumber = SkyPlotSvid.length;
+                            for(int i = 0;i < satnumber;i++){
+                                SkyPlotPos[i][0] = (float) (SkyPlotPos[i][0] * Math.cos(azimuth) - SkyPlotPos[i][1] * Math.sin(azimuth));
+                                SkyPlotPos[i][1] = (float) (SkyPlotPos[i][0] * Math.sin(azimuth) + SkyPlotPos[i][1] * Math.cos(azimuth));
+                            }
                         }
                     });
         }
