@@ -122,7 +122,7 @@ public class Logger2Fragment extends Fragment {
             canvas.drawLine(MaxCanvusWidth/2,MaxCanvusHeight/2 - MaxCanvusWidth/2,MaxCanvusWidth/2,MaxCanvusHeight/2 + MaxCanvusWidth/2,paint);
             for(int i = 0;i < satNumber;i++){
                 if(SkyPlotSvid[i] != null) {
-                    if(SkyPlotSvid[i].indexOf("GL") != -1) {
+                    if(SkyPlotSvid[i].indexOf("R") != -1) {
                         paint.setColor(Color.BLUE);
                         paint.setStyle(Paint.Style.FILL);
                         paint.setAntiAlias(true);
@@ -177,11 +177,16 @@ public class Logger2Fragment extends Fragment {
                         public void run() {
                             for(int i = 0;i < satnumber;i++){
                                 //まずは仰角を変換
-                                double Altitude = Math.cos(pos[i][1]);
+                                double Altitude = 1/Math.tan(pos[i][1]);
                                 //Log.d("Altitude",String.valueOf(Altitude));
                                 Altitude = Altitude * (MaxCanvusWidth/2);
-                                SkyPlotPos[i][0] = (float) (Altitude * Math.cos(pos[i][0]));
-                                SkyPlotPos[i][1] = (float) (Altitude * Math.sin(pos[i][0]));
+                                float azimuth = pos[i][0];
+                                azimuth = azimuth + 90;
+                                if(azimuth > 360){
+                                    azimuth = azimuth - 360;
+                                }
+                                SkyPlotPos[i][0] = (float) (Altitude * Math.cos(azimuth));
+                                SkyPlotPos[i][1] = (float) (Altitude * Math.sin(azimuth));
                                 //Log.d("SkyPlotPos",SkyPlotPos[i][0] + "," + SkyPlotPos[i][1]);
                                 SkyPlotSvid[i] = svid[i];
                             }

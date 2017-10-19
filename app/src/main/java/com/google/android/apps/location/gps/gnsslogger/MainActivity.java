@@ -20,6 +20,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -38,6 +39,9 @@ import android.text.Spanned;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -71,7 +75,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         requestPermissionAndSetupFragments(this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        TabLayout.Tab tab1 = tabLayout.getTabAt(0);
+        View tab1View = inflater.inflate(R.layout.main_tab1,null);
+        tab1.setCustomView(tab1View);
+
+        TabLayout.Tab tab2 = tabLayout.getTabAt(1);
+        View tab2View = inflater.inflate(R.layout.main_tab2,null);
+        tab2.setCustomView(tab2View);
+
+        TabLayout.Tab tab3 = tabLayout.getTabAt(2);
+        View tab3View = inflater.inflate(R.layout.main_tab3,null);
+        tab3.setCustomView(tab3View);
+
         instance = this;
     }
 
@@ -111,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             //Locale locale = Locale.getDefault();
-            switch (position) {
+            /*switch (position) {
                 case 0:
                     title =  "Setting";
                     myDrawable = getResources().getDrawable(R.drawable.icon_101930_256);
@@ -134,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
                 sb.setSpan(span, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } catch (Exception e) {
                 Log.e("Drawable Error","Span Draw Error");
-            }
-            return sb;
+            }*/
+            return null;
         }
     }
 

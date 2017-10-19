@@ -160,7 +160,7 @@ public class UiLogger implements GnssListener {
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i + 1);
                 pos[i][1] = gnssStatus.getElevationDegrees(i + 1);
             }else if(gnssStatus.getConstellationType(i + 1) == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL){
-                SVID[i] ="GL" + String.valueOf(gnssStatus.getSvid(i + 1));
+                SVID[i] ="R" + String.valueOf(gnssStatus.getSvid(i + 1));
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i + 1);
                 pos[i][1] = gnssStatus.getElevationDegrees(i + 1);
             }
