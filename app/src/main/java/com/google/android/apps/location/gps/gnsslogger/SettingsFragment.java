@@ -47,6 +47,7 @@ public class SettingsFragment extends Fragment {
     public static boolean useQZ = false;
     public static boolean useGL = false;
     public static boolean GNSSClockSync = false;
+    public static boolean useDeviceSensor = false;
     private GnssContainer mGpsContainer;
     private SensorContainer mSensorContainer;
     private HelpDialog helpDialog;
@@ -132,8 +133,10 @@ public class SettingsFragment extends Fragment {
 
                         if (isChecked) {
                             mSensorContainer.registerSensor();
+                            useDeviceSensor = true;
                         } else {
                             mSensorContainer.unregisterSensor();
+                            useDeviceSensor = false;
                         }
                     }
                 });

@@ -36,8 +36,10 @@ public class Logger2Fragment extends Fragment {
     private int MaxCanvusWidth;
     private int MaxCanvusHeight;
     private float[][] SkyPlotPos = new float[30][2];
+    private float[] NorthPos = new float[2];
     private String[] SkyPlotSvid = new String[30];
     private int satNumber = 0;
+    private float deviceAzimuth = 0;
 
     private final Logger2Fragment.UIFragment2Component mUiComponent = new Logger2Fragment.UIFragment2Component();
 
@@ -120,6 +122,9 @@ public class Logger2Fragment extends Fragment {
             canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,10.0f, paint);
             canvas.drawLine(MaxCanvusWidth,MaxCanvusHeight/2,0,MaxCanvusHeight/2,paint);
             canvas.drawLine(MaxCanvusWidth/2,MaxCanvusHeight/2 - MaxCanvusWidth/2,MaxCanvusWidth/2,MaxCanvusHeight/2 + MaxCanvusWidth/2,paint);
+            //北方向を表示
+            paint.setTextSize(100);
+            canvas.drawText("N", MaxCanvusWidth/2 + NorthPos[0], MaxCanvusHeight/2 + NorthPos[1], paint);
             for(int i = 0;i < satNumber;i++){
                 if(SkyPlotSvid[i] != null) {
                     if(SkyPlotSvid[i].indexOf("R") != -1) {
@@ -180,16 +185,36 @@ public class Logger2Fragment extends Fragment {
                                 double Altitude = Math.cos(pos[i][1]);
                                 //Log.d("Altitude",String.valueOf(Altitude));
                                 Altitude = Altitude * (MaxCanvusWidth/2);
-                                float azimuth = pos[i][0];
+                                float azimuth = (float) Math.toDegrees(pos[i][0]);
                                 azimuth = azimuth + 90;
                                 if(azimuth > 360){
                                     azimuth = azimuth - 360;
                                 }
-                                SkyPlotPos[i][0] = (float) (Altitude * Math.cos(azimuth));
-                                SkyPlotPos[i][1] = (float) (Altitude * Math.sin(azimuth));
+                                if(SettingsFragment.useDeviceSensor) {
+                                    float gnssAzimuth = azimuth;
+                                    gnssAzimuth = azimuth - deviceAzimuth;
+                                    if (gnssAzimuth < 0) {
+                                        gnssAzimuth = gnssAzimuth + 360;
+                                    }
+                                    azimuth = gnssAzimuth;
+                                }
+                                SkyPlotPos[i][0] = (float) (Altitude * Math.cos(Math.toRadians(azimuth)));
+                                SkyPlotPos[i][1] = (float) (Altitude * Math.sin(Math.toRadians(azimuth)));
                                 //Log.d("SkyPlotPos",SkyPlotPos[i][0] + "," + SkyPlotPos[i][1]);
                                 SkyPlotSvid[i] = svid[i];
+                                //SkyPlotPos[i][0] = (float) (SkyPlotPos[i][0] * Math.cos(Math.toRadians(deviceAzimuth)) - SkyPlotPos[i][1] * Math.sin(Math.toRadians(deviceAzimuth)));
+                                //SkyPlotPos[i][1] = (float) (SkyPlotPos[i][0] * Math.sin(Math.toRadians(deviceAzimuth)) + SkyPlotPos[i][1] * Math.cos(Math.toRadians(deviceAzimuth)));
                             }
+                            float DevAzimuth = -90;
+                            if(SettingsFragment.useDeviceSensor) {
+                                DevAzimuth = -deviceAzimuth;
+                                DevAzimuth = DevAzimuth - 90;
+                                if (DevAzimuth < -360) {
+                                    DevAzimuth = DevAzimuth + 360;
+                                }
+                            }
+                            NorthPos[0] = (float) ((MaxCanvusWidth/2 - 10)*Math.cos(Math.toRadians(DevAzimuth)));
+                            NorthPos[1] = (float) ((MaxCanvusWidth/2 - 10)*Math.sin(Math.toRadians(DevAzimuth)));
                             satNumber = satnumber;
                         }
                     });
@@ -205,11 +230,7 @@ public class Logger2Fragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            int satnumber = SkyPlotSvid.length;
-                            for(int i = 0;i < satnumber;i++){
-                                SkyPlotPos[i][0] = (float) (SkyPlotPos[i][0] * Math.cos(azimuth) - SkyPlotPos[i][1] * Math.sin(azimuth));
-                                SkyPlotPos[i][1] = (float) (SkyPlotPos[i][0] * Math.sin(azimuth) + SkyPlotPos[i][1] * Math.cos(azimuth));
-                            }
+                            deviceAzimuth = (float) azimuth;
                         }
                     });
         }

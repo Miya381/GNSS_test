@@ -25,17 +25,17 @@
         android:id="@+id/register_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="19dp"
         android:singleLine="true"
-        android:text="@string/location_label"
-        tools:text="Register"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
+        android:text="GNSS Measurements"
         app:layout_constraintBottom_toTopOf="@+id/checkBox"
-        app:layout_constraintRight_toRightOf="@+id/checkBox"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/checkBox"
         app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginBottom="19dp" />
+        app:layout_constraintLeft_toLeftOf="@+id/checkBox"
+        app:layout_constraintRight_toRightOf="@+id/checkBox"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:text="GNSS Measurements" />
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -55,15 +55,15 @@
         android:id="@+id/register_sensor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Android Sensor"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
+        android:layout_marginBottom="8dp"
+        android:text="Device Sensor"
         app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintRight_toRightOf="@+id/textView"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/textView"
         app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginBottom="8dp" />
+        app:layout_constraintLeft_toLeftOf="@+id/textView"
+        app:layout_constraintRight_toRightOf="@+id/textView"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
     <TextView
         android:id="@+id/textView"
