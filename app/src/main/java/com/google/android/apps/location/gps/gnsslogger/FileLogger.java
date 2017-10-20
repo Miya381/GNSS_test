@@ -696,18 +696,22 @@ public class FileLogger implements GnssListener {
                 GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
                 ReturnValue value = gpswStoGPST.method(weekNumber, tRxSeconds);
                 /*急場の変更！！*/
-                String tRxStr = String.valueOf(-gnssClock.getFullBiasNanos());
-                String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
-                tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
-                tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
+                String DeviceName = Build.DEVICE;
+                //Log.d("DEVICE",DeviceName);
+                if(DeviceName.indexOf("shamu") != -1) {
+                    String tRxStr = String.valueOf(-gnssClock.getFullBiasNanos());
+                    String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
+                    tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
+                    tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
+                }
                 /*急場の変更！！*/
                 double prSeconds = (tRxSeconds - tTxSeconds)*1e-9;
                 double prm = prSeconds * 2.99792458e8;
                 //コード擬似距離の計算
                 //搬送波位相も計測
-                double AccumulatedDeltaRange = 0;
+                double AccumulatedDeltaRange = 0.0;
                 if(SettingsFragment.CarrierPhase == true) {
-                    AccumulatedDeltaRange = measurement.getAccumulatedDeltaRangeMeters();
+                    AccumulatedDeltaRange = measurement.getCarrierCycles() + measurement.getCarrierPhase();
                 }
 
                 if (firstOBS == true) {
@@ -722,8 +726,9 @@ public class FileLogger implements GnssListener {
                 satnumber = satnumber + 1;
                 Prn.append(prn);
                 String PrmStrings = String.format("%14.3f%s%s", prm, " ", " ");
+                String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
                 if(SettingsFragment.CarrierPhase == true) {
-                    String DeltaRangeStrings = String.format("%14.3f%s%s", AccumulatedDeltaRange, " ", " ");
+                    DeltaRangeStrings = String.format("%14.3f%s%s", AccumulatedDeltaRange, " ", " ");
                 }
                 //Fix用チェック
                 if (ReadUseInFixArray(measurement.getSvid())) {
@@ -733,7 +738,11 @@ public class FileLogger implements GnssListener {
                 //Google側でFixとして使われていない場合は信号強度を0に
                 else {
                     String DbHz = String.format("%14.3f%s%s", 0.0, " ", " ");
-                    Measurements.append(PrmStrings + DbHz + "\n");
+                    if(SettingsFragment.CarrierPhase){
+                        Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + "\n");
+                    }else {
+                        Measurements.append(PrmStrings + DbHz + "\n");
+                    }
                 }
             }
         }

@@ -116,9 +116,16 @@ public class Logger2Fragment extends Fragment {
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(1);
             canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,MaxCanvusWidth/2, paint);
-            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,MaxCanvusWidth/2 * (float)Math.cos(4/Math.PI), paint);
+            //目盛り表示
+            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,(MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(45)), paint);
+            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,(MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(15)), paint);
+            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,(MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(75)), paint);
+            paint.setTextSize(50);
             paint.setStyle(Paint.Style.FILL);
             paint.setAntiAlias(true);
+            canvas.drawText("45°", MaxCanvusWidth/2, MaxCanvusHeight/2 - ((MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(45))), paint);
+            canvas.drawText("15°", MaxCanvusWidth/2, MaxCanvusHeight/2 - ((MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(15))), paint);
+            canvas.drawText("75°", MaxCanvusWidth/2, MaxCanvusHeight/2 - ((MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(75))), paint);
             canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,10.0f, paint);
             canvas.drawLine(MaxCanvusWidth,MaxCanvusHeight/2,0,MaxCanvusHeight/2,paint);
             canvas.drawLine(MaxCanvusWidth/2,MaxCanvusHeight/2 - MaxCanvusWidth/2,MaxCanvusWidth/2,MaxCanvusHeight/2 + MaxCanvusWidth/2,paint);
@@ -187,8 +194,8 @@ public class Logger2Fragment extends Fragment {
                                 Altitude = Altitude * (MaxCanvusWidth/2);
                                 float azimuth = (float) Math.toDegrees(pos[i][0]);
                                 azimuth = azimuth + 90;
-                                if(azimuth > 360){
-                                    azimuth = azimuth - 360;
+                                if(azimuth < 360){
+                                    azimuth = azimuth + 360;
                                 }
                                 if(SettingsFragment.useDeviceSensor) {
                                     float gnssAzimuth = azimuth;

@@ -397,7 +397,7 @@ public class UiLogger implements GnssListener {
                 Log.d("QZSS","QZSS Detected");
                 array[arrayRow][0] = "Q" + String.valueOf(measurement.getSvid());
             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                array[arrayRow][0] = "GL" + String.valueOf(measurement.getSvid());
+                array[arrayRow][0] = "R" + String.valueOf(measurement.getSvid());
             }else {
                 array[arrayRow][0] = "G" + String.valueOf(measurement.getSvid());
             }
