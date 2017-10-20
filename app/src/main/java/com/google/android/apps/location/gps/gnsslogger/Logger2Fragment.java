@@ -116,7 +116,7 @@ public class Logger2Fragment extends Fragment {
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(1);
             canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,MaxCanvusWidth/2, paint);
-            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,MaxCanvusWidth/4, paint);
+            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,MaxCanvusWidth/2 * (float)Math.cos(4/Math.PI), paint);
             paint.setStyle(Paint.Style.FILL);
             paint.setAntiAlias(true);
             canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,10.0f, paint);
@@ -124,7 +124,7 @@ public class Logger2Fragment extends Fragment {
             canvas.drawLine(MaxCanvusWidth/2,MaxCanvusHeight/2 - MaxCanvusWidth/2,MaxCanvusWidth/2,MaxCanvusHeight/2 + MaxCanvusWidth/2,paint);
             //北方向を表示
             paint.setTextSize(100);
-            canvas.drawText("N", MaxCanvusWidth/2 + NorthPos[0], MaxCanvusHeight/2 + NorthPos[1], paint);
+            canvas.drawText("N", MaxCanvusWidth/2 + NorthPos[0] - 30, MaxCanvusHeight/2 + NorthPos[1] - 30, paint);
             for(int i = 0;i < satNumber;i++){
                 if(SkyPlotSvid[i] != null) {
                     if(SkyPlotSvid[i].indexOf("R") != -1) {
@@ -213,8 +213,8 @@ public class Logger2Fragment extends Fragment {
                                     DevAzimuth = DevAzimuth + 360;
                                 }
                             }
-                            NorthPos[0] = (float) ((MaxCanvusWidth/2 - 10)*Math.cos(Math.toRadians(DevAzimuth)));
-                            NorthPos[1] = (float) ((MaxCanvusWidth/2 - 10)*Math.sin(Math.toRadians(DevAzimuth)));
+                            NorthPos[0] = (float) ((MaxCanvusWidth / 2 - 10) * Math.cos(Math.toRadians(DevAzimuth)));
+                            NorthPos[1] = (float) ((MaxCanvusWidth / 2 - 10) * Math.sin(Math.toRadians(DevAzimuth)));
                             satNumber = satnumber;
                         }
                     });
