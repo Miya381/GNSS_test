@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     myDrawable = getResources().getDrawable(R.drawable.icon_160240_256);
                     break;
                 case 2:
-                    title = "SkyPlot";
+                    title = "skyplot.png";
                     myDrawable = getResources().getDrawable(R.drawable.icon_146290_256);
                     break;
                 default:

@@ -48,6 +48,7 @@ public class SettingsFragment extends Fragment {
     public static boolean useGL = false;
     public static boolean GNSSClockSync = false;
     public static boolean useDeviceSensor = false;
+    public static boolean ResearchMode = false;
     private GnssContainer mGpsContainer;
     private SensorContainer mSensorContainer;
     private HelpDialog helpDialog;
@@ -119,6 +120,22 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v){
                 useGL = useGLO.isChecked();
+            }
+
+        });
+
+        final Switch ResearchModeSwitch = (Switch) view.findViewById(R.id.ResearchMode);
+
+        ResearchModeSwitch.setChecked(false);
+        ResearchModeSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+                    ResearchMode = true;
+                } else {
+                    ResearchMode = false;
+                }
             }
 
         });

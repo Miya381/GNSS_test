@@ -182,68 +182,69 @@ public class FileLogger implements GnssListener {
                 }
             }
         }
-
         synchronized (mFileAccAzLock){
-            File baseAccAziDirectory;
-            String state = Environment.getExternalStorageState();
-            if (Environment.MEDIA_MOUNTED.equals(state)) {
-                baseAccAziDirectory = new File(Environment.getExternalStorageDirectory(), FILE_PREFIXACCAZI);
-                baseAccAziDirectory.mkdirs();
-            } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-                logError("Cannot write to external storage.");
-                return;
-            } else {
-                logError("Cannot read external storage.");
-                return;
-            }
-
-            Date now = new Date();
-            String fileNameAccAzi = String.format("AndroidAccAzi.csv", FILE_PREFIXSUB);
-            File currentFileAccAzi = new File(baseAccAziDirectory, fileNameAccAzi);
-            String currentFileAccAziPath = currentFileAccAzi.getAbsolutePath();
-            BufferedWriter currentFileAccAziWriter;
-            try {
-                currentFileAccAziWriter = new BufferedWriter(new FileWriter(currentFileAccAzi));
-            } catch (IOException e) {
-                logException("Could not open subobservation file: " + currentFileAccAziPath, e);
-                return;
-            }
-
-            // サブ観測ファイルへのヘッダ書き出し
-            try {
-                currentFileAccAziWriter.write("Android Acc\nEast,North ");
-                currentFileAccAziWriter.newLine();
-            } catch (IOException e) {
-                Toast.makeText(mContext, "Count not initialize Sub observation file", Toast.LENGTH_SHORT).show();
-                logException("Count not initialize subobservation file: " + currentFileAccAziPath, e);
-                return;
-            }
-
-            if (mFileAccAzWriter != null) {
-                try {
-                    mFileAccAzWriter.close();
-                } catch (IOException e) {
-                    logException("Unable to close sub observation file streams.", e);
+            if(SettingsFragment.ResearchMode) {
+                File baseAccAziDirectory;
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    baseAccAziDirectory = new File(Environment.getExternalStorageDirectory(), FILE_PREFIXACCAZI);
+                    baseAccAziDirectory.mkdirs();
+                } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                    logError("Cannot write to external storage.");
+                    return;
+                } else {
+                    logError("Cannot read external storage.");
                     return;
                 }
-            }
-            mFileAccAzi = currentFileAccAzi;
-            mFileAccAzWriter = currentFileAccAziWriter;
-            Toast.makeText(mContext, "File opened: " + currentFileAccAziPath, Toast.LENGTH_SHORT).show();
 
-            // To make sure that files do not fill up the external storage:
-            // - Remove all empty files
-            FileFilter filter = new FileToDeleteFilter(mFileAccAzi);
-            for (File existingFile : baseAccAziDirectory.listFiles(filter)) {
-                existingFile.delete();
-            }
-            // - Trim the number of files with data
-            File[] existingFiles = baseAccAziDirectory.listFiles();
-            int filesToDeleteCount = existingFiles.length - MAX_FILES_STORED;
-            if (filesToDeleteCount > 0) {
-                Arrays.sort(existingFiles);
-                for (int i = 0; i < filesToDeleteCount; ++i) {
-                    existingFiles[i].delete();
+                Date now = new Date();
+                String fileNameAccAzi = String.format("AndroidAccAzi.csv", FILE_PREFIXSUB);
+                File currentFileAccAzi = new File(baseAccAziDirectory, fileNameAccAzi);
+                String currentFileAccAziPath = currentFileAccAzi.getAbsolutePath();
+                BufferedWriter currentFileAccAziWriter;
+                try {
+                    currentFileAccAziWriter = new BufferedWriter(new FileWriter(currentFileAccAzi));
+                } catch (IOException e) {
+                    logException("Could not open subobservation file: " + currentFileAccAziPath, e);
+                    return;
+                }
+
+                // サブ観測ファイルへのヘッダ書き出し
+                try {
+                    currentFileAccAziWriter.write("Android Acc\nEast,North ");
+                    currentFileAccAziWriter.newLine();
+                } catch (IOException e) {
+                    Toast.makeText(mContext, "Count not initialize Sub observation file", Toast.LENGTH_SHORT).show();
+                    logException("Count not initialize subobservation file: " + currentFileAccAziPath, e);
+                    return;
+                }
+
+                if (mFileAccAzWriter != null) {
+                    try {
+                        mFileAccAzWriter.close();
+                    } catch (IOException e) {
+                        logException("Unable to close sub observation file streams.", e);
+                        return;
+                    }
+                }
+                mFileAccAzi = currentFileAccAzi;
+                mFileAccAzWriter = currentFileAccAziWriter;
+                Toast.makeText(mContext, "File opened: " + currentFileAccAziPath, Toast.LENGTH_SHORT).show();
+
+                // To make sure that files do not fill up the external storage:
+                // - Remove all empty files
+                FileFilter filter = new FileToDeleteFilter(mFileAccAzi);
+                for (File existingFile : baseAccAziDirectory.listFiles(filter)) {
+                    existingFile.delete();
+                }
+                // - Trim the number of files with data
+                File[] existingFiles = baseAccAziDirectory.listFiles();
+                int filesToDeleteCount = existingFiles.length - MAX_FILES_STORED;
+                if (filesToDeleteCount > 0) {
+                    Arrays.sort(existingFiles);
+                    for (int i = 0; i < filesToDeleteCount; ++i) {
+                        existingFiles[i].delete();
+                    }
                 }
             }
         }
@@ -393,8 +394,8 @@ public class FileLogger implements GnssListener {
         if (mFileSub == null){
             return;
         }
-        if(mFileAccAzi == null){
-            return;
+        if(mFileAccAzi == null && SettingsFragment.ResearchMode){
+                return;
         }
         try {
             mFileSubWriter.write("    </coordinates>\n  </LineString>\n</Placemark>\n</Document>\n</kml>\n");
@@ -411,14 +412,15 @@ public class FileLogger implements GnssListener {
         // attach the file
         emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFile));
         getUiComponent().startActivity(Intent.createChooser(emailIntent, "Send RINEX.."));
-
-        Intent emailIntentSub = new Intent(Intent.ACTION_SEND);
-        emailIntentSub.setType("*/*");
-        emailIntentSub.putExtra(Intent.EXTRA_SUBJECT, "SensorSubLog");
-        emailIntentSub.putExtra(Intent.EXTRA_TEXT, "");
-        // attach the file
-        emailIntentSub.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFileSub));
-        getUiComponent().startActivity(Intent.createChooser(emailIntentSub, "Send KML.."));
+        if(SettingsFragment.ResearchMode) {
+            Intent emailIntentSub = new Intent(Intent.ACTION_SEND);
+            emailIntentSub.setType("*/*");
+            emailIntentSub.putExtra(Intent.EXTRA_SUBJECT, "SensorSubLog");
+            emailIntentSub.putExtra(Intent.EXTRA_TEXT, "");
+            // attach the file
+            emailIntentSub.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFileSub));
+            getUiComponent().startActivity(Intent.createChooser(emailIntentSub, "Send KML.."));
+        }
 
         Intent emailIntentAccAzi = new Intent(Intent.ACTION_SEND);
         emailIntentAccAzi.setType("*/*");
@@ -447,14 +449,15 @@ public class FileLogger implements GnssListener {
                 return;
             }
         }
-
-        if (mFileAccAzWriter != null) {
-            try {
-                mFileAccAzWriter.close();
-                mFileAccAzWriter = null;
-            } catch (IOException e) {
-                logException("Unable to close sensorlog file streams.", e);
-                return;
+        if(SettingsFragment.ResearchMode) {
+            if (mFileAccAzWriter != null) {
+                try {
+                    mFileAccAzWriter.close();
+                    mFileAccAzWriter = null;
+                } catch (IOException e) {
+                    logException("Unable to close sensorlog file streams.", e);
+                    return;
+                }
             }
         }
     }

@@ -219,8 +219,12 @@ public class SensorContainer {
                     double AccAziRad = Math.atan(currentAccelerationYValues / currentAccelerationXValues);
                     AccAzi = radianToDegrees((float) AccAziRad);
                 }
-                mLogger.onSensorListener(String.format("Pitch = %f , Roll = %f , Azimuth = %f \n Altitude = %f \n WalkCounter = %d \n AccAzi = %d",Math.toDegrees(mPitchX),Math.toDegrees(mRollY),Math.toDegrees(mAzimuthZ) + 180.0,LastAltitude - Altitude,counter, AccAzi),Math.toDegrees(mAzimuthZ) + 180,currentAccelerationZValues,LastAltitude - Altitude);
-                //mLogger.onSensorListener(String.format("MagX = %f \n MagY = %f \n MagZ = %f",mMagneticValues[0],mMagneticValues[1],mMagneticValues[2]),mAzimuthZ,currentAccelerationZValues,LastAltitude - Altitude);
+                if(SettingsFragment.ResearchMode) {
+                    mLogger.onSensorListener(String.format("Pitch = %f , Roll = %f , Azimuth = %f \n Altitude = %f \n WalkCounter = %d \n AccAzi = %d", Math.toDegrees(mPitchX), Math.toDegrees(mRollY), Math.toDegrees(mAzimuthZ) + 180.0, LastAltitude - Altitude, counter, AccAzi), Math.toDegrees(mAzimuthZ) + 180, currentAccelerationZValues, LastAltitude - Altitude);
+                }else{
+                    mLogger.onSensorListener(String.format("Pitch = %2.1f , Roll = %2.1f , Azimuth = %3.1f \n Altitude = %3.1f", Math.toDegrees(mPitchX), Math.toDegrees(mRollY), Math.toDegrees(mAzimuthZ) + 180.0, Altitude), Math.toDegrees(mAzimuthZ) + 180, currentAccelerationZValues, LastAltitude - Altitude);
+                    //mLogger.onSensorListener(String.format("MagX = %f \n MagY = %f \n MagZ = %f",mMagneticValues[0],mMagneticValues[1],mMagneticValues[2]),mAzimuthZ,currentAccelerationZValues,LastAltitude - Altitude);
+                }
                 //mFileLogger.onSensorListener("",mAzimuthZ,currentAccelerationZValues);
                 LastAltitude = Altitude;
             }

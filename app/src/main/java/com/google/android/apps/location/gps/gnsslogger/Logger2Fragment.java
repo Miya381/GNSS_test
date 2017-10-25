@@ -4,32 +4,35 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Logger2Fragment extends Fragment {
 
     private TextView mLogView;
     private TextView mSensorLogView;
+    private ImageView SkyplotBG;
     private ScrollView mScrollView;
     private FileLogger mFileLogger;
     private UiLogger mUiLogger;
@@ -40,6 +43,7 @@ public class Logger2Fragment extends Fragment {
     private String[] SkyPlotSvid = new String[30];
     private int satNumber = 0;
     private float deviceAzimuth = 0;
+    private Bitmap skyplotbg = null;
 
     private final Logger2Fragment.UIFragment2Component mUiComponent = new Logger2Fragment.UIFragment2Component();
 
@@ -51,11 +55,19 @@ public class Logger2Fragment extends Fragment {
         mFileLogger = value;
     }
 
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View newView = inflater.inflate(R.layout.fragment_log2, container, false /* attachToRoot */);
         FrameLayout frameLayout = (FrameLayout) newView.findViewById(R.id.fragment);
         frameLayout.addView(new TestView(this.getActivity()));
+        SkyplotBG = (ImageView) newView.findViewById(R.id.skyplotview);
+        //int ImageWidth = SkyplotBG.getDrawable().getBounds().width();
+        //int ImageHeight = SkyplotBG.getDrawable().getBounds().height();
+        //Matrix mtx = new Matrix();
+        //mtx.postTranslate(-ImageWidth/2 , -ImageHeight/2);
+        //mtx.postRotate(deviceAzimuth);
+        //.d("Rotate",String.valueOf(deviceAzimuth));
+        //mtx.postTranslate(ImageWidth/2 , ImageHeight/2);
+        //SkyplotBG.setImageMatrix(mtx);
         UiLogger currentUiLogger = mUiLogger;
         if (currentUiLogger != null) {
             currentUiLogger.setUiFragment2Component(mUiComponent);
@@ -63,75 +75,96 @@ public class Logger2Fragment extends Fragment {
         return newView;
     }
 
-    public class SampleHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            Activity activity = getActivity();
-            if (activity == null) {
-                return;
-            }
-            final TestView testview = new TestView((Context) activity);
-            testview.invalidate();
-        }
-
-        public void sleep(long delayMills) {
-            //使用済みメッセージの削除
-            removeMessages(0);
-            sendMessageDelayed(obtainMessage(0), delayMills);
-        }
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        SampleHandler sampleHandler = new SampleHandler();
-        sampleHandler.sleep(0);
-    }
-
-    public class TestView extends View{
+    public class TestView extends SurfaceView implements SurfaceHolder.Callback, Runnable{
         Paint paint = new Paint();
         private boolean isAttached;
-        public TestView(Context context) {
+        private Thread mLooper;
+        private SurfaceHolder mHolder;
+        private long mTime =0;
+        Activity activity = getActivity();
+        public TestView(final Context context) {
             super(context);
+            initialize();
         }
-        protected void onAttachedToWindow(){
-            Handler handler = new Handler(){
-                public void handleMessage(Message msg){
-                    if(isAttached) {
-                        invalidate();
-                        sendEmptyMessageDelayed(0, 1000);
-                    }
-                }
-            };
-            isAttached = true;
-            handler.sendEmptyMessageDelayed(0,1000);
-            super.onAttachedToWindow();
+        private void initialize() {
+            getHolder().setFormat(PixelFormat.TRANSLUCENT);
+            getHolder().addCallback(this);
+            setZOrderOnTop(true);
+        }
+        public void surfaceDestroyed(SurfaceHolder surfaceholder) {
+            mLooper = null;
         }
 
-        protected void onDraw(Canvas canvas){
+        public void surfaceCreated(final SurfaceHolder surfaceholder) {
+            mHolder = surfaceholder;
+            mLooper = new Thread(this);
+        }
+
+
+
+        public void surfaceChanged(SurfaceHolder surfaceholder, int i, int j, int k) {
+            if(mLooper != null) {
+                //mTime = System.currentTimeMillis();
+                mLooper.start();
+                //doDraw(surfaceholder);
+            }
+        }
+        public void run() {
+            while (mLooper != null) {
+                Activity activity = getActivity();
+                if (activity == null) {
+                    try {
+                        mLooper.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    activity.runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    doDraw(mHolder);
+                                    SkyplotBG.setRotation(-deviceAzimuth);
+                                }
+                            });
+                    try {
+                        mLooper.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+
+        private void doDraw(SurfaceHolder holder) {
+            Canvas canvas = holder.lockCanvas();
+            if (canvas == null){ return; }
+            try
+            {
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                draw(canvas);
+            }
+            finally
+            {
+                if ( canvas != null )
+                {
+                    holder.unlockCanvasAndPost(canvas);
+                    canvas = null;
+                }
+            }
+        }
+
+        @Override
+        public void draw(Canvas canvas){
+            //canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            //canvas.drawColor(Color.WHITE);
             MaxCanvusWidth = canvas.getWidth();
             MaxCanvusHeight = canvas.getHeight();
             paint.setColor(Color.BLACK);
-            //Rect rect = new Rect(100, 200, 300, 400);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(1);
-            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,MaxCanvusWidth/2, paint);
-            //目盛り表示
-            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,(MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(45)), paint);
-            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,(MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(15)), paint);
-            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,(MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(75)), paint);
             paint.setTextSize(50);
             paint.setStyle(Paint.Style.FILL);
             paint.setAntiAlias(true);
-            canvas.drawText("45°", MaxCanvusWidth/2, MaxCanvusHeight/2 - ((MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(45))), paint);
-            canvas.drawText("15°", MaxCanvusWidth/2, MaxCanvusHeight/2 - ((MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(15))), paint);
-            canvas.drawText("75°", MaxCanvusWidth/2, MaxCanvusHeight/2 - ((MaxCanvusWidth/2) * (float)Math.cos(Math.toRadians(75))), paint);
-            canvas.drawCircle(MaxCanvusWidth/2,MaxCanvusHeight/2,10.0f, paint);
-            canvas.drawLine(MaxCanvusWidth,MaxCanvusHeight/2,0,MaxCanvusHeight/2,paint);
-            canvas.drawLine(MaxCanvusWidth/2,MaxCanvusHeight/2 - MaxCanvusWidth/2,MaxCanvusWidth/2,MaxCanvusHeight/2 + MaxCanvusWidth/2,paint);
-            //北方向を表示
-            paint.setTextSize(100);
-            canvas.drawText("N", MaxCanvusWidth/2 + NorthPos[0] - 30, MaxCanvusHeight/2 + NorthPos[1] - 30, paint);
             for(int i = 0;i < satNumber;i++){
                 if(SkyPlotSvid[i] != null) {
                     if(SkyPlotSvid[i].indexOf("R") != -1) {
@@ -182,14 +215,14 @@ public class Logger2Fragment extends Fragment {
             if (activity == null) {
                 return;
             }
-            //final TestView testview = new TestView((Context)activity);
+            final TestView testview = new TestView((Context)activity);
             activity.runOnUiThread(
                     new Runnable() {
                         @Override
                         public void run() {
                             for(int i = 0;i < satnumber;i++){
                                 //まずは仰角を変換
-                                double Altitude = Math.cos(pos[i][1]);
+                                double Altitude = 1 - pos[i][1]/90;
                                 //Log.d("Altitude",String.valueOf(Altitude));
                                 Altitude = Altitude * (MaxCanvusWidth/2);
                                 float azimuth = (float) Math.toDegrees(pos[i][0]);
@@ -205,8 +238,8 @@ public class Logger2Fragment extends Fragment {
                                     }
                                     azimuth = gnssAzimuth;
                                 }
-                                SkyPlotPos[i][0] = (float) (Altitude * Math.cos(Math.toRadians(azimuth)));
-                                SkyPlotPos[i][1] = (float) (Altitude * Math.sin(Math.toRadians(azimuth)));
+                                SkyPlotPos[i][0] = (float) (0.888 * Altitude * Math.cos(Math.toRadians(azimuth)));
+                                SkyPlotPos[i][1] = (float) (0.888 * Altitude * Math.sin(Math.toRadians(azimuth)));
                                 //Log.d("SkyPlotPos",SkyPlotPos[i][0] + "," + SkyPlotPos[i][1]);
                                 SkyPlotSvid[i] = svid[i];
                                 //SkyPlotPos[i][0] = (float) (SkyPlotPos[i][0] * Math.cos(Math.toRadians(deviceAzimuth)) - SkyPlotPos[i][1] * Math.sin(Math.toRadians(deviceAzimuth)));
@@ -220,8 +253,8 @@ public class Logger2Fragment extends Fragment {
                                     DevAzimuth = DevAzimuth + 360;
                                 }
                             }
-                            NorthPos[0] = (float) ((MaxCanvusWidth / 2 - 10) * Math.cos(Math.toRadians(DevAzimuth)));
-                            NorthPos[1] = (float) ((MaxCanvusWidth / 2 - 10) * Math.sin(Math.toRadians(DevAzimuth)));
+                            //NorthPos[0] = (float) (0.888 * (MaxCanvusWidth / 2 - 10) * Math.cos(Math.toRadians(DevAzimuth)));
+                            //NorthPos[1] = (float) (0.888 * (MaxCanvusWidth / 2 - 10) * Math.sin(Math.toRadians(DevAzimuth)));
                             satNumber = satnumber;
                         }
                     });

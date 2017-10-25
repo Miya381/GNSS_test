@@ -11,25 +11,21 @@
     <TextView
         android:id="@+id/GNSSClockView"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="-35dp"
+        android:layout_height="61dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toTopOf="@+id/TableLayout"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TableLayout
         android:id="@+id/TableLayout"
         android:layout_width="419dp"
         android:layout_height="278dp"
         android:stretchColumns="1,2"
-        tools:layout_editor_absoluteX="-4dp"
-        android:layout_marginBottom="-192dp"
+        tools:layout_editor_absoluteX="0dp"
         app:layout_constraintBottom_toTopOf="@+id/sensor_log_view">
 
         <TableRow
@@ -487,8 +483,7 @@
         android:id="@+id/sensor_log_view"
         tools:layout_editor_absoluteX="0dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-        tools:layout_editor_absoluteY="429dp" />
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2" />
 
 
     <LinearLayout
@@ -502,7 +497,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -516,7 +512,7 @@
                 android:layout_width="194dp"
                 android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="7dp"
+                android:layout_marginLeft="6dp"
                 android:layout_marginStart="190dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="0.46"
@@ -524,7 +520,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="1.0" />
 
             <Button
                 android:id="@+id/send_file"

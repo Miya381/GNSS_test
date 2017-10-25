@@ -43,6 +43,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Double.NaN;
+
 /**
  * A class representing a UI logger for the application. Its responsibility is show information in
  * the UI.
@@ -187,7 +189,13 @@ public class UiLogger implements GnssListener {
             TrueAzimuth = 360 - TrueAzimuth;
         }
         component2.log2SensorFragment(azimuth);
-        logText("Sensor", listener + "\n Declination : " + Declination + "\n TrueAzimuth : " + Math.abs(TrueAzimuth), USED_COLOR);
+        if(SettingsFragment.ResearchMode) {
+            logText("Sensor", listener + "\n Declination : " + Declination + "\n TrueAzimuth : " + Math.abs(TrueAzimuth), USED_COLOR);
+            //Log.d("Device Sensor",listener);
+        }else {
+            logText("Sensor", listener, USED_COLOR);
+            //Log.d("Device Sensor",listener);
+        }
     }
 
     private void logMeasurementEvent(String event) {
@@ -302,11 +310,12 @@ public class UiLogger implements GnssListener {
             double TimeNanos = gnssClock.getTimeNanos();
             double FullBiasNanos = gnssClock.getFullBiasNanos();
             double BiasNanos = gnssClock.getBiasNanos();
-            double weekNumber = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
+            double weekNumber = Math.floor(- (gnssClock.getFullBiasNanos() * 1e-9 / 604800));
+            double weekNumberNanos = weekNumber * 604800 * 1e9;
             if (gnssClock.hasBiasNanos() == false) {
-                tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos()) * 1e-9;
+                tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos) * 1e-9;
             } else {
-                tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos()) * 1e-9;
+                tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos() - weekNumberNanos) * 1e-9;
             }
             String DeviceName = Build.DEVICE;
             if(DeviceName.indexOf("RAIJIN") != -1) {
@@ -357,24 +366,28 @@ public class UiLogger implements GnssListener {
         int arrayRow = 0;
         for (GnssMeasurement measurement : event.getMeasurements()) {
         if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true))) {
-            double tRxSeconds;
-            //double weekNumber = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
+            double weekNumber = Math.floor(- (gnssClock.getFullBiasNanos() * 1e-9 / 604800));
+            //Log.d("WeekNumber",String.valueOf(weekNumber));
+            double weekNumberNanos = weekNumber * 604800 * 1e9;
+            //Log.d("WeekNumberNanos",String.valueOf(weekNumberNanos));
+            //double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
+            double tRxSeconds = 0;
             if (gnssClock.hasBiasNanos() == false) {
-                tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos());
+                tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos) * 1e-9;
             } else {
-                tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos());
+                tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos() - weekNumberNanos) * 1e-9;
             }
-            double tTxSeconds = measurement.getReceivedSvTimeNanos();
+            double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
             //Log.d("tRxSeconds",String.valueOf(tRxSeconds));
             //Log.d("tTxSeconds",String.valueOf(measurement.getReceivedSvTimeNanos()));
             /*急場の変更！！*/
             String DeviceName = Build.DEVICE;
             //Log.d("DEVICE",DeviceName);
-            if(DeviceName.indexOf("shamu") != -1) {
-                String tRxStr = String.valueOf(-gnssClock.getFullBiasNanos());
+            if(DeviceName.indexOf("shamu") != -1 && gnssClock.getTimeNanos() == 0.0) {
+               /* String tRxStr = String.valueOf(-gnssClock.getFullBiasNanos());
                 String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
                 tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 9));
-                tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 9));
+                tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 9));*/
             }
             if(DeviceName.indexOf("RAIJIN") != -1) {
                 double tRxTime = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
@@ -391,7 +404,9 @@ public class UiLogger implements GnssListener {
             //Log.d("tRxSeconds",tRxStr);
             //Log.d("tTxSeconds",tTxStr);
             //Log.d("Prm",String.valueOf(-gnssClock.getFullBiasNanos() - measurement.getReceivedSvTimeNanos()));
-            double prSeconds = (tRxSeconds - tTxSeconds)*1e-9;
+            Log.d("tRxSeconds",String.valueOf(tRxSeconds));
+            Log.d("tTxSeconds",String.valueOf(tTxSeconds));
+            double prSeconds = tRxSeconds - tTxSeconds;
             double prm = prSeconds * 2.99792458e8;
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
                 Log.d("QZSS","QZSS Detected");
@@ -422,7 +437,11 @@ public class UiLogger implements GnssListener {
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_UNKNOWN) {
                     array[arrayRow][2] = "ADR_STATE_UNKNOWN";
                 }else{
-                    array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
+                    if(measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
+                        array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
+                    }else {
+                        array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters());
+                    }
                 }
             }else{
                 array[arrayRow][2] = "0";
