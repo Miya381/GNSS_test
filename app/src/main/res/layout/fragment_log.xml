@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/GNSSClockView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="61dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -18,15 +18,17 @@
         app:layout_constraintBottom_toTopOf="@+id/TableLayout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <TableLayout
         android:id="@+id/TableLayout"
-        android:layout_width="419dp"
+        android:layout_width="395dp"
         android:layout_height="278dp"
         android:stretchColumns="1,2"
-        tools:layout_editor_absoluteX="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/sensor_log_view">
+        app:layout_constraintBottom_toTopOf="@+id/sensor_log_view"
+        tools:layout_editor_absoluteX="8dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -478,19 +480,19 @@
 
 
     <TextView
-        android:layout_width="572dp"
-        android:layout_height="97dp"
         android:id="@+id/sensor_log_view"
-        tools:layout_editor_absoluteX="0dp"
+        android:layout_width="395dp"
+        android:layout_height="97dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2" />
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        tools:layout_editor_absoluteX="8dp" />
 
 
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="395dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:orientation="horizontal"
@@ -512,7 +514,7 @@
                 android:layout_width="194dp"
                 android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="6dp"
+                android:layout_marginLeft="0dp"
                 android:layout_marginStart="190dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="0.46"
@@ -529,7 +531,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="0dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="1.14"
                 android:text="Stop &amp; Send"

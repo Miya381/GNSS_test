@@ -21,6 +21,8 @@ import android.location.GnssClock;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,12 +45,17 @@ import android.widget.Button;
 public class SettingsFragment extends Fragment {
 
     public static final String TAG = ":SettingsFragment";
+    public static String SAVE_LOCATION = "GNSSLoggerR";
+    public static String FILE_PREFIX = "/" + SAVE_LOCATION + "/RINEX";
+    public static String FILE_PREFIXSUB = "/" + SAVE_LOCATION + "/KML";
+    public static String FILE_PREFIXACCAZI = "/" + SAVE_LOCATION + "/CSV";
     public static boolean CarrierPhase = false;
     public static boolean useQZ = false;
     public static boolean useGL = false;
     public static boolean GNSSClockSync = false;
     public static boolean useDeviceSensor = false;
     public static boolean ResearchMode = false;
+    public static boolean SendMode = false;
     private GnssContainer mGpsContainer;
     private SensorContainer mSensorContainer;
     private HelpDialog helpDialog;
@@ -157,8 +164,43 @@ public class SettingsFragment extends Fragment {
                         }
                     }
                 });
+        final TextView EditSaveLocation = (TextView) view.findViewById(R.id.EditSaveLocation);
+        EditSaveLocation.setText("GNSSLoggerR");
+        EditSaveLocation.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        Button resetGNSSClock = (Button) view.findViewById(R.id.rstbutton);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                SAVE_LOCATION = s.toString();
+                FILE_PREFIX = "/" + SAVE_LOCATION + "/RINEX";
+                FILE_PREFIXSUB = "/" + SAVE_LOCATION + "/KML";
+                FILE_PREFIXACCAZI = "/" + SAVE_LOCATION + "/CSV";
+            }
+        });
+        final Switch SendFileSwitch = (Switch) view.findViewById(R.id.FileSend);
+        SendFileSwitch.setChecked(false);
+        SendFileSwitch.setOnCheckedChangeListener(
+                new OnCheckedChangeListener() {
+
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        if (isChecked) {
+                            SendMode = true;
+                        } else {
+                            SendMode = false;
+                        }
+                    }
+                });
+        /*Button resetGNSSClock = (Button) view.findViewById(R.id.rstbutton);
 
         resetGNSSClock.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,7 +247,7 @@ public class SettingsFragment extends Fragment {
             public void onClick(View view) {
                 getActivity().finishAffinity();
             }
-        });
+        });*/
 
         TextView swInfo = (TextView) view.findViewById(R.id.sw_info);
 

@@ -52,14 +52,14 @@ import java.util.ArrayList;
 public class FileLogger implements GnssListener {
 
     private static final String TAG = "FileLogger";
-    private static final String FILE_PREFIX = "pseudoranges";
-    private static final String FILE_PREFIXSUB = "Locations";
-    private static final String FILE_PREFIXACCAZI = "AccAzi";
     private static final String ERROR_WRITING_FILE = "Problem writing to file.";
     private static final String COMMENT_START = "# ";
     private static final char RECORD_DELIMITER = ',';
     private static final String VERSION_TAG = "Version: ";
     private static final String FILE_VERSION = "1.4.0.0, Platform: N";
+    private static final double GPS_L1_FREQ = 154.0 * 10.23e6;
+    private static final double SPEED_OF_LIGHT = 299792458.0; //[m/s]
+    private static final double GPS_L1_WAVELENGTH = SPEED_OF_LIGHT/GPS_L1_FREQ;
 
     private static final int MAX_FILES_STORED = 100;
     private static final int MINIMUM_USABLE_FILE_SIZE_BYTES = 1000;
@@ -99,7 +99,7 @@ public class FileLogger implements GnssListener {
             File baseSubDirectory;
             String state = Environment.getExternalStorageState();
             if (Environment.MEDIA_MOUNTED.equals(state)) {
-                baseSubDirectory = new File(Environment.getExternalStorageDirectory(), FILE_PREFIXSUB);
+                baseSubDirectory = new File(Environment.getExternalStorageDirectory(), SettingsFragment.FILE_PREFIXSUB);
                 baseSubDirectory.mkdirs();
             } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
                 logError("Cannot write to external storage.");
@@ -111,7 +111,7 @@ public class FileLogger implements GnssListener {
 
             Date now = new Date();
             int observation = now.getYear() - 100;
-            String fileNameSub = String.format("AndroidLocation.kml", FILE_PREFIXSUB);
+            String fileNameSub = String.format("AndroidLocation.kml", SettingsFragment.FILE_PREFIXSUB);
             File currentFileSub = new File(baseSubDirectory, fileNameSub);
             String currentFileSubPath = currentFileSub.getAbsolutePath();
             BufferedWriter currentFileSubWriter;
@@ -187,7 +187,7 @@ public class FileLogger implements GnssListener {
                 File baseAccAziDirectory;
                 String state = Environment.getExternalStorageState();
                 if (Environment.MEDIA_MOUNTED.equals(state)) {
-                    baseAccAziDirectory = new File(Environment.getExternalStorageDirectory(), FILE_PREFIXACCAZI);
+                    baseAccAziDirectory = new File(Environment.getExternalStorageDirectory(), SettingsFragment.FILE_PREFIXACCAZI);
                     baseAccAziDirectory.mkdirs();
                 } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
                     logError("Cannot write to external storage.");
@@ -198,7 +198,7 @@ public class FileLogger implements GnssListener {
                 }
 
                 Date now = new Date();
-                String fileNameAccAzi = String.format("AndroidAccAzi.csv", FILE_PREFIXSUB);
+                String fileNameAccAzi = String.format("AndroidAccAzi.csv", SettingsFragment.FILE_PREFIXSUB);
                 File currentFileAccAzi = new File(baseAccAziDirectory, fileNameAccAzi);
                 String currentFileAccAziPath = currentFileAccAzi.getAbsolutePath();
                 BufferedWriter currentFileAccAziWriter;
@@ -253,7 +253,7 @@ public class FileLogger implements GnssListener {
             File baseDirectory;
             String state = Environment.getExternalStorageState();
             if (Environment.MEDIA_MOUNTED.equals(state)) {
-                baseDirectory = new File(Environment.getExternalStorageDirectory(), FILE_PREFIX);
+                baseDirectory = new File(Environment.getExternalStorageDirectory(), SettingsFragment.FILE_PREFIX);
                 baseDirectory.mkdirs();
             } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
                 logError("Cannot write to external storage.");
@@ -265,7 +265,7 @@ public class FileLogger implements GnssListener {
 
             Date now = new Date();
             int observation = now.getYear() - 100;
-            String fileName = String.format("AndroidOBS." + observation + "o", FILE_PREFIX);
+            String fileName = String.format("AndroidOBS." + observation + "o", SettingsFragment.FILE_PREFIX);
             File currentFile = new File(baseDirectory, fileName);
             String currentFilePath = currentFile.getAbsolutePath();
             BufferedWriter currentFileWriter;
@@ -404,15 +404,15 @@ public class FileLogger implements GnssListener {
             Toast.makeText(mContext, "ERROR_WRITINGFOTTER_FILE", Toast.LENGTH_SHORT).show();
             logException(ERROR_WRITING_FILE, e);
         }
+        if(SettingsFragment.SendMode) {
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("*/*");
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SensorLog");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+            // attach the file
+            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFile));
+            getUiComponent().startActivity(Intent.createChooser(emailIntent, "Send RINEX.."));
 
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("*/*");
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SensorLog");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "");
-        // attach the file
-        emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFile));
-        getUiComponent().startActivity(Intent.createChooser(emailIntent, "Send RINEX.."));
-        if(SettingsFragment.ResearchMode) {
             Intent emailIntentSub = new Intent(Intent.ACTION_SEND);
             emailIntentSub.setType("*/*");
             emailIntentSub.putExtra(Intent.EXTRA_SUBJECT, "SensorSubLog");
@@ -420,15 +420,16 @@ public class FileLogger implements GnssListener {
             // attach the file
             emailIntentSub.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFileSub));
             getUiComponent().startActivity(Intent.createChooser(emailIntentSub, "Send KML.."));
+            if (SettingsFragment.ResearchMode) {
+                Intent emailIntentAccAzi = new Intent(Intent.ACTION_SEND);
+                emailIntentAccAzi.setType("*/*");
+                emailIntentAccAzi.putExtra(Intent.EXTRA_SUBJECT, "SensorAccAziLog");
+                emailIntentAccAzi.putExtra(Intent.EXTRA_TEXT, "");
+                // attach the file
+                emailIntentAccAzi.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFileAccAzi));
+                getUiComponent().startActivity(Intent.createChooser(emailIntentAccAzi, "Send SensorLog ..."));
+            }
         }
-
-        Intent emailIntentAccAzi = new Intent(Intent.ACTION_SEND);
-        emailIntentAccAzi.setType("*/*");
-        emailIntentAccAzi.putExtra(Intent.EXTRA_SUBJECT, "SensorAccAziLog");
-        emailIntentAccAzi.putExtra(Intent.EXTRA_TEXT, "");
-        // attach the file
-        emailIntentAccAzi.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFileAccAzi));
-        getUiComponent().startActivity(Intent.createChooser(emailIntentAccAzi, "Send SensorLog ..."));
 
         if (mFileWriter != null) {
             try {
@@ -597,7 +598,7 @@ public class FileLogger implements GnssListener {
     }
     public void onSensorListener(String listener,float azimuth,float accZ,float altitude){
         synchronized (mFileAccAzLock) {
-            if (mFileAccAzWriter == null) {
+            if (mFileAccAzWriter == null || SettingsFragment.ResearchMode == false) {
                 return;
             }
             else{
@@ -660,28 +661,18 @@ public class FileLogger implements GnssListener {
         int satnumber = 0;
         for ( GnssMeasurement measurement : event.getMeasurements()) {
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
-
-                /*double weekNumber = Math.floor(-(double) (clock.getFullBiasNanos()) * 1e-9 / 604800);
-
-                long weekNumberNanos = (long) weekNumber * (long) (604800 * 1e9);
-
-                double tRxNanos = clock.getTimeNanos() - clock.getFullBiasNanos() - weekNumberNanos;
-                double tRxSeconds = 0;
-                if (clock.hasBiasNanos() == false) {
-                    tRxSeconds = (tRxNanos - measurement.getTimeOffsetNanos()) * 1e-9;
-                } else {
-                    tRxSeconds = (tRxNanos - measurement.getTimeOffsetNanos() - clock.getBiasNanos()) * 1e-9;
-                }
-                */
                 GnssClock gnssClock = event.getClock();
-                double tRxSeconds;
-                double weekNumber = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
-                if (gnssClock.hasBiasNanos() == false) {
-                    tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos()) * 1e-9;
-                } else {
-                    tRxSeconds = (gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos()) * 1e-9;
+                double weekNumber = Math.floor(- (gnssClock.getFullBiasNanos() * 1e-9 / 604800));
+                double weekNumberNanos = weekNumber * 604800 * 1e9;
+                double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
+                if (gnssClock.hasBiasNanos()) {
+                    tRxNanos = - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos();
                 }
-                double tTxSeconds = (measurement.getReceivedSvTimeNanos()) * 1e-9;
+                if (measurement.getTimeOffsetNanos() != 0){
+                    tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
+                }
+                double tRxSeconds = tRxNanos*1e-9;
+                double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
                 //GPS週のロールオーバーチェック
                /* boolean iRollover = prSeconds > 604800 / 2;
                 if (iRollover) {
@@ -701,21 +692,10 @@ public class FileLogger implements GnssListener {
                 /*急場の変更！！*/
                 String DeviceName = Build.DEVICE;
                 //Log.d("DEVICE",DeviceName);
-                if(DeviceName.indexOf("shamu") != -1) {
-                    String tRxStr = String.valueOf(-gnssClock.getFullBiasNanos());
-                    String tTxStr = String.valueOf(measurement.getReceivedSvTimeNanos());
-                    tTxSeconds = Float.parseFloat(tTxStr.substring(tTxStr.length() - 10));
-                    tRxSeconds = Float.parseFloat(tRxStr.substring(tRxStr.length() - 10));
-                }
                 /*急場の変更！！*/
-                double prSeconds = (tRxSeconds - tTxSeconds)*1e-9;
+                double prSeconds = tRxSeconds - tTxSeconds;
                 double prm = prSeconds * 2.99792458e8;
                 //コード擬似距離の計算
-                //搬送波位相も計測
-                double AccumulatedDeltaRange = 0.0;
-                if(SettingsFragment.CarrierPhase == true) {
-                    AccumulatedDeltaRange = measurement.getCarrierCycles() + measurement.getCarrierPhase();
-                }
 
                 if (firstOBS == true) {
                     String OBSTime = String.format(" %2d %2d %2d %2d %2d%11.7f  0", value.Y - 2000, value.M, value.D, value.h, value.m, value.s);
@@ -731,7 +711,11 @@ public class FileLogger implements GnssListener {
                 String PrmStrings = String.format("%14.3f%s%s", prm, " ", " ");
                 String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
                 if(SettingsFragment.CarrierPhase == true) {
-                    DeltaRangeStrings = String.format("%14.3f%s%s", AccumulatedDeltaRange, " ", " ");
+                    if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
+                        DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters()/ -GPS_L1_WAVELENGTH, "1", " ");
+                    }else {
+                        DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters()/ -GPS_L1_WAVELENGTH, " ", " ");
+                    }
                 }
                 //Fix用チェック
                 if (ReadUseInFixArray(measurement.getSvid())) {
@@ -752,8 +736,10 @@ public class FileLogger implements GnssListener {
         Prn.insert(0,String.format("%3d",satnumber));
         mFileWriter.write(Time.toString() + Prn.toString() + "\n");
         mFileWriter.write(Measurements.toString());
-        mFileAccAzWriter.write(SensorStream);
-        mFileAccAzWriter.newLine();
+        if(SettingsFragment.ResearchMode) {
+            mFileAccAzWriter.write(SensorStream);
+            mFileAccAzWriter.newLine();
+        }
     }
 
     private void logException(String errorMessage, Exception e) {
