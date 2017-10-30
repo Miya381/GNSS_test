@@ -158,14 +158,14 @@ public class SensorContainer {
                     return;
             }
             if (mMagneticValues != null && mAccelerometerValues != null) {
-                float[] rotationMatrix = new float[MATRIX_SIZE];
-                float[] inclinationMatrix = new float[MATRIX_SIZE];
-                float[] remapedMatrix = new float[MATRIX_SIZE];
-                float[] orientationValues = new float[DIMENSION];
+                //float[] rotationMatrix = new float[MATRIX_SIZE];
+                //float[] inclinationMatrix = new float[MATRIX_SIZE];
+                //float[] remapedMatrix = new float[MATRIX_SIZE];
+                //float[] orientationValues = new float[DIMENSION];
                 // 加速度センサーと地磁気センサーから回転行列を取得
-                SensorManager.getRotationMatrix(rotationMatrix, inclinationMatrix, mAccelerometerValues, mMagneticValues);
-                SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_Y, remapedMatrix);
-                SensorManager.getOrientation(remapedMatrix, orientationValues);
+                //SensorManager.getRotationMatrix(rotationMatrix, inclinationMatrix, mAccelerometerValues, mMagneticValues);
+                //SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_Y, remapedMatrix);
+                //SensorManager.getOrientation(remapedMatrix, orientationValues);
                 //ローパsフィルタ
                 x = (x * 0.9 + RawX * 0.1);
                 y = (y * 0.9 + RawY * 0.1);
@@ -208,7 +208,7 @@ public class SensorContainer {
                     if (currentAccelerationZValues <= -1.5) {
                         counter++;
                         passcounter = false;
-                        mFileLogger.onSensorListener("",orientationValues[0],(float)0.72,Altitude);
+                        mFileLogger.onSensorListener("", (float) mAzimuthZ,(float)0.72,Altitude);
                     }
                 }else{
                     if (currentAccelerationZValues >= 1.0) {

@@ -350,12 +350,12 @@ public class UiLogger implements GnssListener {
         //雷神は値がひっくり返っているため補正する必要あり
         //builder.append("GPSWeek = ").append(GPSWeek).append("\n");
         //builder.append("GPSWeekSec = ").append(tRxSeconds).append("\n");
-    //builder.append("GPSWeek = ").append(Math.floor(gnssClock.getFullBiasNanos())).append("\n");
-    //builder.append("GPSWeekNanos = ").append(tRxNanos * 1e-9).append("\n");
-    //builder.append("FullBiasSeconds = ").append((double)(gnssClock.getFullBiasNanos() * 1e-9)).append("\n");
-    //builder.append("TimeSeconds = ").append((double)(gnssClock.getTimeNanos()* 1e-9)).append("\n");
-    //builder.append("BiasSeconds = ").appen
-    // kfleavfesthoszdeoxdgilojfgytd((double)(gnssClock.getBiasNanos()* 1e-9)).append("\n");
+        //builder.append("GPSWeek = ").append(Math.floor(gnssClock.getFullBiasNanos())).append("\n");
+        //builder.append("GPSWeekNanos = ").append(tRxNanos * 1e-9).append("\n");
+        //builder.append("FullBiasSeconds = ").append((double)(gnssClock.getFullBiasNanos() * 1e-9)).append("\n");
+        //builder.append("TimeSeconds = ").append((double)(gnssClock.getTimeNanos()* 1e-9)).append("\n");
+        //builder.append("BiasSeconds = ").appen
+        // kfleavfesthoszdeoxdgilojfgytd((double)(gnssClock.getBiasNanos()* 1e-9)).append("\n");
         int arrayRow = 0;
         for (GnssMeasurement measurement : event.getMeasurements()) {
         if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true))) {
