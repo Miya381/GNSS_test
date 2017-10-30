@@ -434,6 +434,8 @@ public class FileLogger implements GnssListener {
         if (mFileWriter != null) {
             try {
                 mFileWriter.close();
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.fromFile(mFile));
+                mContext.sendBroadcast(mediaScanIntent);
                 mFileWriter = null;
             } catch (IOException e) {
                 logException("Unable to close all file streams.", e);
@@ -444,6 +446,8 @@ public class FileLogger implements GnssListener {
         if(mFileSubWriter != null) {
             try {
                 mFileSubWriter.close();
+                Intent mediaScanIntentSub = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.fromFile(mFileSub));
+                mContext.sendBroadcast(mediaScanIntentSub);
                 mFileSubWriter = null;
             } catch (IOException e) {
                 logException("Unable to close subobservation file streams.", e);
@@ -454,6 +458,8 @@ public class FileLogger implements GnssListener {
             if (mFileAccAzWriter != null) {
                 try {
                     mFileAccAzWriter.close();
+                    Intent mediaScanIntentSensor = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.fromFile(mFileAccAzi));
+                    mContext.sendBroadcast(mediaScanIntentSensor);
                     mFileAccAzWriter = null;
                 } catch (IOException e) {
                     logException("Unable to close sensorlog file streams.", e);
@@ -566,7 +572,7 @@ public class FileLogger implements GnssListener {
 
     @Override
     public void onGnssNavigationMessageReceived(GnssNavigationMessage navigationMessage) {
-        synchronized (mFileLock) {
+        /*synchronized (mFileLock) {
             if (mFileWriter == null) {
                 return;
             }
@@ -594,7 +600,7 @@ public class FileLogger implements GnssListener {
             } catch (IOException e) {
                 logException(ERROR_WRITING_FILE, e);
             }
-        }
+        }*/
     }
     public void onSensorListener(String listener,float azimuth,float accZ,float altitude){
         synchronized (mFileAccAzLock) {
@@ -666,7 +672,7 @@ public class FileLogger implements GnssListener {
                 double weekNumberNanos = weekNumber * 604800 * 1e9;
                 double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
                 if (gnssClock.hasBiasNanos()) {
-                    tRxNanos = - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos();
+                    tRxNanos = tRxNanos - gnssClock.getBiasNanos();
                 }
                 if (measurement.getTimeOffsetNanos() != 0){
                     tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
@@ -674,17 +680,21 @@ public class FileLogger implements GnssListener {
                 double tRxSeconds = tRxNanos*1e-9;
                 double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
                 //GPS週のロールオーバーチェック
-               /* boolean iRollover = prSeconds > 604800 / 2;
+                double prSeconds = tRxSeconds - tTxSeconds;
+                boolean iRollover = prSeconds > 604800 / 2;
                 if (iRollover) {
                     double delS = Math.round(prSeconds / 604800) * 604800;
                     double prS = prSeconds - delS;
                     double maxBiasSeconds = 10;
                     if (prS > maxBiasSeconds) {
                         Log.e("RollOver", "Rollover Error");
+                        iRollover = true;
                     } else {
                         tRxSeconds = tRxSeconds - delS;
+                        prSeconds = tRxSeconds - tTxSeconds;
+                        iRollover = false;
                     }
-                }*/
+                }
 
                 //GPS週・週秒から年月日時分秒に変換
                 GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
@@ -693,42 +703,46 @@ public class FileLogger implements GnssListener {
                 String DeviceName = Build.DEVICE;
                 //Log.d("DEVICE",DeviceName);
                 /*急場の変更！！*/
-                double prSeconds = tRxSeconds - tTxSeconds;
                 double prm = prSeconds * 2.99792458e8;
                 //コード擬似距離の計算
-
-                if (firstOBS == true) {
-                    String OBSTime = String.format(" %2d %2d %2d %2d %2d%11.7f  0", value.Y - 2000, value.M, value.D, value.h, value.m, value.s);
-                    SensorStream =
-                            String.format("%6d,%6d,%6d,%6d,%6d,%13.7f", value.Y, value.M, value.D, value.h, value.m, value.s);
-                    Time.append(OBSTime);
-                    firstOBS = false;
-                }
-                //GPSのPRN番号と時刻用String
-                String prn = String.format("G%2d", measurement.getSvid());
-                satnumber = satnumber + 1;
-                Prn.append(prn);
-                String PrmStrings = String.format("%14.3f%s%s", prm, " ", " ");
-                String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
-                if(SettingsFragment.CarrierPhase == true) {
-                    if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
-                        DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters()/ -GPS_L1_WAVELENGTH, "1", " ");
-                    }else {
-                        DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters()/ -GPS_L1_WAVELENGTH, " ", " ");
+                if(iRollover == false && prm > 0) {
+                    if (firstOBS == true) {
+                        String OBSTime = String.format(" %2d %2d %2d %2d %2d%11.7f  0", value.Y - 2000, value.M, value.D, value.h, value.m, value.s);
+                        SensorStream =
+                                String.format("%6d,%6d,%6d,%6d,%6d,%13.7f", value.Y, value.M, value.D, value.h, value.m, value.s);
+                        Time.append(OBSTime);
+                        firstOBS = false;
                     }
-                }
-                //Fix用チェック
-                if (ReadUseInFixArray(measurement.getSvid())) {
-                    String DbHz = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
-                    Measurements.append(PrmStrings + DbHz + "\n");
-                }
-                //Google側でFixとして使われていない場合は信号強度を0に
-                else {
-                    String DbHz = String.format("%14.3f%s%s", 0.0, " ", " ");
-                    if(SettingsFragment.CarrierPhase){
-                        Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + "\n");
-                    }else {
-                        Measurements.append(PrmStrings + DbHz + "\n");
+                    //GPSのPRN番号と時刻用String
+                    String prn = String.format("G%2d", measurement.getSvid());
+                    satnumber = satnumber + 1;
+                    Prn.append(prn);
+                    String PrmStrings = String.format("%14.3f%s%s", prm, " ", " ");
+                    String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
+                    if (SettingsFragment.CarrierPhase == true) {
+                        if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
+                            DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, "1", " ");
+                        } else {
+                            DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, " ", " ");
+                        }
+                    }
+                    //Fix用チェック
+                    if (ReadUseInFixArray(measurement.getSvid())) {
+                        String DbHz = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
+                        if (SettingsFragment.CarrierPhase) {
+                            Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + "\n");
+                        } else {
+                            Measurements.append(PrmStrings + DbHz + "\n");
+                        }
+                    }
+                    //Google側でFixとして使われていない場合は信号強度を0に
+                    else {
+                        String DbHz = String.format("%14.3f%s%s", 0.0, " ", " ");
+                        if (SettingsFragment.CarrierPhase) {
+                            Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + "\n");
+                        } else {
+                            Measurements.append(PrmStrings + DbHz + "\n");
+                        }
                     }
                 }
             }

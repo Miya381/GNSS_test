@@ -336,7 +336,7 @@ public class UiLogger implements GnssListener {
     }
 
     private String[][] gnssMessageToString(GnssMeasurementsEvent event, GnssClock gnssClock){
-        String[][] array = new String[12][4];
+        String[][] array = new String[20][4];
         //builder.append("GNSSClock = ").append(event.getClock().toString()).append("\n");
         //double GPSWeek = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
         //long GPSWeekNanos = (long) GPSWeek * (long) (604800 * 1e9);
@@ -366,26 +366,40 @@ public class UiLogger implements GnssListener {
             //double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
             double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
             if (gnssClock.hasBiasNanos()) {
-                tRxNanos = - gnssClock.getFullBiasNanos() - gnssClock.getBiasNanos();
+                tRxNanos = tRxNanos - gnssClock.getBiasNanos();
             }
             if (measurement.getTimeOffsetNanos() != 0){
                 tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
             }
             double tRxSeconds = tRxNanos*1e-9;
             double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
-            //Log.d("tRxSeconds",String.valueOf(tRxSeconds));
-            //Log.d("tTxSeconds",String.valueOf(measurement.getReceivedSvTimeNanos()));
+            Log.d("tRxSeconds",String.valueOf(tRxSeconds));
+            Log.d("tTxSeconds",String.valueOf(tTxSeconds));
             /*急場の変更！！*/
             String DeviceName = Build.DEVICE;
             //Log.d("DEVICE",DeviceName);
             /*急場の変更！！*/
             //GPS週のロールオーバーチェック
+            double prSeconds = tRxSeconds - tTxSeconds;
+            boolean iRollover = prSeconds > 604800 / 2;
+            if (iRollover) {
+                double delS = Math.round(prSeconds / 604800) * 604800;
+                double prS = prSeconds - delS;
+                double maxBiasSeconds = 10;
+                if (prS > maxBiasSeconds) {
+                    Log.e("RollOver", "Rollover Error");
+                    iRollover = true;
+                } else {
+                    tRxSeconds = tRxSeconds - delS;
+                    prSeconds = tRxSeconds - tTxSeconds;
+                    iRollover = false;
+                }
+            }
             //Log.d("tRxSeconds",tRxStr);
             //Log.d("tTxSeconds",tTxStr);
             //Log.d("Prm",String.valueOf(-gnssClock.getFullBiasNanos() - measurement.getReceivedSvTimeNanos()));
             //Log.d("tRxSeconds",String.valueOf(tRxSeconds));
             //Log.d("tTxSeconds",String.valueOf(tTxSeconds));
-            double prSeconds = tRxSeconds - tTxSeconds;
             double prm = prSeconds * 2.99792458e8;
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
                 //Log.d("QZSS","QZSS Detected");
@@ -396,7 +410,12 @@ public class UiLogger implements GnssListener {
                 array[arrayRow][0] = "G" + String.valueOf(measurement.getSvid());
             }
             //Log.d("STATE",String.valueOf(measurement.getState());
-            if(getStateName(measurement.getState()) == "1") {
+            if(iRollover){
+                array[arrayRow][1] = "ROLLOVER_ERROR";
+            }else if(prm < 0){
+                array[arrayRow][1] = "CODE_ERROR";
+            }
+            else if(getStateName(measurement.getState()) == "1") {
                 array[arrayRow][1] = String.format("%14.3f", prm);
             }else {
                 array[arrayRow][1] = getStateName(measurement.getState());
@@ -419,13 +438,13 @@ public class UiLogger implements GnssListener {
                     if(measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
                         array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
                     }else {
-                        array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / -GPS_L1_WAVELENGTH);
+                        array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH);
                     }
                 }
             }else{
                 array[arrayRow][2] = "0";
             }
-            array[arrayRow][3] = String.valueOf(measurement.getCn0DbHz());
+            array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
             arrayRow++;
         }
     }

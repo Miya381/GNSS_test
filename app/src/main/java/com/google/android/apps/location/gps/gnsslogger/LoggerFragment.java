@@ -54,7 +54,11 @@ public class LoggerFragment extends Fragment {
             {R.id.textView5_1,R.id.textView5_2,R.id.textView5_3,R.id.textView5_4},{R.id.textView6_1,R.id.textView6_2,R.id.textView6_3,R.id.textView6_4},
             {R.id.textView7_1,R.id.textView7_2,R.id.textView7_3,R.id.textView7_4},{R.id.textView8_1,R.id.textView8_2,R.id.textView8_3,R.id.textView8_4},
             {R.id.textView9_1,R.id.textView9_2,R.id.textView9_3,R.id.textView9_4},{R.id.textView10_1,R.id.textView10_2,R.id.textView10_3,R.id.textView10_4},
-            {R.id.textView11_1,R.id.textView11_2,R.id.textView11_3,R.id.textView11_4},{R.id.textView12_1,R.id.textView12_2,R.id.textView12_3,R.id.textView12_4}};
+            {R.id.textView11_1,R.id.textView11_2,R.id.textView11_3,R.id.textView11_4},{R.id.textView12_1,R.id.textView12_2,R.id.textView12_3,R.id.textView12_4},
+            {R.id.textView13_1,R.id.textView13_2,R.id.textView13_3,R.id.textView13_4},{R.id.textView14_1,R.id.textView14_2,R.id.textView14_3,R.id.textView14_4},
+            {R.id.textView15_1,R.id.textView15_2,R.id.textView15_3,R.id.textView15_4},{R.id.textView16_1,R.id.textView16_2,R.id.textView16_3,R.id.textView16_4},
+            {R.id.textView17_1,R.id.textView17_2,R.id.textView17_3,R.id.textView17_4},{R.id.textView18_1,R.id.textView18_2,R.id.textView18_3,R.id.textView18_4},
+            {R.id.textView19_1,R.id.textView19_2,R.id.textView19_3,R.id.textView19_4}};
 
     TextView mTextView[][] = new TextView[12][4];
     private final UIFragmentComponent mUiComponent = new UIFragmentComponent();
