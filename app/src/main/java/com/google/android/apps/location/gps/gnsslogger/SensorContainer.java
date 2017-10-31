@@ -180,7 +180,10 @@ public class SensorContainer {
                 //mRollY = radianToDegrees(orientationValues[2]);
                 //研究用システム
                 mRollY = Math.atan2(y,z);
-                mPitchX = Math.atan2( -x , (y * Math.sin(mRollY)) + (z * Math.cos(mRollY)));
+                mPitchX = Math.atan2( x , (y * Math.sin(mRollY)) + (z * Math.cos(mRollY)));
+                //double tmp = mRollY;
+                //mRollY = mPitchX;
+                //mPitchX = tmp;
                 //地磁気センサーオフセット
                 double GxOff=0;
                 double GyOff=0;
