@@ -164,7 +164,7 @@ public class LoggerFragment extends Fragment {
                                 for(int j = 0;j < 4;j++){
                                     if(j == 2){
                                         if(array[i][j] == "0") {
-                                            mTextView[i][j].setTextColor(Color.YELLOW);
+                                            mTextView[i][j].setTextColor(Color.parseColor("#FF9900"));
                                             mTextView[i][j].setText("Carrier Phase OFF");
                                         }else if(array[i][j] == "ADR_STATE_CYCLE_SLIP"){
                                             mTextView[i][j].setTextColor(Color.RED);
@@ -179,7 +179,7 @@ public class LoggerFragment extends Fragment {
                                                 mTextView[i][j].setTextColor(Color.RED);
                                                 mTextView[i][j].setText(array[i][j]);
                                             } else if (Float.parseFloat(array[i][j]) < 25.0) {
-                                                mTextView[i][j].setTextColor(Color.YELLOW);
+                                                mTextView[i][j].setTextColor(Color.parseColor("#FF9900"));
                                                 mTextView[i][j].setText(array[i][j]);
                                             } else {
                                                 mTextView[i][j].setTextColor(Color.GREEN);

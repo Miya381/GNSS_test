@@ -130,7 +130,7 @@ public class Logger2Fragment extends Fragment {
                     try {
                         mLooper.sleep(1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                         e.printStackTrace();
                     }
                 }
             }
