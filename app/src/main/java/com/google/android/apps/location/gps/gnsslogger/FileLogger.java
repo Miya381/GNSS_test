@@ -265,7 +265,7 @@ public class FileLogger implements GnssListener {
 
             Date now = new Date();
             int observation = now.getYear() - 100;
-            String fileName = String.format("AndroidOBS." + observation + "o", SettingsFragment.FILE_PREFIX);
+            String fileName = String.format(SettingsFragment.FILE_NAME + "." + observation + "o", SettingsFragment.FILE_PREFIX);
             File currentFile = new File(baseDirectory, fileName);
             String currentFilePath = currentFile.getAbsolutePath();
             BufferedWriter currentFileWriter;
@@ -705,7 +705,7 @@ public class FileLogger implements GnssListener {
                 /*急場の変更！！*/
                 double prm = prSeconds * 2.99792458e8;
                 //コード擬似距離の計算
-                if(iRollover == false && prm > 0) {
+                if(iRollover == false && prm > 0 && prSeconds < 1) {
                     if (firstOBS == true) {
                         String OBSTime = String.format(" %2d %2d %2d %2d %2d%11.7f  0", value.Y - 2000, value.M, value.D, value.h, value.m, value.s);
                         SensorStream =

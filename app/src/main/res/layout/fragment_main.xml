@@ -90,6 +90,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -237,6 +239,13 @@
             android:inputType="textPersonName"
             android:text="Name"
             android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/FileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView" />
     </LinearLayout>
 
     <Switch

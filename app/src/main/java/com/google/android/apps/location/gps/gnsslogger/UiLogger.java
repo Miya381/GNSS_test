@@ -59,6 +59,8 @@ public class UiLogger implements GnssListener {
     private double trueAzimuth;
     private double Declination;
 
+    private boolean gnssStatusReady = false;
+
     String array[][] = new String[12][4];
 
 
@@ -136,6 +138,11 @@ public class UiLogger implements GnssListener {
 
     @Override
     public void onGnssMeasurementsStatusChanged(int status) {
+        if(gnssMeasurementsStatusToString(status) != "READY"){
+            gnssStatusReady = false;
+        }else {
+            gnssStatusReady = true;
+        }
         //logMeasurementEvent("onStatusChanged: " + gnssMeasurementsStatusToString(status));
     }
 
@@ -152,6 +159,9 @@ public class UiLogger implements GnssListener {
     @Override
     public void onGnssStatusChanged(GnssStatus gnssStatus) {
         UIFragment2Component component2 = getUiFragment2Component();
+        if(gnssStatusReady == false){
+            return;
+        }
         String[] SVID = new String[30];
         float[][] pos = new float[30][2];
         int maxSat = gnssStatus.getSatelliteCount();
@@ -306,6 +316,9 @@ public class UiLogger implements GnssListener {
 
     private String gnssClockToString(GnssClock gnssClock){
         String ClockStr = "";
+        if(gnssStatusReady == false){
+            return "GNSS Measurements NOT READY or SUPPORTED";
+        }
         if(gnssClock.getHardwareClockDiscontinuityCount() == -1){
             ClockStr = "WARING!! HARDWARE Clock may broken";
         }else{
@@ -356,6 +369,9 @@ public class UiLogger implements GnssListener {
         //builder.append("TimeSeconds = ").append((double)(gnssClock.getTimeNanos()* 1e-9)).append("\n");
         //builder.append("BiasSeconds = ").appen
         // kfleavfesthoszdeoxdgilojfgytd((double)(gnssClock.getBiasNanos()* 1e-9)).append("\n");
+        if(gnssStatusReady == false){
+            return array;
+        }
         int arrayRow = 0;
         for (GnssMeasurement measurement : event.getMeasurements()) {
         if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true))) {
@@ -412,7 +428,7 @@ public class UiLogger implements GnssListener {
             //Log.d("STATE",String.valueOf(measurement.getState());
             if(iRollover){
                 array[arrayRow][1] = "ROLLOVER_ERROR";
-            }else if(prm < 0){
+            }else if(prSeconds < 0 || prSeconds > 1){
                 array[arrayRow][1] = "CODE_ERROR";
             }
             else if(getStateName(measurement.getState()) == "1") {

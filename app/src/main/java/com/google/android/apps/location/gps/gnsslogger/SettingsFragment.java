@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.google.android.apps.location.gps.gnsslogger.GnssContainer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 
 import android.widget.Button;
 
@@ -49,6 +50,7 @@ public class SettingsFragment extends Fragment {
     public static String FILE_PREFIX = "/" + SAVE_LOCATION + "/RINEX";
     public static String FILE_PREFIXSUB = "/" + SAVE_LOCATION + "/KML";
     public static String FILE_PREFIXACCAZI = "/" + SAVE_LOCATION + "/CSV";
+    public static String FILE_NAME = "AndroidOBS";
     public static boolean CarrierPhase = false;
     public static boolean useQZ = false;
     public static boolean useGL = false;
@@ -164,6 +166,10 @@ public class SettingsFragment extends Fragment {
                         }
                     }
                 });
+        Date now = new Date();
+        int observation = now.getYear() - 100;
+        final TextView FileName = (TextView) view.findViewById(R.id.FileName);
+        FileName.setText("/" + FILE_NAME + "." + observation + "o");
         final TextView EditSaveLocation = (TextView) view.findViewById(R.id.EditSaveLocation);
         EditSaveLocation.setText("GNSSLoggerR");
         EditSaveLocation.addTextChangedListener(new TextWatcher() {
