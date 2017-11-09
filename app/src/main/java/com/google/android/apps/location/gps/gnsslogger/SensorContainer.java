@@ -158,14 +158,14 @@ public class SensorContainer {
                     return;
             }
             if (mMagneticValues != null && mAccelerometerValues != null) {
-                //float[] rotationMatrix = new float[MATRIX_SIZE];
-                //float[] inclinationMatrix = new float[MATRIX_SIZE];
-                //float[] remapedMatrix = new float[MATRIX_SIZE];
-                //float[] orientationValues = new float[DIMENSION];
+                float[] rotationMatrix = new float[MATRIX_SIZE];
+                float[] inclinationMatrix = new float[MATRIX_SIZE];
+                float[] remapedMatrix = new float[MATRIX_SIZE];
+                float[] orientationValues = new float[DIMENSION];
                 // 加速度センサーと地磁気センサーから回転行列を取得
-                //SensorManager.getRotationMatrix(rotationMatrix, inclinationMatrix, mAccelerometerValues, mMagneticValues);
-                //SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_Y, remapedMatrix);
-                //SensorManager.getOrientation(remapedMatrix, orientationValues);
+                SensorManager.getRotationMatrix(rotationMatrix, inclinationMatrix, mAccelerometerValues, mMagneticValues);
+                SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_Y, remapedMatrix);
+                SensorManager.getOrientation(remapedMatrix, orientationValues);
                 //ローパsフィルタ
                 x = (x * 0.9 + RawX * 0.1);
                 y = (y * 0.9 + RawY * 0.1);
@@ -175,12 +175,12 @@ public class SensorContainer {
                 mz = (mz * 0.9 + MagZ * 0.1);
                 // ラジアン値を変換し、それぞれの回転角度を取得する
                 //Androidオリジナルシステム
-                //mAzimuthZ = radianToDegrees(orientationValues[0]);
-                //mPitchX = radianToDegrees((orientationValues[1]));
-                //mRollY = radianToDegrees(orientationValues[2]);
+                mAzimuthZ = radianToDegrees(orientationValues[0]);
+                mPitchX = radianToDegrees((orientationValues[1]));
+                mRollY = radianToDegrees(orientationValues[2]);
                 //研究用システム
-                mRollY = Math.atan2(y,z);
-                mPitchX = Math.atan2( x , (y * Math.sin(mRollY)) + (z * Math.cos(mRollY)));
+                //mPitchX = Math.atan2(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)),z);
+                //mRollY  = Math.atan2( x , Math.sqrt(Math.pow(y,2) + Math.pow(z,2)));
                 //double tmp = mRollY;
                 //mRollY = mPitchX;
                 //mPitchX = tmp;
@@ -188,8 +188,8 @@ public class SensorContainer {
                 double GxOff=0;
                 double GyOff=0;
                 double GzOff=0;
-                mAzimuthZ = Math.atan2((((mz - GzOff)*Math.sin(mRollY)) - ((my - GyOff)*Math.cos(mRollY))) , ((mx - GxOff)*Math.cos(mPitchX) + (my - GyOff)*Math.sin(mPitchX)*Math.sin(mRollY) + (mz - GzOff)*Math.sin(mPitchX)*Math.cos(mRollY)));
-                mAzimuthZ = -mAzimuthZ;
+                //mAzimuthZ = Math.atan2((((mz - GzOff)*Math.sin(mRollY)) - ((my - GyOff)*Math.cos(mRollY))) , ((mx - GxOff)*Math.cos(mPitchX) + (my - GyOff)*Math.sin(mPitchX)*Math.sin(mRollY) + (mz - GzOff)*Math.sin(mPitchX)*Math.cos(mRollY)));
+                //mAzimuthZ = -mAzimuthZ;
                 //加速度センサーのWGS84系での下向きの加速度を求める
                 double az = - RawX * Math.sin(mRollY) + RawY * Math.sin((mPitchX)) + RawZ * Math.cos((mPitchX)) * Math.cos(mRollY);
                 double bx = RawX * Math.cos(mRollY) + RawZ * Math.sin(mRollY);
@@ -225,7 +225,7 @@ public class SensorContainer {
                 if(SettingsFragment.ResearchMode) {
                     mLogger.onSensorListener(String.format("Pitch = %f , Roll = %f , Azimuth = %f \n Altitude = %f \n WalkCounter = %d \n AccAzi = %d", Math.toDegrees(mPitchX), Math.toDegrees(mRollY), Math.toDegrees(mAzimuthZ) + 180.0, LastAltitude - Altitude, counter, AccAzi), Math.toDegrees(mAzimuthZ) + 180, currentAccelerationZValues, LastAltitude - Altitude);
                 }else{
-                    mLogger.onSensorListener(String.format("Pitch = %2.1f , Roll = %2.1f , Azimuth = %3.1f \n Altitude = %3.1f", Math.toDegrees(mPitchX), Math.toDegrees(mRollY), Math.toDegrees(mAzimuthZ) + 180.0, Altitude), Math.toDegrees(mAzimuthZ) + 180, currentAccelerationZValues, LastAltitude - Altitude);
+                    mLogger.onSensorListener(String.format("Pitch = %2.1f , Roll = %2.1f , Azimuth = %3.1f \n Altitude = %3.1f", mPitchX, mRollY, mAzimuthZ, Altitude), mAzimuthZ, currentAccelerationZValues, LastAltitude - Altitude);
                     //mLogger.onSensorListener(String.format("MagX = %f \n MagY = %f \n MagZ = %f",mMagneticValues[0],mMagneticValues[1],mMagneticValues[2]),mAzimuthZ,currentAccelerationZValues,LastAltitude - Altitude);
                 }
                 //mFileLogger.onSensorListener("",mAzimuthZ,currentAccelerationZValues);
