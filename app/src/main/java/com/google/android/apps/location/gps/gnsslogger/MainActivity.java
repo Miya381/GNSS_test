@@ -53,10 +53,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String[] REQUIRED_PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.BODY_SENSORS
     };
-    private static final int NUMBER_OF_FRAGMENTS = 3;
+    private static final int NUMBER_OF_FRAGMENTS = 4;
     private static final int FRAGMENT_INDEX_SETTING = 0;
     private static final int FRAGMENT_INDEX_LOGGER = 1;
     private static final int FRAGMENT_INDEX_LOGGER2 = 2;
+    private static final int FRAGMENT_INDEX_LOGGER3 = 3;
 
     private GnssContainer mGnssContainer;
     private UiLogger mUiLogger;
@@ -65,11 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private  SensorContainer mSensorContainer;
 
     private static MainActivity instance = null;
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +87,25 @@ public class MainActivity extends AppCompatActivity {
         View tab3View = inflater.inflate(R.layout.main_tab3,null);
         tab3.setCustomView(tab3View);
 
+        TabLayout.Tab tab4 = tabLayout.getTabAt(3);
+        View tab4View = inflater.inflate(R.layout.main_tab4,null);
+        tab4.setCustomView(tab4View);
+
         instance = this;
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(hasPermissions(this)){
+            mGnssContainer.registerAll();
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(hasPermissions(this)){
+            mGnssContainer.unregisterAll();
+        }
     }
 
     /**
@@ -113,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
                     return mFragments[FRAGMENT_INDEX_LOGGER];
                 case FRAGMENT_INDEX_LOGGER2:
                     return mFragments[FRAGMENT_INDEX_LOGGER2];
+                case FRAGMENT_INDEX_LOGGER3:
+                    return mFragments[FRAGMENT_INDEX_LOGGER3];
                 default:
                     throw new IllegalArgumentException("Invalid section: " + position);
             }
@@ -121,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show total pages.
-            return 3;
+            return 4;
         }
 
         Drawable myDrawable;
@@ -178,6 +194,9 @@ public class MainActivity extends AppCompatActivity {
         SettingsFragment settingsFragment = new SettingsFragment();
         settingsFragment.setSensorContainer(mSensorContainer);
         settingsFragment.setGpsContainer(mGnssContainer);
+        settingsFragment.setFileLogger(mFileLogger);
+        settingsFragment.setUILogger(mUiLogger);
+        settingsFragment.setGnssContainer(mGnssContainer);
         mFragments[FRAGMENT_INDEX_SETTING] = settingsFragment;
 
         LoggerFragment loggerFragment = new LoggerFragment();
@@ -189,6 +208,11 @@ public class MainActivity extends AppCompatActivity {
         logger2Fragment.setUILogger(mUiLogger);
         logger2Fragment.setFileLogger(mFileLogger);
         mFragments[FRAGMENT_INDEX_LOGGER2] = logger2Fragment;
+
+        Logger3Fragment logger3Fragment = new Logger3Fragment();
+        logger3Fragment.setUILogger(mUiLogger);
+        logger3Fragment.setFileLogger(mFileLogger);
+        mFragments[FRAGMENT_INDEX_LOGGER3] = logger3Fragment;
 
 
         // The viewpager that will host the section contents.

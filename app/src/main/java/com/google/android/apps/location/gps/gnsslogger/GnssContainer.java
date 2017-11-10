@@ -17,6 +17,7 @@
 package com.google.android.apps.location.gps.gnsslogger;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.GnssMeasurementsEvent;
@@ -34,6 +35,7 @@ import android.util.Log;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import com.google.android.apps.location.gps.gnsslogger.SettingsFragment.UIFragmentSettingComponent;
 
 /**
  * A container for GPS related API calls, it binds the {@link LocationManager} with {@link UiLogger}
@@ -52,7 +54,15 @@ public class GnssContainer {
     private boolean mLogNmeas = true;
 
     private final List<GnssListener> mLoggers;
+    private UIFragmentSettingComponent mUISettingComponent;
 
+    public synchronized UIFragmentSettingComponent getUISettingComponent() {
+        return mUISettingComponent;
+    }
+
+    public synchronized void setUISettingComponent(UIFragmentSettingComponent value) {
+        mUISettingComponent = value;
+    }
     private final LocationManager mLocationManager;
     private final LocationListener mLocationListener =
             new LocationListener() {
@@ -107,6 +117,8 @@ public class GnssContainer {
 
                 @Override
                 public void onStatusChanged(int status) {
+                    //UIFragmentSettingComponent component = getUISettingComponent();
+                    //component.SettingErrorFragment(status);
                     if (mLogMeasurements) {
                         for (GnssListener logger : mLoggers) {
                             logger.onGnssMeasurementsStatusChanged(status);
@@ -245,9 +257,7 @@ public class GnssContainer {
             Log.e("Permission Error","GNSS MEASUREMENTS ERROR");
             return;
         }
-        logRegistration(
-                "GnssMeasurements",
-                mLocationManager.registerGnssMeasurementsCallback(gnssMeasurementsEventListener));
+            boolean Status = mLocationManager.registerGnssMeasurementsCallback(gnssMeasurementsEventListener);
     }
 
     public void unregisterMeasurements() {

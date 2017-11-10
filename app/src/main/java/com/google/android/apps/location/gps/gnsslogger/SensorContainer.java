@@ -174,22 +174,25 @@ public class SensorContainer {
                 my = (my * 0.9 + MagY * 0.1);
                 mz = (mz * 0.9 + MagZ * 0.1);
                 // ラジアン値を変換し、それぞれの回転角度を取得する
-                //Androidオリジナルシステム
-                mAzimuthZ = radianToDegrees(orientationValues[0]);
-                mPitchX = radianToDegrees((orientationValues[1]));
-                mRollY = radianToDegrees(orientationValues[2]);
-                //研究用システム
-                //mPitchX = Math.atan2(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)),z);
-                //mRollY  = Math.atan2( x , Math.sqrt(Math.pow(y,2) + Math.pow(z,2)));
-                //double tmp = mRollY;
-                //mRollY = mPitchX;
-                //mPitchX = tmp;
-                //地磁気センサーオフセット
-                double GxOff=0;
-                double GyOff=0;
-                double GzOff=0;
-                //mAzimuthZ = Math.atan2((((mz - GzOff)*Math.sin(mRollY)) - ((my - GyOff)*Math.cos(mRollY))) , ((mx - GxOff)*Math.cos(mPitchX) + (my - GyOff)*Math.sin(mPitchX)*Math.sin(mRollY) + (mz - GzOff)*Math.sin(mPitchX)*Math.cos(mRollY)));
-                //mAzimuthZ = -mAzimuthZ;
+                if(SettingsFragment.ResearchMode) {
+                    //Androidオリジナルシステム
+                    mAzimuthZ = radianToDegrees(orientationValues[0]);
+                    mPitchX = radianToDegrees((orientationValues[1]));
+                    mRollY = radianToDegrees(orientationValues[2]);
+                }else {
+                    //研究用システム
+                    mPitchX = Math.atan2(x,y);
+                    mRollY  = Math.acos( z / Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2)));
+                    double tmp = mRollY;
+                    mRollY = mPitchX;
+                    mPitchX = tmp;
+                    //地磁気センサーオフセット
+                    double GxOff = 0;
+                    double GyOff = 0;
+                    double GzOff = 0;
+                    mAzimuthZ = Math.atan2((((mz - GzOff)*Math.sin(mRollY)) - ((my - GyOff)*Math.cos(mRollY))) , ((mx - GxOff)*Math.cos(mPitchX) + (my - GyOff)*Math.sin(mPitchX)*Math.sin(mRollY) + (mz - GzOff)*Math.sin(mPitchX)*Math.cos(mRollY)));
+                    mAzimuthZ = -mAzimuthZ;
+                }
                 //加速度センサーのWGS84系での下向きの加速度を求める
                 double az = - RawX * Math.sin(mRollY) + RawY * Math.sin((mPitchX)) + RawZ * Math.cos((mPitchX)) * Math.cos(mRollY);
                 double bx = RawX * Math.cos(mRollY) + RawZ * Math.sin(mRollY);

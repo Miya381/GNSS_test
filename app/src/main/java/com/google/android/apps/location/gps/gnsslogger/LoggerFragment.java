@@ -237,7 +237,7 @@ public class LoggerFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            mSensorLogView.setText("Android Sensor : \n" + text);
+                            //mSensorLogView.setText("Android Sensor : \n" + text);
                         }
                     });
         }

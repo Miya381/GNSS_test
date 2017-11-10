@@ -8,39 +8,6 @@
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
-    <TextView
-        android:id="@+id/register_location_label"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="GNSS Register"
-        android:textStyle="bold"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-    <Switch
-        android:id="@+id/register_location"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="7dp"
-        android:singleLine="true"
-        android:text="GNSS Measurements"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_location_label"
-        tools:text="GNSS Measurements"
-        app:layout_constraintHorizontal_bias="0.0" />
-
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="142dp"
@@ -150,12 +117,13 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="9dp"
         android:text="RINEX Setting"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_location" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
         android:id="@+id/textView3"
@@ -230,6 +198,13 @@
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="498dp" />
 
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="/GNSSLoggerR/RINEX/" />
+
         <EditText
             android:id="@+id/EditSaveLocation"
             android:layout_width="wrap_content"
@@ -241,11 +216,10 @@
             android:textSize="10sp" />
 
         <TextView
-            android:id="@+id/FileName"
+            android:id="@+id/FileExtension"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView" />
+            android:layout_weight="1" />
     </LinearLayout>
 
     <Switch
@@ -260,7 +234,7 @@
         app:layout_constraintVertical_bias="0.008" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
@@ -272,7 +246,9 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
 
         <Switch
             android:id="@+id/register_sensor"

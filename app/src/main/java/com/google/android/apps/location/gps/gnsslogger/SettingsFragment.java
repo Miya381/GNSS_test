@@ -16,7 +16,10 @@
 
 package com.google.android.apps.location.gps.gnsslogger;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.location.GnssClock;
 import android.location.LocationManager;
 import android.os.Build;
@@ -40,6 +43,9 @@ import java.util.Date;
 
 import android.widget.Button;
 
+import static android.location.GnssMeasurementsEvent.Callback.STATUS_LOCATION_DISABLED;
+import static android.location.GnssMeasurementsEvent.Callback.STATUS_NOT_SUPPORTED;
+
 /**
  * The UI fragment showing a set of configurable settings for the client to request GPS data.
  */
@@ -60,6 +66,9 @@ public class SettingsFragment extends Fragment {
     public static boolean SendMode = false;
     private GnssContainer mGpsContainer;
     private SensorContainer mSensorContainer;
+    private FileLogger mFileLogger;
+    private UiLogger mUiLogger;
+    private GnssContainer mGnssContainer;
     private HelpDialog helpDialog;
 
 
@@ -68,40 +77,24 @@ public class SettingsFragment extends Fragment {
     }
     public void setSensorContainer(SensorContainer value){ mSensorContainer = value; }
 
+    private final SettingsFragment.UIFragmentSettingComponent mUiSettingComponent = new SettingsFragment.UIFragmentSettingComponent();
+
+    public void setUILogger(UiLogger value) {
+        mUiLogger = value;
+    }
+
+    public void setFileLogger(FileLogger value) {
+        mFileLogger = value;
+    }
+
+    public void setGnssContainer(GnssContainer value){
+        mGnssContainer = value;
+    }
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false /* attachToRoot */);
-
-        final Switch registerLocation = (Switch) view.findViewById(R.id.register_location);
-        final TextView registerLocationLabel =
-                (TextView) view.findViewById(R.id.register_location_label);
-        //set the switch to OFF
-        registerLocation.setChecked(false);
-        registerLocationLabel.setText("GNSS Register OFF");
-        registerLocation.setOnCheckedChangeListener(
-                new OnCheckedChangeListener() {
-
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                        if (isChecked) {
-                            mGpsContainer.registerLocation();
-                            mGpsContainer.registerMeasurements();
-                            mGpsContainer.registerNavigation();
-                            mGpsContainer.registerGnssStatus();
-                            //mGpsContainer.registerNmea();
-                            registerLocationLabel.setText("GNSS Register ON");
-                        } else {
-                            mGpsContainer.unregisterLocation();
-                            mGpsContainer.unregisterMeasurements();
-                            mGpsContainer.unregisterNavigation();
-                            mGpsContainer.unregisterGpsStatus();
-                            //mGpsContainer.unregisterNmea();
-                            registerLocationLabel.setText("GNSS Register OFF");
-                        }
-                    }
-                });
 
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
         final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
@@ -168,10 +161,12 @@ public class SettingsFragment extends Fragment {
                 });
         Date now = new Date();
         int observation = now.getYear() - 100;
-        final TextView FileName = (TextView) view.findViewById(R.id.FileName);
-        FileName.setText("/" + FILE_NAME + "." + observation + "o");
+        //final TextView FileName = (TextView) view.findViewById(R.id.FileName);
+        //FileName.setText(FILE_NAME);
+        final TextView FileExtension = (TextView) view.findViewById(R.id.FileExtension);
+        FileExtension.setText("." + observation + "o");
         final TextView EditSaveLocation = (TextView) view.findViewById(R.id.EditSaveLocation);
-        EditSaveLocation.setText("GNSSLoggerR");
+        EditSaveLocation.setText(FILE_NAME);
         EditSaveLocation.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -185,10 +180,7 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                SAVE_LOCATION = s.toString();
-                FILE_PREFIX = "/" + SAVE_LOCATION + "/RINEX";
-                FILE_PREFIXSUB = "/" + SAVE_LOCATION + "/KML";
-                FILE_PREFIXACCAZI = "/" + SAVE_LOCATION + "/CSV";
+                FILE_NAME = s.toString();
             }
         });
         final Switch SendFileSwitch = (Switch) view.findViewById(R.id.FileSend);
@@ -284,11 +276,72 @@ public class SettingsFragment extends Fragment {
         int apiLivelInt = Build.VERSION.SDK_INT;
         swInfo.append("Api Level: " + apiLivelInt);
 
+        UiLogger currentUiLogger = mUiLogger;
+        if (currentUiLogger != null) {
+            currentUiLogger.setUISettingComponent(mUiSettingComponent);
+        }
+        GnssContainer currentGnssContainer = mGnssContainer;
+        if(currentGnssContainer != null){
+            currentGnssContainer.setUISettingComponent(mUiSettingComponent);
+        }
+
         return view;
     }
 
     private void logException(String errorMessage, Exception e) {
         //Log.e(GnssContainer.TAG + TAG, errorMessage, e);
         Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    public class UIFragmentSettingComponent {
+
+        private static final int MAX_LENGTH = 12000;
+        private static final int LOWER_THRESHOLD = (int) (MAX_LENGTH * 0.5);
+
+        public synchronized void SettingTextFragment(final String SensorString) {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    });
+        }
+
+        public synchronized void SettingErrorFragment(final int status) {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            if(status == STATUS_NOT_SUPPORTED){
+                                new AlertDialog.Builder(MainActivity.getInstance())
+                                        .setTitle("DEVICE NOT SUPPORTED")
+                                        .setMessage("This device is not suppored please check supported device list\nhttps://developer.android.com/guide/topics/sensors/gnss.html")
+                                        .setPositiveButton("OK", null)
+                                        .show();
+
+                            }
+                            if(status == STATUS_LOCATION_DISABLED){
+                                new AlertDialog.Builder(MainActivity.getInstance())
+                                        .setTitle("LOCATION DISABLED")
+                                        .setMessage("Location is disabled. \nplease turn on your GPS Setting")
+                                        .setPositiveButton("OK", null)
+                                        .show();
+                            }
+
+                        }
+                    });
+        }
+        public void startActivity(Intent intent) {
+            getActivity().startActivity(intent);
+        }
     }
 }

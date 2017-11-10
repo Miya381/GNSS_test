@@ -33,6 +33,8 @@ import android.widget.Toast;
 
 import com.google.android.apps.location.gps.gnsslogger.LoggerFragment.UIFragmentComponent;
 import com.google.android.apps.location.gps.gnsslogger.Logger2Fragment.UIFragment2Component;
+import com.google.android.apps.location.gps.gnsslogger.Logger3Fragment.UIFragment3Component;
+import com.google.android.apps.location.gps.gnsslogger.SettingsFragment.UIFragmentSettingComponent;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -85,6 +87,26 @@ public class UiLogger implements GnssListener {
 
     public synchronized void setUiFragment2Component(UIFragment2Component value) {
         mUiFragment2Component = value;
+    }
+
+    private UIFragment3Component mUiFragment3Component;
+
+    public synchronized UIFragment3Component getUiFragment3Component() {
+        return mUiFragment3Component;
+    }
+
+    public synchronized void setUiFragment3Component(UIFragment3Component value) {
+        mUiFragment3Component = value;
+    }
+
+    private UIFragmentSettingComponent mUISettingComponent;
+
+    public synchronized UIFragmentSettingComponent getUISettingComponent() {
+        return mUISettingComponent;
+    }
+
+    public synchronized void setUISettingComponent(UIFragmentSettingComponent value) {
+        mUISettingComponent = value;
     }
 
 
@@ -197,11 +219,13 @@ public class UiLogger implements GnssListener {
 
     public void onSensorListener(String listener,double azimuth,float accZ , float altitude){
         UIFragment2Component component2 = getUiFragment2Component();
+        UIFragment3Component component3 = getUiFragment3Component();
         double TrueAzimuth = azimuth + Declination;
         if(TrueAzimuth >= 360){
             TrueAzimuth = 360 - TrueAzimuth;
         }
         component2.log2SensorFragment(azimuth);
+        component3.log3TextFragment(listener);
         if(SettingsFragment.ResearchMode) {
             logText("Sensor", listener + "\n Declination : " + Declination + "\n TrueAzimuth : " + Math.abs(TrueAzimuth), USED_COLOR);
             //Log.d("Device Sensor",listener);
