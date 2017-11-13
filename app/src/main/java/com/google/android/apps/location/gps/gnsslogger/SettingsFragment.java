@@ -307,6 +307,7 @@ public class SettingsFragment extends Fragment {
                     .setMessage("This device is not suppored please check supported device list\nhttps://developer.android.com/guide/topics/sensors/gnss.html")
                     .setPositiveButton("OK", null)
                     .show();
+            //MainActivity.getInstance().finishAndRemoveTask();
 
         }
         if(status == STATUS_LOCATION_DISABLED){
