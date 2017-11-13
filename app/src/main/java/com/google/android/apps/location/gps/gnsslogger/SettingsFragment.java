@@ -45,6 +45,7 @@ import android.widget.Button;
 
 import static android.location.GnssMeasurementsEvent.Callback.STATUS_LOCATION_DISABLED;
 import static android.location.GnssMeasurementsEvent.Callback.STATUS_NOT_SUPPORTED;
+import static android.location.GnssMeasurementsEvent.Callback.STATUS_READY;
 
 /**
  * The UI fragment showing a set of configurable settings for the client to request GPS data.
@@ -64,12 +65,14 @@ public class SettingsFragment extends Fragment {
     public static boolean useDeviceSensor = false;
     public static boolean ResearchMode = false;
     public static boolean SendMode = false;
+    public static int GNSSMeasurementReadyMode = 0;
     private GnssContainer mGpsContainer;
     private SensorContainer mSensorContainer;
     private FileLogger mFileLogger;
     private UiLogger mUiLogger;
     private GnssContainer mGnssContainer;
     private HelpDialog helpDialog;
+    private TextView EditSaveLocation;
 
 
     public void setGpsContainer(GnssContainer value) {
@@ -165,8 +168,8 @@ public class SettingsFragment extends Fragment {
         //FileName.setText(FILE_NAME);
         final TextView FileExtension = (TextView) view.findViewById(R.id.FileExtension);
         FileExtension.setText("." + observation + "o");
-        final TextView EditSaveLocation = (TextView) view.findViewById(R.id.EditSaveLocation);
-        EditSaveLocation.setText(FILE_NAME);
+        EditSaveLocation = (TextView) view.findViewById(R.id.EditSaveLocation);
+        EditSaveLocation.setText("(Current Time)");
         EditSaveLocation.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -180,7 +183,11 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                FILE_NAME = s.toString();
+                if(s.toString() == ""){
+                    EditSaveLocation.setText("(Current Time)");
+                }else{
+                    FILE_NAME = s.toString();
+                }
             }
         });
         final Switch SendFileSwitch = (Switch) view.findViewById(R.id.FileSend);
@@ -275,9 +282,9 @@ public class SettingsFragment extends Fragment {
         swInfo.append("Platform: " + platfromVersionString + "\n");
         int apiLivelInt = Build.VERSION.SDK_INT;
         swInfo.append("Api Level: " + apiLivelInt);
-
         UiLogger currentUiLogger = mUiLogger;
         if (currentUiLogger != null) {
+            //Log.d("mUILogger","Pointer OK");
             currentUiLogger.setUISettingComponent(mUiSettingComponent);
         }
         GnssContainer currentGnssContainer = mGnssContainer;
@@ -285,7 +292,31 @@ public class SettingsFragment extends Fragment {
             currentGnssContainer.setUISettingComponent(mUiSettingComponent);
         }
 
+        CheckGNSSMeasurementsReady(GNSSMeasurementReadyMode);
+
         return view;
+    }
+
+    private void CheckGNSSMeasurementsReady(int status){
+        if(status == STATUS_NOT_SUPPORTED){
+            new AlertDialog.Builder(getContext())
+                    .setTitle("DEVICE NOT SUPPORTED")
+                    .setMessage("This device is not suppored please check supported device list\nhttps://developer.android.com/guide/topics/sensors/gnss.html")
+                    .setPositiveButton("OK", null)
+                    .show();
+
+        }
+        if(status == STATUS_LOCATION_DISABLED){
+            new AlertDialog.Builder(getContext())
+                    .setTitle("LOCATION DISABLED")
+                    .setMessage("Location is disabled. \nplease turn on your GPS Setting")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
+        if(status == STATUS_READY){
+            //Log.d("GNSSStatus","GNSSMeasurements Status Ready");
+            Toast.makeText(getContext(),"GNSS Measurements Ready",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void logException(String errorMessage, Exception e) {
@@ -298,7 +329,7 @@ public class SettingsFragment extends Fragment {
         private static final int MAX_LENGTH = 12000;
         private static final int LOWER_THRESHOLD = (int) (MAX_LENGTH * 0.5);
 
-        public synchronized void SettingTextFragment(final String SensorString) {
+        public synchronized void SettingTextFragment(final String FileName) {
             Activity activity = getActivity();
             if (activity == null) {
                 return;
@@ -307,12 +338,14 @@ public class SettingsFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-
+                            if(EditSaveLocation.getText().toString().indexOf("Current Time") != -1){
+                                FILE_NAME = FileName;
+                            }
                         }
                     });
         }
 
-        public synchronized void SettingErrorFragment(final int status) {
+        public synchronized void Lockout(final boolean status) {
             Activity activity = getActivity();
             if (activity == null) {
                 return;
@@ -321,21 +354,7 @@ public class SettingsFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            if(status == STATUS_NOT_SUPPORTED){
-                                new AlertDialog.Builder(MainActivity.getInstance())
-                                        .setTitle("DEVICE NOT SUPPORTED")
-                                        .setMessage("This device is not suppored please check supported device list\nhttps://developer.android.com/guide/topics/sensors/gnss.html")
-                                        .setPositiveButton("OK", null)
-                                        .show();
-
-                            }
-                            if(status == STATUS_LOCATION_DISABLED){
-                                new AlertDialog.Builder(MainActivity.getInstance())
-                                        .setTitle("LOCATION DISABLED")
-                                        .setMessage("Location is disabled. \nplease turn on your GPS Setting")
-                                        .setPositiveButton("OK", null)
-                                        .show();
-                            }
+                            EditSaveLocation.setEnabled(status);
 
                         }
                     });

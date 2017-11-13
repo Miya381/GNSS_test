@@ -165,6 +165,9 @@ public class UiLogger implements GnssListener {
         }else {
             gnssStatusReady = true;
         }
+        //UIFragmentSettingComponent component = getUISettingComponent();
+        //component.SettingErrorFragment(status);
+        SettingsFragment.GNSSMeasurementReadyMode = status;
         //logMeasurementEvent("onStatusChanged: " + gnssMeasurementsStatusToString(status));
     }
 
@@ -361,6 +364,8 @@ public class UiLogger implements GnssListener {
             FileLogger.GPSWStoGPST gpswStoGPST = new FileLogger.GPSWStoGPST();
             FileLogger.ReturnValue value = gpswStoGPST.method(weekNumber,tRxSeconds);
             ClockStr = String.format("DEVICE NAME: %s\nGPST = %d / %d / %d / %d : %d : %f \n", Build.DEVICE,value.Y,value.M,value.D,value.h,value.m,value.s);
+            UIFragmentSettingComponent component = getUISettingComponent();
+            component.SettingTextFragment(String.format("%d_%d_%d_%d_%d",value.Y,value.M,value.D,value.h,value.m));
             final Calendar calendar = Calendar.getInstance();
             if(String.valueOf(value.Y).indexOf(String.valueOf(calendar.YEAR)) != -1){
                 SettingsFragment.GNSSClockSync = true;

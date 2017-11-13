@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private FileLogger mFileLogger;
     private Fragment[] mFragments;
     private  SensorContainer mSensorContainer;
-
     private static MainActivity instance = null;
 
     @Override
