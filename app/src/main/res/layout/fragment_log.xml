@@ -25,7 +25,7 @@
         app:layout_constraintVertical_bias="0.454" />
 
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="298dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -585,6 +585,7 @@
         android:layout_width="395dp"
         android:layout_height="97dp"
         android:layout_marginBottom="8dp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         tools:layout_editor_absoluteX="8dp" />
 

@@ -73,6 +73,7 @@ public class SettingsFragment extends Fragment {
     private GnssContainer mGnssContainer;
     private HelpDialog helpDialog;
     private TextView EditSaveLocation;
+    public static boolean FIRST_CHECK = false;
 
 
     public void setGpsContainer(GnssContainer value) {
@@ -291,8 +292,10 @@ public class SettingsFragment extends Fragment {
         if(currentGnssContainer != null){
             currentGnssContainer.setUISettingComponent(mUiSettingComponent);
         }
-
-        CheckGNSSMeasurementsReady(GNSSMeasurementReadyMode);
+        if(FIRST_CHECK == false) {
+            CheckGNSSMeasurementsReady(GNSSMeasurementReadyMode);
+            FIRST_CHECK = true;
+        }
 
         return view;
     }

@@ -135,6 +135,8 @@ public class UiLogger implements GnssListener {
         Declination = x.doubleValue();
 
         location.getTime();
+        UIFragmentComponent component = getUiFragmentComponent();
+        component.LocationTextFragment(String.format("LON:%f\nLAT:%f\nALT:%f",location.getLongitude(),location.getLatitude(),location.getAltitude()),0);
 
         //logLocationEvent("onLocationChanged: " + location);
     }
@@ -223,12 +225,15 @@ public class UiLogger implements GnssListener {
     public void onSensorListener(String listener,double azimuth,float accZ , float altitude){
         UIFragment2Component component2 = getUiFragment2Component();
         UIFragment3Component component3 = getUiFragment3Component();
+
         double TrueAzimuth = azimuth + Declination;
         if(TrueAzimuth >= 360){
             TrueAzimuth = 360 - TrueAzimuth;
         }
         component2.log2SensorFragment(azimuth);
-        component3.log3TextFragment(listener);
+        if(component3 != null) {
+            component3.log3TextFragment(listener);
+        }
         if(SettingsFragment.ResearchMode) {
             logText("Sensor", listener + "\n Declination : " + Declination + "\n TrueAzimuth : " + Math.abs(TrueAzimuth), USED_COLOR);
             //Log.d("Device Sensor",listener);
@@ -264,7 +269,7 @@ public class UiLogger implements GnssListener {
         UIFragmentComponent component = getUiFragmentComponent();
         if (component != null) {
             if(tag == "Sensor"){
-                component.SensorlogTextFragment(text,color);
+                //component.SensorlogTextFragment(text,color);
             }
             else{
                 //component.logTextFragment(tag, text, color);
@@ -276,7 +281,7 @@ public class UiLogger implements GnssListener {
         UIFragmentComponent component = getUiFragmentComponent();
         if (component != null) {
             if(tag == "Sensor"){
-                component.SensorlogTextFragment(text,color);
+                //component.SensorlogTextFragment(text,color);
             }
             else{
                 //component.logTextFragment(tag, text, color);
@@ -458,7 +463,7 @@ public class UiLogger implements GnssListener {
             if(iRollover){
                 array[arrayRow][1] = "ROLLOVER_ERROR";
             }else if(prSeconds < 0 || prSeconds > 1){
-                array[arrayRow][1] = "CODE_ERROR";
+                array[arrayRow][1] = "INVALID_VALUE";
             }
             else if(getStateName(measurement.getState()) == "1") {
                 array[arrayRow][1] = String.format("%14.3f", prm);

@@ -228,7 +228,7 @@ public class LoggerFragment extends Fragment {
                     });
         }
 
-        public synchronized void SensorlogTextFragment(final String text, int color) {
+        public synchronized void LocationTextFragment(final String text, int color) {
             Activity activity = getActivity();
             if (activity == null) {
                 return;
@@ -237,7 +237,7 @@ public class LoggerFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            //mSensorLogView.setText("Android Sensor : \n" + text);
+                            mSensorLogView.setText("Location provided by google\n" + text);
                         }
                     });
         }

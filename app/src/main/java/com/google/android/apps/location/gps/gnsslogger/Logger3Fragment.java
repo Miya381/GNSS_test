@@ -36,6 +36,14 @@ public class Logger3Fragment extends Fragment {
     public void setFileLogger(FileLogger value) {
         mFileLogger = value;
     }
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        UiLogger currentUiLogger = mUiLogger;
+        if (currentUiLogger != null) {
+            currentUiLogger.setUiFragment3Component(mUiComponent);
+        }
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View newView = inflater.inflate(R.layout.fragment_log3, container, false /* attachToRoot */);
@@ -49,10 +57,6 @@ public class Logger3Fragment extends Fragment {
         //.d("Rotate",String.valueOf(deviceAzimuth));
         //mtx.postTranslate(ImageWidth/2 , ImageHeight/2);
         //SkyplotBG.setImageMatrix(mtx);
-        UiLogger currentUiLogger = mUiLogger;
-        if (currentUiLogger != null) {
-            currentUiLogger.setUiFragment3Component(mUiComponent);
-        }
         return newView;
     }
 
