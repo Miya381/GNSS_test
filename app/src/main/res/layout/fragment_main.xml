@@ -193,17 +193,10 @@
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="/sdcard/"
+            android:text="sdcard/GNSSLoggerR/RINEX/"
             android:textSize="14sp"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="498dp" />
-
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="/GNSSLoggerR/RINEX/" />
 
         <EditText
             android:id="@+id/EditSaveLocation"
