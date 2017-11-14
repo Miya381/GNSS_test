@@ -12,6 +12,7 @@
         <TextView
             android:id="@+id/sensorview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="24sp" />
     </FrameLayout>
 </LinearLayout>

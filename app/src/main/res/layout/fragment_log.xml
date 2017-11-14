@@ -585,7 +585,7 @@
         android:layout_width="395dp"
         android:layout_height="97dp"
         android:layout_marginBottom="8dp"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         tools:layout_editor_absoluteX="8dp" />
 

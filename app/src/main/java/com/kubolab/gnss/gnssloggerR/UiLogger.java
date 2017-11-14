@@ -120,7 +120,7 @@ public class UiLogger implements GnssListener {
 
         location.getTime();
         LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
-        component.LocationTextFragment(String.format("LON:%f\nLAT:%f\nALT:%f",location.getLongitude(),location.getLatitude(),location.getAltitude()),0);
+        component.LocationTextFragment(String.format("PROVIDER:%s\nLON:%f\nLAT:%f\nALT:%f",location.getProvider(),location.getLongitude(),location.getLatitude(),location.getAltitude()),0);
 
         //logLocationEvent("onLocationChanged: " + location);
     }
@@ -219,7 +219,7 @@ public class UiLogger implements GnssListener {
             component3.log3TextFragment(listener);
         }
         if(SettingsFragment.ResearchMode) {
-            logText("Sensor", listener + "\n Declination : " + Declination + "\n TrueAzimuth : " + Math.abs(TrueAzimuth), USED_COLOR);
+            logText("Sensor", listener + "\nDeclination : " + Declination + "\nTrueAzimuth : " + Math.abs(TrueAzimuth), USED_COLOR);
             //Log.d("Device Sensor",listener);
         }else {
             logText("Sensor", listener, USED_COLOR);
