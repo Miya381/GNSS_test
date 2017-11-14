@@ -446,7 +446,7 @@ public class UiLogger implements GnssListener {
             //Log.d("STATE",String.valueOf(measurement.getState());
             if(iRollover){
                 array[arrayRow][1] = "ROLLOVER_ERROR";
-            }else if(prSeconds < 0 || prSeconds > 1){
+            }else if(prSeconds < 0 || prSeconds > 0.5){
                 array[arrayRow][1] = "INVALID_VALUE";
             }
             else if(getStateName(measurement.getState()) == "1") {
