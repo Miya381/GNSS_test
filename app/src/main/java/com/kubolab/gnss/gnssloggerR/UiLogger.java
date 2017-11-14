@@ -182,7 +182,7 @@ public class UiLogger implements GnssListener {
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i + 1);
                 pos[i][1] = gnssStatus.getElevationDegrees(i + 1);
             }else if(gnssStatus.getConstellationType(i + 1) == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ){
-                SVID[i] ="Q" + String.valueOf(gnssStatus.getSvid(i + 1));
+                SVID[i] ="J" + String.valueOf(gnssStatus.getSvid(i + 1));
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i + 1);
                 pos[i][1] = gnssStatus.getElevationDegrees(i + 1);
             }else if(gnssStatus.getConstellationType(i + 1) == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL){
@@ -437,7 +437,7 @@ public class UiLogger implements GnssListener {
             double prm = prSeconds * 2.99792458e8;
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
                 //Log.d("QZSS","QZSS Detected");
-                array[arrayRow][0] = "Q" + String.valueOf(measurement.getSvid());
+                array[arrayRow][0] = "J" + String.valueOf(measurement.getSvid());
             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                 array[arrayRow][0] = "R" + String.valueOf(measurement.getSvid());
             }else {

@@ -171,7 +171,7 @@ public class Logger2Fragment extends Fragment {
                         paint.setColor(Color.BLUE);
                         canvas.drawText(SkyPlotSvid[i], MaxCanvusWidth / 2 + SkyPlotPos[i][0] - 100.0f, MaxCanvusHeight / 2 + SkyPlotPos[i][1] + 50.0f, paint);
                     }
-                    else if(SkyPlotSvid[i].indexOf("Q") != -1){
+                    else if(SkyPlotSvid[i].indexOf("J") != -1){
                         paint.setColor(Color.MAGENTA);
                         paint.setStyle(Paint.Style.FILL) ;
                         paint.setAntiAlias(true);
