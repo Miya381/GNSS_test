@@ -230,7 +230,7 @@ public class SensorContainer {
                     mLogger.onSensorListener(String.format("Pitch = %2.1f\n,Roll = %2.1f\n,Azimuth = %3.1f \nAltitude = %3.1f", mPitchX, mRollY, mAzimuthZ, Altitude), mAzimuthZ, currentAccelerationZValues, LastAltitude - Altitude);
                     //mLogger.onSensorListener(String.format("MagX = %f \n MagY = %f \n MagZ = %f",mMagneticValues[0],mMagneticValues[1],mMagneticValues[2]),mAzimuthZ,currentAccelerationZValues,LastAltitude - Altitude);
                 }
-                //mFileLogger.onSensorListener("",mAzimuthZ,currentAccelerationZValues);
+                //mFileLogger.onSensorListener("",mAzimuthZ,currentAccelerationZValues);//aaaaa
                 LastAltitude = Altitude;
             }
         }
