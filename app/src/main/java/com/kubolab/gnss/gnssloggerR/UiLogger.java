@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.apps.location.gps.gnsslogger;
+package com.kubolab.gnss.gnssloggerR;
 
 import android.graphics.Color;
 import android.location.GnssClock;
@@ -23,29 +23,13 @@ import android.location.GnssMeasurementsEvent;
 import android.location.GnssNavigationMessage;
 import android.location.GnssStatus;
 import android.location.Location;
-import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
-import android.renderscript.Sampler;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.android.apps.location.gps.gnsslogger.LoggerFragment.UIFragmentComponent;
-import com.google.android.apps.location.gps.gnsslogger.Logger2Fragment.UIFragment2Component;
-import com.google.android.apps.location.gps.gnsslogger.Logger3Fragment.UIFragment3Component;
-import com.google.android.apps.location.gps.gnsslogger.SettingsFragment.UIFragmentSettingComponent;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
-import static java.lang.Double.NaN;
 
 /**
  * A class representing a UI logger for the application. Its responsibility is show information in
@@ -69,43 +53,43 @@ public class UiLogger implements GnssListener {
     public UiLogger() {
     }
 
-    private UIFragmentComponent mUiFragmentComponent;
+    private LoggerFragment.UIFragmentComponent mUiFragmentComponent;
 
-    public synchronized UIFragmentComponent getUiFragmentComponent() {
+    public synchronized LoggerFragment.UIFragmentComponent getUiFragmentComponent() {
         return mUiFragmentComponent;
     }
 
-    public synchronized void setUiFragmentComponent(UIFragmentComponent value) {
+    public synchronized void setUiFragmentComponent(LoggerFragment.UIFragmentComponent value) {
         mUiFragmentComponent = value;
     }
 
-    private UIFragment2Component mUiFragment2Component;
+    private Logger2Fragment.UIFragment2Component mUiFragment2Component;
 
-    public synchronized UIFragment2Component getUiFragment2Component() {
+    public synchronized Logger2Fragment.UIFragment2Component getUiFragment2Component() {
         return mUiFragment2Component;
     }
 
-    public synchronized void setUiFragment2Component(UIFragment2Component value) {
+    public synchronized void setUiFragment2Component(Logger2Fragment.UIFragment2Component value) {
         mUiFragment2Component = value;
     }
 
-    private UIFragment3Component mUiFragment3Component;
+    private Logger3Fragment.UIFragment3Component mUiFragment3Component;
 
-    public synchronized UIFragment3Component getUiFragment3Component() {
+    public synchronized Logger3Fragment.UIFragment3Component getUiFragment3Component() {
         return mUiFragment3Component;
     }
 
-    public synchronized void setUiFragment3Component(UIFragment3Component value) {
+    public synchronized void setUiFragment3Component(Logger3Fragment.UIFragment3Component value) {
         mUiFragment3Component = value;
     }
 
-    private UIFragmentSettingComponent mUISettingComponent;
+    private SettingsFragment.UIFragmentSettingComponent mUISettingComponent;
 
-    public synchronized UIFragmentSettingComponent getUISettingComponent() {
+    public synchronized SettingsFragment.UIFragmentSettingComponent getUISettingComponent() {
         return mUISettingComponent;
     }
 
-    public synchronized void setUISettingComponent(UIFragmentSettingComponent value) {
+    public synchronized void setUISettingComponent(SettingsFragment.UIFragmentSettingComponent value) {
         mUISettingComponent = value;
     }
 
@@ -135,7 +119,7 @@ public class UiLogger implements GnssListener {
         Declination = x.doubleValue();
 
         location.getTime();
-        UIFragmentComponent component = getUiFragmentComponent();
+        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
         component.LocationTextFragment(String.format("LON:%f\nLAT:%f\nALT:%f",location.getLongitude(),location.getLatitude(),location.getAltitude()),0);
 
         //logLocationEvent("onLocationChanged: " + location);
@@ -152,7 +136,7 @@ public class UiLogger implements GnssListener {
 
     @Override
     public void onGnssMeasurementsReceived(GnssMeasurementsEvent event) {
-        UIFragmentComponent component = getUiFragmentComponent();
+        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
         array = gnssMessageToString(event,event.getClock());
         component.logTextFragment("", "", array);
         String GNSSStr = gnssClockToString(event.getClock());
@@ -185,7 +169,7 @@ public class UiLogger implements GnssListener {
 
     @Override
     public void onGnssStatusChanged(GnssStatus gnssStatus) {
-        UIFragment2Component component2 = getUiFragment2Component();
+        Logger2Fragment.UIFragment2Component component2 = getUiFragment2Component();
         if(gnssStatusReady == false){
             return;
         }
@@ -223,8 +207,8 @@ public class UiLogger implements GnssListener {
     }
 
     public void onSensorListener(String listener,double azimuth,float accZ , float altitude){
-        UIFragment2Component component2 = getUiFragment2Component();
-        UIFragment3Component component3 = getUiFragment3Component();
+        Logger2Fragment.UIFragment2Component component2 = getUiFragment2Component();
+        Logger3Fragment.UIFragment3Component component3 = getUiFragment3Component();
 
         double TrueAzimuth = azimuth + Declination;
         if(TrueAzimuth >= 360){
@@ -266,7 +250,7 @@ public class UiLogger implements GnssListener {
     }
 
     private void logText(String tag, String text, int color) {
-        UIFragmentComponent component = getUiFragmentComponent();
+        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
         if (component != null) {
             if(tag == "Sensor"){
                 //component.SensorlogTextFragment(text,color);
@@ -278,7 +262,7 @@ public class UiLogger implements GnssListener {
     }
 
     private void SublogText(String tag, String text, int color) {
-        UIFragmentComponent component = getUiFragmentComponent();
+        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
         if (component != null) {
             if(tag == "Sensor"){
                 //component.SensorlogTextFragment(text,color);
@@ -369,7 +353,7 @@ public class UiLogger implements GnssListener {
             FileLogger.GPSWStoGPST gpswStoGPST = new FileLogger.GPSWStoGPST();
             FileLogger.ReturnValue value = gpswStoGPST.method(weekNumber,tRxSeconds);
             ClockStr = String.format("DEVICE NAME: %s\nGPST = %d / %d / %d / %d : %d : %f \n", Build.DEVICE,value.Y,value.M,value.D,value.h,value.m,value.s);
-            UIFragmentSettingComponent component = getUISettingComponent();
+            SettingsFragment.UIFragmentSettingComponent component = getUISettingComponent();
             component.SettingTextFragment(String.format("%d_%d_%d_%d_%d",value.Y,value.M,value.D,value.h,value.m));
             final Calendar calendar = Calendar.getInstance();
             if(String.valueOf(value.Y).indexOf(String.valueOf(calendar.YEAR)) != -1){

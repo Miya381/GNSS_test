@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion '25.0.1'
     defaultConfig {
-        applicationId 'com.google.android.apps.location.gps.gnssloggerR'
+        applicationId 'com.kubolab.gnss.gnssloggerR'
         minSdkVersion 24
         targetSdkVersion 24
         versionCode 1

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.apps.location.gps.gnsslogger;
+package com.kubolab.gnss.gnssloggerR;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,21 +29,18 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
-import com.google.android.apps.location.gps.gnsslogger.LoggerFragment.UIFragmentComponent;
+import com.kubolab.gnss.gnssloggerR.LoggerFragment.UIFragmentComponent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import android.text.format.Time;
 import java.util.ArrayList;
 
 /**

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.android.apps.location.gps.gnsslogger" >
+    package="com.kubolab.gnss.gnssloggerR" >
 
     <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="24" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -13,7 +13,7 @@
         android:label="GNSSLogger+R"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.google.android.apps.location.gps.gnsslogger.MainActivity"
+            android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:label="GNSSLogger+R" >
             <intent-filter>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.apps.location.gps.gnsslogger;
+package com.kubolab.gnss.gnssloggerR;
 
 import android.location.GnssMeasurementsEvent;
 import android.location.GnssNavigationMessage;

@@ -1,18 +1,10 @@
-package com.google.android.apps.location.gps.gnsslogger;
+package com.kubolab.gnss.gnssloggerR;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * 回転角度取得クラス

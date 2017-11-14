@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.android.apps.location.gps.gnsslogger;
+package com.kubolab.gnss.gnssloggerR;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.GnssMeasurementsEvent;
@@ -28,14 +27,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.OnNmeaMessageListener;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import com.google.android.apps.location.gps.gnsslogger.SettingsFragment.UIFragmentSettingComponent;
+import com.kubolab.gnss.gnssloggerR.SettingsFragment.UIFragmentSettingComponent;
 
 /**
  * A container for GPS related API calls, it binds the {@link LocationManager} with {@link UiLogger}

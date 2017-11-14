@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package com.google.android.apps.location.gps.gnsslogger;
+package com.kubolab.gnss.gnssloggerR;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
-import android.location.GnssClock;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +34,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.google.android.apps.location.gps.gnsslogger.GnssContainer;
+import com.kubolab.gnss.gnssloggerR.GnssContainer;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Date;
-
-import android.widget.Button;
 
 import static android.location.GnssMeasurementsEvent.Callback.STATUS_LOCATION_DISABLED;
 import static android.location.GnssMeasurementsEvent.Callback.STATUS_NOT_SUPPORTED;
@@ -65,7 +60,7 @@ public class SettingsFragment extends Fragment {
     public static boolean useDeviceSensor = false;
     public static boolean ResearchMode = false;
     public static boolean SendMode = false;
-    public static int GNSSMeasurementReadyMode = 0;
+    public static int GNSSMeasurementReadyMode = 10;
     private GnssContainer mGpsContainer;
     private SensorContainer mSensorContainer;
     private FileLogger mFileLogger;

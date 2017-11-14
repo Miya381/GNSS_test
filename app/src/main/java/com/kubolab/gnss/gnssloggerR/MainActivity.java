@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.android.apps.location.gps.gnsslogger;
+package com.kubolab.gnss.gnssloggerR;
 
 import android.Manifest;
 import android.app.Activity;
@@ -34,17 +34,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.DynamicDrawableSpan;
-import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.Locale;
 
 /** The activity for the application. */
 public class MainActivity extends AppCompatActivity {
@@ -66,44 +57,29 @@ public class MainActivity extends AppCompatActivity {
     private  SensorContainer mSensorContainer;
     private static MainActivity instance = null;
 
+    public boolean GNSSRegister = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         requestPermissionAndSetupFragments(this);
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        TabLayout.Tab tab1 = tabLayout.getTabAt(0);
-        View tab1View = inflater.inflate(R.layout.main_tab1,null);
-        tab1.setCustomView(tab1View);
-
-        TabLayout.Tab tab2 = tabLayout.getTabAt(1);
-        View tab2View = inflater.inflate(R.layout.main_tab2,null);
-        tab2.setCustomView(tab2View);
-
-        TabLayout.Tab tab3 = tabLayout.getTabAt(2);
-        View tab3View = inflater.inflate(R.layout.main_tab3,null);
-        tab3.setCustomView(tab3View);
-
-        TabLayout.Tab tab4 = tabLayout.getTabAt(3);
-        View tab4View = inflater.inflate(R.layout.main_tab4,null);
-        tab4.setCustomView(tab4View);
-
         instance = this;
     }
     @Override
     protected void onStart() {
         super.onStart();
-        if(hasPermissions(this)){
+        if(hasPermissions(this)) {
             mGnssContainer.registerAll();
+            GNSSRegister = true;
         }
     }
     @Override
     protected void onStop() {
         super.onStop();
-        if(hasPermissions(this)){
+        if(hasPermissions(this)) {
             mGnssContainer.unregisterAll();
+            GNSSRegister = false;
         }
     }
 
@@ -213,14 +189,12 @@ public class MainActivity extends AppCompatActivity {
         logger3Fragment.setFileLogger(mFileLogger);
         mFragments[FRAGMENT_INDEX_LOGGER3] = logger3Fragment;
 
-
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         // The viewpager that will host the section contents.
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setOffscreenPageLimit(2);
+            viewPager.setOffscreenPageLimit(2);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        viewPager.setAdapter(adapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+            viewPager.setAdapter(adapter);
         tabLayout.setTabsFromPagerAdapter(adapter);
 
         // Set a listener via setOnTabSelectedListener(OnTabSelectedListener) to be notified when any
@@ -230,6 +204,23 @@ public class MainActivity extends AppCompatActivity {
         // Use a TabLayout.TabLayoutOnPageChangeListener to forward the scroll and selection changes to
         // this layout
         viewPager.addOnPageChangeListener(new TabLayoutOnPageChangeListener(tabLayout));
+        //TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        TabLayout.Tab tab1 = tabLayout.getTabAt(0);
+        View tab1View = inflater.inflate(R.layout.main_tab1, null);
+        tab1.setCustomView(tab1View);
+
+        TabLayout.Tab tab2 = tabLayout.getTabAt(1);
+        View tab2View = inflater.inflate(R.layout.main_tab2, null);
+        tab2.setCustomView(tab2View);
+
+        TabLayout.Tab tab3 = tabLayout.getTabAt(2);
+        View tab3View = inflater.inflate(R.layout.main_tab3, null);
+        tab3.setCustomView(tab3View);
+
+        TabLayout.Tab tab4 = tabLayout.getTabAt(3);
+        View tab4View = inflater.inflate(R.layout.main_tab4, null);
+        tab4.setCustomView(tab4View);
     }
 
     private boolean hasPermissions(Activity activity) {
