@@ -31,5 +31,5 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:support-v13:24.2.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile files('commons-net-3.6.jar')
+    compile files('libs/commons-net-3.6.jar')
 }

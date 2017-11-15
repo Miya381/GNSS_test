@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A class representing a UI logger for the application. Its responsibility is show information in
@@ -339,8 +341,17 @@ public class UiLogger implements GnssListener {
             ClockStr = String.format("DEVICE NAME: %s\nGPST = %d / %d / %d / %d : %d : %f \n", Build.DEVICE,value.Y,value.M,value.D,value.h,value.m,value.s);
             SettingsFragment.UIFragmentSettingComponent component = getUISettingComponent();
             component.SettingTextFragment(String.format("%d_%d_%d_%d_%d",value.Y,value.M,value.D,value.h,value.m));
-            SettingsFragment.FTP_SERVER_DIRECTORY = String.format("%4d/brdc/brdc%3d0.%2dn.Z");
-            component.SettingFTPDirectory(String.format("%4d/brdc/brdc%3d0.%2dn.Z"));
+            Calendar Start = Calendar.getInstance();
+            Calendar End = Calendar.getInstance();
+            Start.set(Calendar.YEAR,value.Y);
+            Start.set(Calendar.MONTH,1);
+            Start.set(Calendar.DATE,1);
+            End.set(Calendar.YEAR,value.Y);
+            End.set(Calendar.MONTH,value.M);
+            End.set(Calendar.DATE,value.D);
+            int spent = calcspent(Start,End);
+            SettingsFragment.FTP_SERVER_DIRECTORY = String.format("%4d/brdc/brdc%03d0.%2dn.Z",value.Y,spent,value.Y - 2000);
+            component.SettingFTPDirectory(String.format("%4d/brdc/brdc%03d0.%2dn.Z",value.Y,spent,value.Y - 2000));
             final Calendar calendar = Calendar.getInstance();
             if(String.valueOf(value.Y).indexOf(String.valueOf(calendar.YEAR)) != -1){
                 SettingsFragment.GNSSClockSync = true;
@@ -529,5 +540,11 @@ public class UiLogger implements GnssListener {
             default:
                 return "UNKNOWN";
         }
+    }
+
+    private static int calcspent(Calendar Start , Calendar End){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Log.d("DATE",String.valueOf(Start) + String.valueOf(End));
+        return  (int)((End.getTimeInMillis() - Start.getTimeInMillis() + (1000 * 60 * 60 * 24)) / (1000 * 60 * 60 * 24));
     }
 }
