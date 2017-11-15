@@ -339,6 +339,8 @@ public class UiLogger implements GnssListener {
             ClockStr = String.format("DEVICE NAME: %s\nGPST = %d / %d / %d / %d : %d : %f \n", Build.DEVICE,value.Y,value.M,value.D,value.h,value.m,value.s);
             SettingsFragment.UIFragmentSettingComponent component = getUISettingComponent();
             component.SettingTextFragment(String.format("%d_%d_%d_%d_%d",value.Y,value.M,value.D,value.h,value.m));
+            SettingsFragment.FTP_SERVER_DIRECTORY = String.format("%4d/brdc/brdc%3d0.%2dn.Z");
+            component.SettingFTPDirectory(String.format("%4d/brdc/brdc%3d0.%2dn.Z"));
             final Calendar calendar = Calendar.getInstance();
             if(String.valueOf(value.Y).indexOf(String.valueOf(calendar.YEAR)) != -1){
                 SettingsFragment.GNSSClockSync = true;

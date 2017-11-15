@@ -51,7 +51,9 @@ public class SettingsFragment extends Fragment {
     private UiLogger mUiLogger;
     private GnssContainer mGnssContainer;
     private TextView EditSaveLocation;
+    private TextView FTPDirectory;
     public static boolean FIRST_CHECK = false;
+    public static String FTP_SERVER_DIRECTORY = "";
 
 
     public void setGpsContainer(GnssContainer value) {
@@ -147,6 +149,9 @@ public class SettingsFragment extends Fragment {
         //FileName.setText(FILE_NAME);
         final TextView FileExtension = (TextView) view.findViewById(R.id.FileExtension);
         FileExtension.setText("." + observation + "o");
+
+        FTPDirectory = (TextView) view.findViewById(R.id.FTPDirectory);
+
         EditSaveLocation = (TextView) view.findViewById(R.id.EditSaveLocation);
         EditSaveLocation.setText("(Current Time)");
         EditSaveLocation.addTextChangedListener(new TextWatcher() {
@@ -310,6 +315,19 @@ public class SettingsFragment extends Fragment {
 
         private static final int MAX_LENGTH = 12000;
         private static final int LOWER_THRESHOLD = (int) (MAX_LENGTH * 0.5);
+        public synchronized void SettingFTPDirectory(final String DirectoryName){
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                        FTPDirectory.setText(DirectoryName);
+                        }
+                    });
+        }
 
         public synchronized void SettingTextFragment(final String FileName) {
             Activity activity = getActivity();

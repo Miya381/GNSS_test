@@ -27,9 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ArrayList;
 
-/**
- * A GNSS logger to store information to a file.
- */
 public class FileLogger implements GnssListener {
 
     private static final String TAG = "FileLogger";
@@ -92,7 +89,7 @@ public class FileLogger implements GnssListener {
 
             Date now = new Date();
             int observation = now.getYear() - 100;
-            String fileNameSub = String.format("AndroidLocation.kml", SettingsFragment.FILE_PREFIXSUB);
+            String fileNameSub = String.format(SettingsFragment.FILE_NAME + ".kml", SettingsFragment.FILE_PREFIXSUB);
             File currentFileSub = new File(baseSubDirectory, fileNameSub);
             String currentFileSubPath = currentFileSub.getAbsolutePath();
             BufferedWriter currentFileSubWriter;
