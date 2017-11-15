@@ -47,6 +47,9 @@ import static android.location.GnssMeasurementsEvent.Callback.STATUS_READY;
  */
 public class SettingsFragment extends Fragment {
 
+//    private UiLogger mUiLogger;
+    private TextView mSensorLogView;
+
     public static final String TAG = ":SettingsFragment";
     public static String SAVE_LOCATION = "GNSSLoggerR";
     public static String FILE_PREFIX = "/" + SAVE_LOCATION + "/RINEX";
@@ -94,6 +97,8 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false /* attachToRoot */);
+
+        mSensorLogView = (TextView) view.findViewById(R.id.textView11);
 
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
         final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
@@ -186,6 +191,12 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
+//        final TextView testtextview = (TextView) view.findViewById(R.id.textView11);
+//        testtextview.setText("tesettest");
+
+
+
         final Switch SendFileSwitch = (Switch) view.findViewById(R.id.FileSend);
         SendFileSwitch.setChecked(false);
         SendFileSwitch.setOnCheckedChangeListener(
@@ -358,6 +369,21 @@ public class SettingsFragment extends Fragment {
                         }
                     });
         }
+
+        public synchronized void SettingSensorTextFragment(final String SensorString) {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            mSensorLogView.setText(SensorString);
+                        }
+                    });
+        }
+
         public void startActivity(Intent intent) {
             getActivity().startActivity(intent);
         }
