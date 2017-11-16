@@ -34,7 +34,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.kubolab.gnss.gnssloggerR.GnssContainer;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
@@ -48,7 +48,11 @@ import static android.location.GnssMeasurementsEvent.Callback.STATUS_READY;
 public class SettingsFragment extends Fragment {
 
 //    private UiLogger mUiLogger;
-    private TextView mSensorLogView;
+//private TextView mSensorSpecView;
+    private TextView mAccSpecView;
+    private TextView mGyroSpecView;
+    private TextView mMagSpecView;
+    private TextView mPressSpecView;
 
     public static final String TAG = ":SettingsFragment";
     public static String SAVE_LOCATION = "GNSSLoggerR";
@@ -98,7 +102,10 @@ public class SettingsFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false /* attachToRoot */);
 
-        mSensorLogView = (TextView) view.findViewById(R.id.textView11);
+        mAccSpecView = (TextView) view.findViewById(R.id.accSpecView);
+        mGyroSpecView = (TextView) view.findViewById(R.id.gyroSpecView);
+        mMagSpecView = (TextView) view.findViewById(R.id.magSpecView);
+        mPressSpecView = (TextView) view.findViewById(R.id.pressSpecView);
 
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
         final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
@@ -370,7 +377,7 @@ public class SettingsFragment extends Fragment {
                     });
         }
 
-        public synchronized void SettingSensorTextFragment(final String SensorString) {
+        public synchronized void SettingFragmentSensorSpec(final String SensorSpec[]) {
             Activity activity = getActivity();
             if (activity == null) {
                 return;
@@ -379,7 +386,10 @@ public class SettingsFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            mSensorLogView.setText(SensorString);
+                            mAccSpecView.setText(SensorSpec[0]);
+                            mGyroSpecView.setText(SensorSpec[1]);
+                            mMagSpecView.setText(SensorSpec[2]);
+                            mPressSpecView.setText(SensorSpec[3]);
                         }
                     });
         }

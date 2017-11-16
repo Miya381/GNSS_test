@@ -6,6 +6,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import java.util.List;
+
 /**
  * 回転角度取得クラス
  *
@@ -13,6 +15,8 @@ import android.hardware.SensorManager;
  *
  */
 public class SensorContainer {
+    //センサ生データ用
+    private String sensorRaw[] = new String[6];
     /** デバッグ用 */
     private static final boolean DEBUG = true;
     private static final String TAG = "OrientationListener";
@@ -29,9 +33,17 @@ public class SensorContainer {
     private float[] mAccelerometerValues;
     private float RawX,RawY,RawZ;
     private int AccAzi;
+    // ジャイロ
+    private float[] mGyroValues;
+    private float GyroX, GyroY, GyroZ;
+    // ジャイロuncalibratred
+    private float[] mGyroUncalibratedValues;
+    private float GyroUncalibratedX, GyroUncalibratedY, GyroUncalibratedZ;
+    private float GyroDriftX, GyroDriftY, GyroDriftZ;
     /** 気圧 **/
     private float[] mPressureValues;
     private float Altitude;
+    private float Pressure;
     private float LastAltitude = 0.0f;
     /** X軸の回転角度 */
     private double mPitchX;
@@ -79,6 +91,39 @@ public class SensorContainer {
         mManager.registerListener(listener, mManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 100000);
         //気圧センサー登録
         mManager.registerListener(listener,mManager.getDefaultSensor(Sensor.TYPE_PRESSURE), 100000);
+        //ジャイロセンサー登録
+        mManager.registerListener(listener,mManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 100000);
+        //ジャイロセンサーuncalibrated登録
+        mManager.registerListener(listener,mManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE_UNCALIBRATED), 100000);
+
+        Sensor sensor;
+        String[] strTmp = new String[4];
+        //String strTmp="";
+        sensor = mManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (sensor == null) {
+            strTmp[0] = "利用不可";
+        }else {
+            strTmp[0] = sensor.getName();
+        }
+        sensor = mManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        if (sensor == null) {
+            strTmp[1] = "利用不可";
+        }else {
+            strTmp[1] = sensor.getName();
+        }
+        sensor = mManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (sensor == null) {
+            strTmp[2] = "利用不可";
+        }else {
+            strTmp[2] = sensor.getName();
+        }
+        sensor = mManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        if (sensor == null) {
+            strTmp[3] = "利用不可";
+        }else {
+            strTmp[3] = sensor.getName();
+        }
+        mLogger.SensorSpec(strTmp);
     }
 
     public void unregisterSensor(){
@@ -145,6 +190,22 @@ public class SensorContainer {
                 case Sensor.TYPE_PRESSURE:
                     //気圧センサー
                     mPressureValues = event.values.clone();
+                    Pressure  = mPressureValues[0];
+                case Sensor.TYPE_GYROSCOPE:
+                    //ジャイロ
+                    mGyroValues = event.values.clone();
+                    GyroX  = mGyroValues[0];
+                    GyroY  = mGyroValues[1];
+                    GyroZ  = mGyroValues[2];
+                case Sensor.TYPE_GYROSCOPE_UNCALIBRATED:
+                    //ジャイロ
+                    mGyroUncalibratedValues = event.values.clone();
+                    GyroUncalibratedX  = mGyroUncalibratedValues[0];
+                    GyroUncalibratedY  = mGyroUncalibratedValues[1];
+                    GyroUncalibratedZ  = mGyroUncalibratedValues[2];
+//                    GyroDriftX  = mGyroUncalibratedValues[3];
+//                    GyroDriftY  = mGyroUncalibratedValues[4];
+//                    GyroDriftZ  = mGyroUncalibratedValues[5];
                 default:
                     // それ以外は無視
                     return;
@@ -223,11 +284,29 @@ public class SensorContainer {
                 //気圧から高度を算出
                 if(mPressureValues != null){
                     Altitude = (float) -(((Math.pow((mPressureValues[0]/1023.0),(1/5.257)) - 1)*(6.6 + 273.15)) / 0.0065);
+                    sensorRaw[5] = String.format("Ambient Pressure = %f", Pressure);
                 }
+
+                if(mMagneticValues != null){
+                    sensorRaw[4] = String.format("X = %f, Y = %f, Z = %f", MagX, MagY, MagZ);
+                }
+                if(mGyroValues != null){
+                    sensorRaw[2] = String.format("X = %f, Y = %f, Z = %f", GyroX, GyroY, GyroZ);
+                }
+                if(mGyroUncalibratedValues != null){
+//                    sensorRaw[1] = String.format("X = %f, Y = %f, Z = %f\n dX = %f, dY = %f, dZ = %f (drift estimates)", GyroUncalibratedX, GyroUncalibratedY, GyroUncalibratedZ, GyroDriftX, GyroDriftY, GyroDriftZ);
+                    sensorRaw[1] = String.format("X = %f, Y = %f, Z = %f\n dX = %f, dY = %f, dZ = %f (drift estimates)", GyroUncalibratedX, GyroUncalibratedY, GyroUncalibratedZ, 0.001, 0.001, 0.001);
+                }
+
+                sensorRaw[0] = String.format("X = %f, Y = %f, Z = %f", RawX, RawY, RawZ);
+
+                mLogger.onSensorRawListener(sensorRaw);
+
+
                 if(SettingsFragment.ResearchMode) {
                     mLogger.onSensorListener(String.format("Pitch = %f , Roll = %f , Azimuth = %f \n Altitude = %f \n WalkCounter = %d \n AccAzi = %d", Math.toDegrees(mPitchX), Math.toDegrees(mRollY), Math.toDegrees(mAzimuthZ) + 180, LastAltitude - Altitude, counter, AccAzi), Math.toDegrees(mAzimuthZ) + 180, currentAccelerationZValues, LastAltitude - Altitude);
                 }else{
-                    mLogger.onSensorListener(String.format("Pitch = %2.1f\nRoll = %2.1f\nAzimuth = %3.1f\nAltitude = %3.1f", mPitchX, mRollY, mAzimuthZ, Altitude), mAzimuthZ, currentAccelerationZValues, LastAltitude - Altitude);
+                    mLogger.onSensorListener(String.format("Pitchh = %2.1f\nRoll = %2.1f\nAzimuth = %3.1f\nAltitude = %3.1f", mPitchX, mRollY, mAzimuthZ, Altitude), mAzimuthZ, currentAccelerationZValues, LastAltitude - Altitude);
                     //mLogger.onSensorListener(String.format("MagX = %f \n MagY = %f \n MagZ = %f",mMagneticValues[0],mMagneticValues[1],mMagneticValues[2]),mAzimuthZ,currentAccelerationZValues,LastAltitude - Altitude);
                 }
                 //mFileLogger.onSensorListener("",mAzimuthZ,currentAccelerationZValues);//aaaaa

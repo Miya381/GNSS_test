@@ -227,6 +227,20 @@ public class UiLogger implements GnssListener {
         }
     }
 
+    public void SensorSpec(String sensorSpec[]) {
+        SettingsFragment.UIFragmentSettingComponent component = getUISettingComponent();
+        if (component != null) {
+            component.SettingFragmentSensorSpec(sensorSpec);
+        }
+    }
+
+    public void onSensorRawListener(String sensorRaw[]) {
+        Logger3Fragment.UIFragment3Component component = getUiFragment3Component();
+        if (component != null) {
+            component.log3SensorRawFragment(sensorRaw);
+        }
+    }
+
     private void logMeasurementEvent(String event) {
         logEvent("Measurement", event, USED_COLOR);
     }
