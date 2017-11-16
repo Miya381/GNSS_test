@@ -99,14 +99,14 @@
         android:layout_height="22dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="8dp"
         android:text="RINEX Setting"
         android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/view6" />
 
     <TextView
         android:id="@+id/textView3"
@@ -244,19 +244,19 @@
         android:id="@+id/accSpecView"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginLeft="132dp"
+        android:layout_marginStart="100dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
     <TextView
         android:id="@+id/textView11"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="加速度センサ："
+        android:text="ACC: "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
@@ -264,9 +264,9 @@
         android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
-        android:text="ジャイロセンサ："
+        android:text="Gyro: "
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
@@ -274,9 +274,9 @@
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:text="地磁気センサ："
+        android:text="Mag: "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
@@ -284,9 +284,9 @@
         android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
-        android:text="気圧センサ："
+        android:text="Pressure: "
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
@@ -294,7 +294,7 @@
         android:id="@+id/gyroSpecView"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="132dp"
+        android:layout_marginStart="100dp"
         android:layout_marginTop="4dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
@@ -304,7 +304,7 @@
         android:id="@+id/magSpecView"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="132dp"
+        android:layout_marginStart="100dp"
         android:layout_marginTop="4dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
@@ -314,7 +314,7 @@
         android:id="@+id/pressSpecView"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginStart="132dp"
+        android:layout_marginStart="100dp"
         android:layout_marginTop="4dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
@@ -328,7 +328,8 @@
         app:layout_constraintBottom_toTopOf="@+id/accSpecView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
     <TextView
         android:id="@+id/textView19"
@@ -345,9 +346,20 @@
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
         android:text="GNSS information and setting"
         android:textSize="18sp"
-        tools:layout_editor_absoluteX="32dp"
-        tools:layout_editor_absoluteY="32dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view6"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
 </android.support.constraint.ConstraintLayout>
