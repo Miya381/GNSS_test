@@ -19,6 +19,7 @@ public class Logger3Fragment extends Fragment {
     private TextView mSensorRawAccView;
     private TextView mSensorRawPressView;
     private TextView mSensorRawMagView;
+    private TextView mSensorRawMagUncalibratedView;
     private TextView mSensorRawGyroView;
     private TextView mSensorRawGyroUncalibratedView;
 
@@ -47,6 +48,7 @@ public class Logger3Fragment extends Fragment {
         mSensorRawAccView = (TextView) newView.findViewById(R.id.sensorAccView);
         mSensorRawPressView = (TextView) newView.findViewById(R.id.sensorPressView);
         mSensorRawMagView = (TextView) newView.findViewById(R.id.sensorMagView);
+        mSensorRawMagUncalibratedView = (TextView) newView.findViewById(R.id.sensorMagUncalibratedView);
         mSensorRawGyroView = (TextView) newView.findViewById(R.id.sensorGyroView);
         mSensorRawGyroUncalibratedView = (TextView) newView.findViewById(R.id.sensorGyroUncalibratedView);
         //int ImageWidth = SkyplotBG.getDrawable().getBounds().width();
@@ -91,6 +93,7 @@ public class Logger3Fragment extends Fragment {
                             mSensorRawAccView.setText(SensorRawString[0]);
                             mSensorRawGyroUncalibratedView .setText(SensorRawString[1]);
                             mSensorRawGyroView.setText(SensorRawString[2]);
+                            mSensorRawMagUncalibratedView.setText(SensorRawString[3]);
                             mSensorRawMagView.setText(SensorRawString[4]);
                             mSensorRawPressView.setText(SensorRawString[5]);
                         }

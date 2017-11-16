@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:text="加速度（TYPE_ACCELEROMETER）"
+        android:text="加速度（ACCELEROMETER）[m/s^2]"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:text="ジャイロ（TYPE_GYROSCOPE_UNCALIBRATED）"
+        android:text="ジャイロ（GYROSCOPE_UNCALIBRATED）[rad/s]"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:text="ジャイロ（TYPE_GYROSCOPE）"
+        android:text="ジャイロ（GYROSCOPE）[rad/s]"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view2" />
 
@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:text="地磁気（TYPE_MAGNETIC_FIELD_UNCALIBRATED）"
+        android:text="地磁気（MAGNETIC_FIELD_UNCALIBRATED）[uT]"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view3" />
 
@@ -104,7 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:text="地磁気（TYPE_MAGNETIC_FIELD）"
+        android:text="地磁気（MAGNETIC_FIELD）[uT]"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view4" />
 
@@ -174,7 +174,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:text="気圧（TYPE_PRESSURE）"
+        android:text="気圧（PRESSURE）[hPa]"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view5" />
 
