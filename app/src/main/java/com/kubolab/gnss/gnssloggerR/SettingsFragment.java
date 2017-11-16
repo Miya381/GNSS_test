@@ -18,7 +18,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.kubolab.gnss.gnssloggerR.GnssContainer;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
@@ -30,6 +30,13 @@ import static android.location.GnssMeasurementsEvent.Callback.STATUS_READY;
  * The UI fragment showing a set of configurable settings for the client to request GPS data.
  */
 public class SettingsFragment extends Fragment {
+
+//    private UiLogger mUiLogger;
+//private TextView mSensorSpecView;
+    private TextView mAccSpecView;
+    private TextView mGyroSpecView;
+    private TextView mMagSpecView;
+    private TextView mPressSpecView;
 
     public static final String TAG = ":SettingsFragment";
     public static String SAVE_LOCATION = "GNSSLoggerR";
@@ -79,6 +86,11 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false /* attachToRoot */);
+
+        mAccSpecView = (TextView) view.findViewById(R.id.accSpecView);
+        mGyroSpecView = (TextView) view.findViewById(R.id.gyroSpecView);
+        mMagSpecView = (TextView) view.findViewById(R.id.magSpecView);
+        mPressSpecView = (TextView) view.findViewById(R.id.pressSpecView);
 
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
         final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
@@ -174,6 +186,12 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
+//        final TextView testtextview = (TextView) view.findViewById(R.id.textView11);
+//        testtextview.setText("tesettest");
+
+
+
         final Switch SendFileSwitch = (Switch) view.findViewById(R.id.FileSend);
         SendFileSwitch.setChecked(false);
         SendFileSwitch.setOnCheckedChangeListener(
@@ -359,6 +377,24 @@ public class SettingsFragment extends Fragment {
                         }
                     });
         }
+
+        public synchronized void SettingFragmentSensorSpec(final String SensorSpec[]) {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            mAccSpecView.setText(SensorSpec[0]);
+                            mGyroSpecView.setText(SensorSpec[1]);
+                            mMagSpecView.setText(SensorSpec[2]);
+                            mPressSpecView.setText(SensorSpec[3]);
+                        }
+                    });
+        }
+
         public void startActivity(Intent intent) {
             getActivity().startActivity(intent);
         }
