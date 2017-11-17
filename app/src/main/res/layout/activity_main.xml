@@ -9,7 +9,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabBackground="@android:color/white"/>
+        app:tabBackground="@color/colorTabBack"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"

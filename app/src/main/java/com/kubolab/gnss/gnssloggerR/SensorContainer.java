@@ -29,6 +29,9 @@ public class SensorContainer {
     /** 地磁気行列 */
     private float[] mMagneticValues;
     private float MagX,MagY,MagZ;
+    /** 地磁気行列 uncalibrated*/
+    private float[] mMagneticUncalibratedValues;
+    private float MagUncalibratedX,MagUncalibratedY,MagUncalibratedZ;
     /** 加速度行列 */
     private float[] mAccelerometerValues;
     private float RawX,RawY,RawZ;
@@ -39,7 +42,7 @@ public class SensorContainer {
     // ジャイロuncalibratred
     private float[] mGyroUncalibratedValues;
     private float GyroUncalibratedX, GyroUncalibratedY, GyroUncalibratedZ;
-    private float GyroDriftX, GyroDriftY, GyroDriftZ;
+    private float GyroDriftX, GyroDriftY, GyroDriftZ;  //6つ有るはずだけど出てこないのではずす
     /** 気圧 **/
     private float[] mPressureValues;
     private float Altitude;
@@ -86,7 +89,10 @@ public class SensorContainer {
             // 初回実行時
             mManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
         }
+        // 地磁気センサー登録
         mManager.registerListener(listener, mManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), 100000);
+        //地磁気センサーuncalibrated登録
+        mManager.registerListener(listener,mManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED), 100000);
         // 加速度センサー登録
         mManager.registerListener(listener, mManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 100000);
         //気圧センサー登録
@@ -180,6 +186,13 @@ public class SensorContainer {
                     MagY = mMagneticValues[1];
                     MagZ = mMagneticValues[2];
                     break;
+                case Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED:
+                    // 地磁気センサーuncalibrated
+                    mMagneticUncalibratedValues = event.values.clone();
+                    MagUncalibratedX = mMagneticUncalibratedValues[0];
+                    MagUncalibratedY = mMagneticUncalibratedValues[1];
+                    MagUncalibratedZ = mMagneticUncalibratedValues[2];
+                    break;
                 case Sensor.TYPE_ACCELEROMETER:
                     // 加速度センサー
                     mAccelerometerValues = event.values.clone();
@@ -191,21 +204,24 @@ public class SensorContainer {
                     //気圧センサー
                     mPressureValues = event.values.clone();
                     Pressure  = mPressureValues[0];
+                    break;
                 case Sensor.TYPE_GYROSCOPE:
                     //ジャイロ
                     mGyroValues = event.values.clone();
                     GyroX  = mGyroValues[0];
                     GyroY  = mGyroValues[1];
                     GyroZ  = mGyroValues[2];
+                    break;
                 case Sensor.TYPE_GYROSCOPE_UNCALIBRATED:
-                    //ジャイロ
+                    //ジャイロ uncalibrated
                     mGyroUncalibratedValues = event.values.clone();
                     GyroUncalibratedX  = mGyroUncalibratedValues[0];
                     GyroUncalibratedY  = mGyroUncalibratedValues[1];
                     GyroUncalibratedZ  = mGyroUncalibratedValues[2];
-//                    GyroDriftX  = mGyroUncalibratedValues[3];
-//                    GyroDriftY  = mGyroUncalibratedValues[4];
-//                    GyroDriftZ  = mGyroUncalibratedValues[5];
+                    GyroDriftX  = mGyroUncalibratedValues[3];
+                    GyroDriftY  = mGyroUncalibratedValues[4];
+                    GyroDriftZ  = mGyroUncalibratedValues[5];
+                    break;
                 default:
                     // それ以外は無視
                     return;
@@ -284,21 +300,24 @@ public class SensorContainer {
                 //気圧から高度を算出
                 if(mPressureValues != null){
                     Altitude = (float) -(((Math.pow((mPressureValues[0]/1023.0),(1/5.257)) - 1)*(6.6 + 273.15)) / 0.0065);
-                    sensorRaw[5] = String.format("Ambient Pressure = %f", Pressure);
+                    sensorRaw[5] = String.format("Ambient Pressure = %7.2f", Pressure);
                 }
 
                 if(mMagneticValues != null){
-                    sensorRaw[4] = String.format("X = %f, Y = %f, Z = %f", MagX, MagY, MagZ);
+                    sensorRaw[4] = String.format("X = %7.3f, Y = %7.3f, Z = %7.3f", MagX, MagY, MagZ);
+                }
+                if(mMagneticUncalibratedValues != null){
+                    sensorRaw[3] = String.format("X = %7.3f, Y = %7.3f, Z = %7.3f", MagUncalibratedX, MagUncalibratedY, MagUncalibratedZ);
                 }
                 if(mGyroValues != null){
-                    sensorRaw[2] = String.format("X = %f, Y = %f, Z = %f", GyroX, GyroY, GyroZ);
+                    sensorRaw[2] = String.format("X = %7.4f, Y = %7.4f, Z = %7.4f", GyroX, GyroY, GyroZ);
                 }
                 if(mGyroUncalibratedValues != null){
-//                    sensorRaw[1] = String.format("X = %f, Y = %f, Z = %f\n dX = %f, dY = %f, dZ = %f (drift estimates)", GyroUncalibratedX, GyroUncalibratedY, GyroUncalibratedZ, GyroDriftX, GyroDriftY, GyroDriftZ);
-                    sensorRaw[1] = String.format("X = %f, Y = %f, Z = %f\n dX = %f, dY = %f, dZ = %f (drift estimates)", GyroUncalibratedX, GyroUncalibratedY, GyroUncalibratedZ, 0.001, 0.001, 0.001);
+                    sensorRaw[1] = String.format("X = %7.4f, Y = %7.4f, Z = %7.4f\n Drift estimates: \n x = %5.3e, y = %5.3e, z = %5.3e", GyroUncalibratedX, GyroUncalibratedY, GyroUncalibratedZ, GyroDriftX, GyroDriftY, GyroDriftZ);
+//                    sensorRaw[1] = String.format("X = %f, Y = %f, Z = %f", GyroUncalibratedX, GyroUncalibratedY, GyroUncalibratedZ);
                 }
 
-                sensorRaw[0] = String.format("X = %f, Y = %f, Z = %f", RawX, RawY, RawZ);
+                sensorRaw[0] = String.format("X = %7.4f, Y = %7.4f, Z = %7.4f", RawX, RawY, RawZ);
 
                 mLogger.onSensorRawListener(sensorRaw);
 

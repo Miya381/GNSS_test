@@ -162,7 +162,7 @@ public class SettingsFragment extends Fragment {
         final TextView FileExtension = (TextView) view.findViewById(R.id.FileExtension);
         FileExtension.setText("." + observation + "o");
 
-        FTPDirectory = (TextView) view.findViewById(R.id.FTPDirectory);
+//        FTPDirectory = (TextView) view.findViewById(R.id.FTPDirectory);
 
         EditSaveLocation = (TextView) view.findViewById(R.id.EditSaveLocation);
         EditSaveLocation.setText("(Current Time)");
