@@ -220,6 +220,14 @@ public class UiLogger implements GnssListener {
         }
     }
 
+    public void SensorAvairable(String sensorAvairable[]) {
+        SettingsFragment.UIFragmentSettingComponent component = getUISettingComponent();
+        if (component != null) {
+            component.SettingFragmentSensorAvairable(sensorAvairable);
+        }
+    }
+
+
     public void onSensorRawListener(String sensorRaw[]) {
         Logger3Fragment.UIFragment3Component component = getUiFragment3Component();
         if (component != null) {

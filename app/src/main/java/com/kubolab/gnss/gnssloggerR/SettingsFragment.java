@@ -18,6 +18,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RadioButton;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
@@ -33,13 +34,18 @@ public class SettingsFragment extends Fragment {
 
 //    private UiLogger mUiLogger;
 //private TextView mSensorSpecView;
-    private TextView mAccSpecView;
+private TextView mAccSpecView;
     private TextView mGyroSpecView;
     private TextView mMagSpecView;
     private TextView mPressSpecView;
 
+    private TextView mAccAvView;
+    private TextView mGyroAvView;
+    private TextView mMagAvView;
+    private TextView mPressAvView;
+
     public static final String TAG = ":SettingsFragment";
-    public static String SAVE_LOCATION = "GNSSLoggerR";
+    public static String SAVE_LOCATION = "G_RitZ_Logger";
     public static String FILE_PREFIX = "/" + SAVE_LOCATION + "/RINEX";
     public static String FILE_PREFIXSUB = "/" + SAVE_LOCATION + "/KML";
     public static String FILE_PREFIXACCAZI = "/" + SAVE_LOCATION + "/CSV";
@@ -89,12 +95,35 @@ public class SettingsFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false /* attachToRoot */);
 
+        mRawDataIsOk = (TextView) view.findViewById(R.id.rawDataIsOk);
+        mLocationIsOk = (TextView) view.findViewById(R.id.locationIsOk);
+
         mAccSpecView = (TextView) view.findViewById(R.id.accSpecView);
         mGyroSpecView = (TextView) view.findViewById(R.id.gyroSpecView);
         mMagSpecView = (TextView) view.findViewById(R.id.magSpecView);
         mPressSpecView = (TextView) view.findViewById(R.id.pressSpecView);
-        mRawDataIsOk = (TextView) view.findViewById(R.id.rawDataIsOk);
-        mLocationIsOk = (TextView) view.findViewById(R.id.locationIsOk);
+
+        mAccAvView = (TextView) view.findViewById(R.id.accAvView);
+        mGyroAvView = (TextView) view.findViewById(R.id.gyroAvView);
+        mMagAvView = (TextView) view.findViewById(R.id.magAvView);
+        mPressAvView = (TextView) view.findViewById(R.id.pressAvView);
+
+        //ダミーラジオボタン、スイッチの初期設定
+        RadioButton rb = (RadioButton) view.findViewById(R.id.radioButtonRinex3);
+        rb.setEnabled(false);
+        CheckBox cb = (CheckBox) view.findViewById(R.id.checkBoxPseudorange);
+        cb.setEnabled(false);
+        cb = (CheckBox) view.findViewById(R.id.useGPS);
+        cb.setEnabled(false);
+        cb = (CheckBox) view.findViewById(R.id.outputRINEX);
+        cb.setEnabled(false);
+        cb = (CheckBox) view.findViewById(R.id.outputKML);
+        cb.setEnabled(false);
+        cb = (CheckBox) view.findViewById(R.id.outputNmea);
+        cb.setEnabled(false);
+        cb = (CheckBox) view.findViewById(R.id.outputSensor);
+        cb.setEnabled(false);
+
 
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
         final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
@@ -164,7 +193,7 @@ public class SettingsFragment extends Fragment {
         //final TextView FileName = (TextView) view.findViewById(R.id.FileName);
         //FileName.setText(FILE_NAME);
         final TextView FileExtension = (TextView) view.findViewById(R.id.FileExtension);
-        FileExtension.setText("." + observation + "o");
+        FileExtension.setText("$log/RINEX/\"prefix\"." + observation + "o");
 
 //        FTPDirectory = (TextView) view.findViewById(R.id.FTPDirectory);
 
@@ -313,7 +342,7 @@ public class SettingsFragment extends Fragment {
                     .setPositiveButton("OK", null)
                     .show();
             //MainActivity.getInstance().finishAndRemoveTask();
-            mRawDataIsOk.setText("Unavairable");
+            mRawDataIsOk.setText("Unavailable");
         }
         if(status == STATUS_LOCATION_DISABLED){
             new AlertDialog.Builder(getContext())
@@ -321,7 +350,7 @@ public class SettingsFragment extends Fragment {
                     .setMessage("Location is disabled. \nplease turn on your GPS Setting")
                     .setPositiveButton("OK", null)
                     .show();
-            mLocationIsOk.setText("Unavairable");
+            mLocationIsOk.setText("Unavailable");
         }
         if(status == STATUS_READY){
             //Log.d("GNSSStatus","GNSSMeasurements Status Ready");
@@ -400,8 +429,26 @@ public class SettingsFragment extends Fragment {
                     });
         }
 
+        public synchronized void SettingFragmentSensorAvairable(final String SensorAvairable[]) {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            mAccAvView.setText(SensorAvairable[0]);
+                            mGyroAvView.setText(SensorAvairable[1]);
+                            mMagAvView.setText(SensorAvairable[2]);
+                            mPressAvView.setText(SensorAvairable[3]);
+                        }
+                    });
+        }
+
         public void startActivity(Intent intent) {
             getActivity().startActivity(intent);
         }
     }
 }
+//aaa

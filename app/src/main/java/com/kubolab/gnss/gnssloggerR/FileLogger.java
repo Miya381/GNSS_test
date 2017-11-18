@@ -176,7 +176,7 @@ public class FileLogger implements GnssListener {
                 }
 
                 Date now = new Date();
-                String fileNameAccAzi = String.format("AndroidAccAzi.csv", SettingsFragment.FILE_PREFIXSUB);
+                String fileNameAccAzi = String.format(SettingsFragment.FILE_NAME + ".csv", SettingsFragment.FILE_PREFIXSUB);
                 File currentFileAccAzi = new File(baseAccAziDirectory, fileNameAccAzi);
                 String currentFileAccAziPath = currentFileAccAzi.getAbsolutePath();
                 BufferedWriter currentFileAccAziWriter;

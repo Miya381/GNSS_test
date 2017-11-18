@@ -104,39 +104,48 @@ public class SensorContainer {
 
         Sensor sensor;
         String[] strTmp = new String[4];
+        String[] strTmp2 = new String[4];
         sensor = mManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (sensor == null) {
             strTmp[0] = "Unavailable";
         }else {
-            strTmp[0] = "[OK] " + sensor.getName();
+            strTmp[0] = sensor.getName();
+            strTmp2[0] = "Available";
         }
         sensor = mManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         if (sensor == null) {
             strTmp[1] = "Unavailable";
         }else {
-            strTmp[1] = "[OK] " + sensor.getName();
+            strTmp[1] = sensor.getName();
+            strTmp2[1] = "Available";
         }
         sensor = mManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         if (sensor == null) {
             strTmp[2] = "Unavailable";
         }else {
-            strTmp[2] = "[OK] " + sensor.getName();
+            strTmp[2] = sensor.getName();
+            strTmp2[2] = "Available";
         }
         sensor = mManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
         if (sensor == null) {
             strTmp[3] = "Unavailable";
         }else {
-            strTmp[3] = "[OK] " + sensor.getName();
+            strTmp[3] = sensor.getName();
+            strTmp2[3] = "Available";
         }
         mLogger.SensorSpec(strTmp);
+        mLogger.SensorAvairable(strTmp2);
     }
 
     public void unregisterSensor(){
         String[] strTmp = new String[4];
+        String[] strTmp2 = new String[4];
         for(int i=0; i<4; i++) {
-            strTmp[i] = "Unavairable";
+            strTmp[i] = "Unavailable";
+            strTmp2[i] = "Unavailable";
         }
         mLogger.SensorSpec(strTmp);
+        mLogger.SensorAvairable(strTmp2);
         mManager.unregisterListener(listener);
     }
 
