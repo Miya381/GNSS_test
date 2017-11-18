@@ -104,35 +104,39 @@ public class SensorContainer {
 
         Sensor sensor;
         String[] strTmp = new String[4];
-        //String strTmp="";
         sensor = mManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (sensor == null) {
-            strTmp[0] = "利用不可";
+            strTmp[0] = "Unavailable";
         }else {
-            strTmp[0] = sensor.getName();
+            strTmp[0] = "[OK] " + sensor.getName();
         }
         sensor = mManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         if (sensor == null) {
-            strTmp[1] = "利用不可";
+            strTmp[1] = "Unavailable";
         }else {
-            strTmp[1] = sensor.getName();
+            strTmp[1] = "[OK] " + sensor.getName();
         }
         sensor = mManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         if (sensor == null) {
-            strTmp[2] = "利用不可";
+            strTmp[2] = "Unavailable";
         }else {
-            strTmp[2] = sensor.getName();
+            strTmp[2] = "[OK] " + sensor.getName();
         }
         sensor = mManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
         if (sensor == null) {
-            strTmp[3] = "利用不可";
+            strTmp[3] = "Unavailable";
         }else {
-            strTmp[3] = sensor.getName();
+            strTmp[3] = "[OK] " + sensor.getName();
         }
         mLogger.SensorSpec(strTmp);
     }
 
     public void unregisterSensor(){
+        String[] strTmp = new String[4];
+        for(int i=0; i<4; i++) {
+            strTmp[i] = "Unavairable";
+        }
+        mLogger.SensorSpec(strTmp);
         mManager.unregisterListener(listener);
     }
 
@@ -325,7 +329,7 @@ public class SensorContainer {
                 if(SettingsFragment.ResearchMode) {
                     mLogger.onSensorListener(String.format("Pitch = %f , Roll = %f , Azimuth = %f \n Altitude = %f \n WalkCounter = %d \n AccAzi = %d", Math.toDegrees(mPitchX), Math.toDegrees(mRollY), Math.toDegrees(mAzimuthZ) + 180, LastAltitude - Altitude, counter, AccAzi), Math.toDegrees(mAzimuthZ) + 180, currentAccelerationZValues, LastAltitude - Altitude);
                 }else{
-                    mLogger.onSensorListener(String.format("Pitchh = %2.1f\nRoll = %2.1f\nAzimuth = %3.1f\nAltitude = %3.1f", mPitchX, mRollY, mAzimuthZ, Altitude), mAzimuthZ, currentAccelerationZValues, LastAltitude - Altitude);
+                    mLogger.onSensorListener(String.format("Pitch = %5.1f, Roll = %5.1f, Azimuth = %5.1f\nAltitude = %6.1f", mPitchX, mRollY, mAzimuthZ, Altitude), mAzimuthZ, currentAccelerationZValues, LastAltitude - Altitude);
                     //mLogger.onSensorListener(String.format("MagX = %f \n MagY = %f \n MagZ = %f",mMagneticValues[0],mMagneticValues[1],mMagneticValues[2]),mAzimuthZ,currentAccelerationZValues,LastAltitude - Altitude);
                 }
                 //mFileLogger.onSensorListener("",mAzimuthZ,currentAccelerationZValues);//aaaaa

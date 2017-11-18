@@ -58,6 +58,8 @@ public class SettingsFragment extends Fragment {
     private UiLogger mUiLogger;
     private GnssContainer mGnssContainer;
     private TextView EditSaveLocation;
+    private TextView mRawDataIsOk;
+    private TextView mLocationIsOk;
     private TextView FTPDirectory;
     public static boolean FIRST_CHECK = false;
     public static String FTP_SERVER_DIRECTORY = "";
@@ -91,6 +93,8 @@ public class SettingsFragment extends Fragment {
         mGyroSpecView = (TextView) view.findViewById(R.id.gyroSpecView);
         mMagSpecView = (TextView) view.findViewById(R.id.magSpecView);
         mPressSpecView = (TextView) view.findViewById(R.id.pressSpecView);
+        mRawDataIsOk = (TextView) view.findViewById(R.id.rawDataIsOk);
+        mLocationIsOk = (TextView) view.findViewById(R.id.locationIsOk);
 
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
         final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
@@ -309,7 +313,7 @@ public class SettingsFragment extends Fragment {
                     .setPositiveButton("OK", null)
                     .show();
             //MainActivity.getInstance().finishAndRemoveTask();
-
+            mRawDataIsOk.setText("Unavairable");
         }
         if(status == STATUS_LOCATION_DISABLED){
             new AlertDialog.Builder(getContext())
@@ -317,6 +321,7 @@ public class SettingsFragment extends Fragment {
                     .setMessage("Location is disabled. \nplease turn on your GPS Setting")
                     .setPositiveButton("OK", null)
                     .show();
+            mLocationIsOk.setText("Unavairable");
         }
         if(status == STATUS_READY){
             //Log.d("GNSSStatus","GNSSMeasurements Status Ready");
