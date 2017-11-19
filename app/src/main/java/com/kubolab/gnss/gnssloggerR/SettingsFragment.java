@@ -327,29 +327,35 @@ private TextView mAccSpecView;
             currentGnssContainer.setUISettingComponent(mUiSettingComponent);
         }
         if(FIRST_CHECK == false) {
-            CheckGNSSMeasurementsReady(GNSSMeasurementReadyMode);
+            CheckGNSSMeasurementsReady(GNSSMeasurementReadyMode, FIRST_CHECK);
             FIRST_CHECK = true;
+        }else{
+            CheckGNSSMeasurementsReady(GNSSMeasurementReadyMode, FIRST_CHECK);
         }
 
         return view;
     }
 
-    private void CheckGNSSMeasurementsReady(int status){
+    private void CheckGNSSMeasurementsReady(int status, boolean FIRST_CHECK){
         if(status == STATUS_NOT_SUPPORTED){
-            new AlertDialog.Builder(getContext())
-                    .setTitle("DEVICE NOT SUPPORTED")
-                    .setMessage("This device is not suppored please check supported device list\nhttps://developer.android.com/guide/topics/sensors/gnss.html")
-                    .setPositiveButton("OK", null)
-                    .show();
+            if(FIRST_CHECK == false) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("DEVICE NOT SUPPORTED")
+                        .setMessage("This device is not suppored please check supported device list\nhttps://developer.android.com/guide/topics/sensors/gnss.html")
+                        .setPositiveButton("OK", null)
+                        .show();
+            }
             //MainActivity.getInstance().finishAndRemoveTask();
             mRawDataIsOk.setText("Unavailable");
         }
         if(status == STATUS_LOCATION_DISABLED){
-            new AlertDialog.Builder(getContext())
-                    .setTitle("LOCATION DISABLED")
-                    .setMessage("Location is disabled. \nplease turn on your GPS Setting")
-                    .setPositiveButton("OK", null)
-                    .show();
+            if(FIRST_CHECK == false) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("LOCATION DISABLED")
+                        .setMessage("Location is disabled. \nplease turn on your GPS Setting")
+                        .setPositiveButton("OK", null)
+                        .show();
+            }
             mLocationIsOk.setText("Unavailable");
         }
         if(status == STATUS_READY){
