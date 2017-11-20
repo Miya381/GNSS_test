@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">GnssLogger+</string>
+    <string name="app_name">G-RitZ Logger</string>
     <string name="app_version">v1.4.0.0R1</string>
 
     <string name="title_settings">Settings</string>
