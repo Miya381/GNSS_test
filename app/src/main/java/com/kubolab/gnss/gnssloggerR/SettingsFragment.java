@@ -382,7 +382,7 @@ private TextView mAccSpecView;
                     new Runnable() {
                         @Override
                         public void run() {
-                        FTPDirectory.setText(DirectoryName);
+                        //FTPDirectory.setText(DirectoryName);
                         }
                     });
         }

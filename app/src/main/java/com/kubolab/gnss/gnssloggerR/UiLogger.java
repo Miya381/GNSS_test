@@ -106,7 +106,7 @@ public class UiLogger implements GnssListener {
 
         location.getTime();
         LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
-        component.LocationTextFragment(String.format("PROVIDER:%s\nLON:%f\nLAT:%f\nALT:%f",location.getProvider(),location.getLongitude(),location.getLatitude(),location.getAltitude()),0);
+        component.LocationTextFragment("Google(" + location.getProvider() + ")",String.format("%f",location.getLatitude()),String.format("%f",location.getLongitude()),String.format("%f",location.getAltitude()),0);
 
         //logLocationEvent("onLocationChanged: " + location);
     }
@@ -360,7 +360,7 @@ public class UiLogger implements GnssListener {
             String DeviceName = Build.DEVICE;
             FileLogger.GPSWStoGPST gpswStoGPST = new FileLogger.GPSWStoGPST();
             FileLogger.ReturnValue value = gpswStoGPST.method(weekNumber,tRxSeconds);
-            ClockStr = String.format("DEVICE NAME: %s\nGPST = %d / %d / %d / %d : %d : %f \n", Build.DEVICE,value.Y,value.M,value.D,value.h,value.m,value.s);
+            ClockStr = String.format("%d / %d / %d / %d : %d : %f",value.Y,value.M,value.D,value.h,value.m,value.s);
             SettingsFragment.UIFragmentSettingComponent component = getUISettingComponent();
             component.SettingTextFragment(String.format("%d_%d_%d_%d_%d",value.Y,value.M,value.D,value.h,value.m));
             Calendar Start = Calendar.getInstance();

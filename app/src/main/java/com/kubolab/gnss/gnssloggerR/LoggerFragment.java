@@ -21,7 +21,11 @@ public class LoggerFragment extends Fragment {
 
     private TextView mLogView;
     private TextView mGNSSClockView;
-    private TextView mSensorLogView;
+    private TextView mLocationProvider;
+    private TextView mLocationLatitude;
+    private TextView mLocationLongitude;
+    private TextView mLocationAltitude;
+
     private ScrollView mScrollView;
     private FileLogger mFileLogger;
     private UiLogger mUiLogger;
@@ -58,7 +62,10 @@ public class LoggerFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View newView = inflater.inflate(R.layout.fragment_log, container, false /* attachToRoot */);
         //mLogView = (TextView) newView.findViewById(R.id.lo);
-        mSensorLogView = (TextView) newView.findViewById(R.id.sensor_log_view);
+        mLocationProvider = (TextView) newView.findViewById(R.id.location_prov);
+        mLocationLatitude = (TextView) newView.findViewById(R.id.location_lat);
+        mLocationLongitude = (TextView) newView.findViewById(R.id.location_lon);
+        mLocationAltitude = (TextView) newView.findViewById(R.id.location_alt);
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);
         mTable = (ViewGroup) newView.findViewById(R.id.TableLayout);
         //表の初期化
@@ -184,9 +191,7 @@ public class LoggerFragment extends Fragment {
                     });
         }
 
-        public synchronized void GNSSClockLog(final String String) {
-            final SpannableStringBuilder builder = new SpannableStringBuilder();
-            builder.append(String).append("\n");
+        public synchronized void GNSSClockLog(final String ClockData) {
 
             Activity activity = getActivity();
             if (activity == null) {
@@ -196,11 +201,7 @@ public class LoggerFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            mGNSSClockView.setText(builder);
-                            if(SettingsFragment.GNSSClockSync == false) {
-                                builder.append("GNSS Clock Syncronizing... Please Standby");
-                                builder.append("\n");
-                            }
+                            mGNSSClockView.setText(ClockData);
                             /*Editable editable = mLogView.getEditableText();
                             int length = editable.length();
                             if (length > MAX_LENGTH) {
@@ -210,7 +211,7 @@ public class LoggerFragment extends Fragment {
                     });
         }
 
-        public synchronized void LocationTextFragment(final String text, int color) {
+        public synchronized void LocationTextFragment(final String provider, final String latitude, final String longitude,final String altitude,int color) {
             Activity activity = getActivity();
             if (activity == null) {
                 return;
@@ -219,7 +220,10 @@ public class LoggerFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            mSensorLogView.setText("Location provided by google\n" + text);
+                            mLocationProvider.setText(provider);
+                            mLocationLatitude.setText(latitude);
+                            mLocationLongitude.setText(longitude);
+                            mLocationAltitude.setText(altitude);
                         }
                     });
         }

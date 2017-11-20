@@ -30,7 +30,7 @@ public class FTPCliant {
         myProgressDialog.show();
     }
 
-    // 非同期処理
+    // 非同期処理 n
     protected String doInBackground(String... params) {
         String remoteserver = "198.118.242.40";                 //FTPサーバーアドレス
         int remoteport = 46127;    //FTPサーバーポート
