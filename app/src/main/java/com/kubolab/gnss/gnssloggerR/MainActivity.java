@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         // The viewpager that will host the section contents.
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-            viewPager.setOffscreenPageLimit(2);
+            viewPager.setOffscreenPageLimit(3);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
             viewPager.setAdapter(adapter);
         tabLayout.setTabsFromPagerAdapter(adapter);

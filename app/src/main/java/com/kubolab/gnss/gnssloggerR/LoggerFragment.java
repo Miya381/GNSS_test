@@ -87,11 +87,9 @@ public class LoggerFragment extends Fragment {
         }
 
         startLog = (Button) newView.findViewById(R.id.start_logs);
-        sendFile = (Button) newView.findViewById(R.id.send_file);
 
         startLog.setText("ClockSync...");
         startLog.setEnabled(false);
-        sendFile.setEnabled(false);
 
         mGNSSClockView = (TextView) newView.findViewById(R.id.GNSSClockView);
 
@@ -101,23 +99,22 @@ public class LoggerFragment extends Fragment {
                 new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        startLog.setEnabled(false);
-                        sendFile.setEnabled(true);
-                        Toast.makeText(getContext(), "Starting log...", Toast.LENGTH_LONG).show();
-                        mFileLogger.startNewLog();
-                        FileLogging = true;
-                    }
-                });
-
-        sendFile.setOnClickListener(
-                new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startLog.setEnabled(true);
-                        sendFile.setEnabled(false);
-                        Toast.makeText(getContext(), "Sending file...", Toast.LENGTH_LONG).show();
-                        mFileLogger.send();
-                        FileLogging = false;
+                        if(SettingsFragment.EnableLogging == false) {
+                            //startLog.setEnabled(false);
+                            //sendFile.setEnabled(true);
+                            Toast.makeText(getContext(), "Starting log...", Toast.LENGTH_LONG).show();
+                            mFileLogger.startNewLog();
+                            FileLogging = true;
+                            SettingsFragment.EnableLogging = true;
+                            startLog.setText("End Log");
+                        }else {
+                            //startLog.setEnabled(true);
+                            //sendFile.setEnabled(false);
+                            Toast.makeText(getContext(), "Sending file...", Toast.LENGTH_LONG).show();
+                            mFileLogger.send();
+                            FileLogging = false;
+                            startLog.setText("Start Log");
+                        }
                     }
                 });
         return newView;
@@ -143,7 +140,7 @@ public class LoggerFragment extends Fragment {
                             if(FileLogging == false) {
                                 if (SettingsFragment.GNSSClockSync == true) {
                                     startLog.setEnabled(true);
-                                    startLog.setText("START LOG");
+                                    startLog.setText("Start Log");
                                 } else {
                                     startLog.setEnabled(false);
                                     startLog.setText("ClockSync...");

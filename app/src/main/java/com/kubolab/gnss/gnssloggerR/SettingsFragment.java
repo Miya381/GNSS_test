@@ -70,6 +70,8 @@ private TextView mAccSpecView;
     public static boolean FIRST_CHECK = false;
     public static String FTP_SERVER_DIRECTORY = "";
 
+    public static boolean EnableLogging = false;
+
 
     public void setGpsContainer(GnssContainer value) {
         mGpsContainer = value;
