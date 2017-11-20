@@ -170,10 +170,9 @@
                     android:id="@+id/checkBoxPseudorange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:checked="true"
                     app:layout_constraintBottom_toBottomOf="@+id/textView35"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
                     app:layout_constraintTop_toTopOf="@+id/textView35" />
 
                 <TextView
@@ -213,10 +212,9 @@
                     android:id="@+id/checkBox"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_marginEnd="16dp"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView37"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
                     app:layout_constraintTop_toTopOf="@+id/textView37"
                     app:layout_constraintVertical_bias="1.0" />
 
@@ -353,12 +351,12 @@
                     android:id="@+id/register_sensor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView41"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
                     app:layout_constraintTop_toTopOf="@+id/textView41" />
 
                 <TextView
@@ -670,10 +668,9 @@
                     android:id="@+id/outputKML"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:checked="true"
+                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
                     app:layout_constraintBottom_toBottomOf="@+id/textView56"
-                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView56" />
 
                 <TextView
@@ -714,9 +711,8 @@
                     android:id="@+id/outputNmea"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView58"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
                     app:layout_constraintTop_toTopOf="@+id/textView58" />
 
                 <TextView
@@ -757,10 +753,9 @@
                     android:id="@+id/outputSensor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:checked="false"
                     app:layout_constraintBottom_toBottomOf="@+id/textView62"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
                     app:layout_constraintTop_toTopOf="@+id/textView62" />
 
                 <TextView
@@ -803,10 +798,10 @@
                     android:id="@+id/ResearchMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     app:layout_constraintBottom_toBottomOf="@+id/textView65"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
                     app:layout_constraintTop_toTopOf="@+id/textView65" />
 
                 <TextView
@@ -857,11 +852,9 @@
                     android:id="@+id/outputRINEX"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:checked="true"
                     app:layout_constraintBottom_toBottomOf="@+id/textView54"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
                     app:layout_constraintTop_toTopOf="@+id/textView54" />
 
 
