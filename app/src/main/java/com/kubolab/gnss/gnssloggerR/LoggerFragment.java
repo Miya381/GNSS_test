@@ -44,9 +44,14 @@ public class LoggerFragment extends Fragment {
             {R.id.textView13_1,R.id.textView13_2,R.id.textView13_3,R.id.textView13_4},{R.id.textView14_1,R.id.textView14_2,R.id.textView14_3,R.id.textView14_4},
             {R.id.textView15_1,R.id.textView15_2,R.id.textView15_3,R.id.textView15_4},{R.id.textView16_1,R.id.textView16_2,R.id.textView16_3,R.id.textView16_4},
             {R.id.textView17_1,R.id.textView17_2,R.id.textView17_3,R.id.textView17_4},{R.id.textView18_1,R.id.textView18_2,R.id.textView18_3,R.id.textView18_4},
-            {R.id.textView19_1,R.id.textView19_2,R.id.textView19_3,R.id.textView19_4}};
+            {R.id.textView19_1,R.id.textView19_2,R.id.textView19_3,R.id.textView19_4},{R.id.textView20_1,R.id.textView20_2,R.id.textView20_3,R.id.textView20_4},
+            {R.id.textView21_1,R.id.textView21_2,R.id.textView21_3,R.id.textView21_4},{R.id.textView22_1,R.id.textView22_2,R.id.textView22_3,R.id.textView22_4},
+            {R.id.textView23_1,R.id.textView23_2,R.id.textView23_3,R.id.textView23_4},{R.id.textView24_1,R.id.textView24_2,R.id.textView24_3,R.id.textView24_4},
+            {R.id.textView25_1,R.id.textView25_2,R.id.textView25_3,R.id.textView25_4},{R.id.textView25_1,R.id.textView26_2,R.id.textView26_3,R.id.textView26_4},
+            {R.id.textView27_1,R.id.textView27_2,R.id.textView27_3,R.id.textView27_4},{R.id.textView28_1,R.id.textView28_2,R.id.textView28_3,R.id.textView28_4},
+            {R.id.textView29_1,R.id.textView29_2,R.id.textView29_3,R.id.textView29_4}};
 
-    TextView mTextView[][] = new TextView[12][4];
+    TextView mTextView[][] = new TextView[29][4];
     private final UIFragmentComponent mUiComponent = new UIFragmentComponent();
 
     public void setUILogger(UiLogger value) {
@@ -69,7 +74,7 @@ public class LoggerFragment extends Fragment {
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);
         mTable = (ViewGroup) newView.findViewById(R.id.TableLayout);
         //表の初期化
-        for(int i = 0;i < 12;i++){
+        for(int i = 0;i < 29;i++){
             for(int j = 0;j < 4;j++){
                 Log.d("Array", i + "," + j);
                 mTextView[i][j]=(TextView) newView.findViewById(Rid[i][j]);
@@ -146,7 +151,7 @@ public class LoggerFragment extends Fragment {
                                     startLog.setText("ClockSync...");
                                 }
                             }
-                            for(int i = 0;i < 12;i++){
+                            for(int i = 0;i < 29;i++){
                                 for(int j = 0;j < 4;j++){
                                     if(j == 2){
                                         if(array[i][j] == "0") {

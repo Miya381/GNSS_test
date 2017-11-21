@@ -70,6 +70,9 @@ private TextView mAccSpecView;
     public static boolean FIRST_CHECK = false;
     public static String FTP_SERVER_DIRECTORY = "";
 
+    public static boolean PermissionOK = false;
+    public static boolean registerGNSS = false;
+
     public static boolean EnableLogging = false;
 
 
