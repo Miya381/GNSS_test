@@ -65,13 +65,13 @@
                         android:id="@+id/textView5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pseudorange" />
+                        android:text="Pseudorange (CA)" />
 
                     <TextView
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="CarrierPhase" />
+                        android:text="CarrierPhase (L1)" />
 
                     <TextView
                         android:id="@+id/textView7"
@@ -1048,15 +1048,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView10"
         app:layout_constraintVertical_bias="1.0" />
-
-    <View
-        android:id="@+id/view15"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/textView19"

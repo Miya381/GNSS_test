@@ -133,6 +133,10 @@ private TextView mAccSpecView;
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
         final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
         final CheckBox useGLO = (CheckBox) view.findViewById(R.id.useGLO);
+        final CheckBox useGAL = (CheckBox) view.findViewById(R.id.useGAL);
+        final CheckBox useBDS = (CheckBox) view.findViewById(R.id.useBDS);
+        useGAL.setEnabled(false);
+        useBDS.setEnabled(false);
         CarrierPhaseChkBox.setChecked(false);
         CarrierPhaseChkBox.setOnClickListener(new View.OnClickListener(){
             @Override

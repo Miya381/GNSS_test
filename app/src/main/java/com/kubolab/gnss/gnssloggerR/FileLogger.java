@@ -275,7 +275,7 @@ public class FileLogger implements GnssListener {
                 currentFileWriter.newLine();
                 //MARKER NUMBER
                 //OBSERVER AGENCY
-                String OBSERVER = String.format("%-20s","GNSSLogger+R");
+                String OBSERVER = String.format("%-20s","GRitzLogger");
                 String AGENCY = String.format("%-40s","KUBOLAB");
                 currentFileWriter.write(OBSERVER + AGENCY +  "OBSERVER / AGENCY");
                 currentFileWriter.newLine();
@@ -683,7 +683,7 @@ public class FileLogger implements GnssListener {
                 /*急場の変更！！*/
                 double prm = prSeconds * 2.99792458e8;
                 //コード擬似距離の計算
-                if(iRollover == false && prm > 0 && prSeconds < 1) {
+                if(iRollover == false && prm > 0 && prSeconds < 0.5) {
                     if (firstOBS == true) {
                         String OBSTime = String.format(" %2d %2d %2d %2d %2d%11.7f  0", value.Y - 2000, value.M, value.D, value.h, value.m, value.s);
                         SensorStream =

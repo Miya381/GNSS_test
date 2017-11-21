@@ -140,8 +140,8 @@
                     android:id="@+id/textView34"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="BDS can be logged only in ver.3.03"
+                    android:layout_marginLeft="16dp"
+                    android:text="BDS can be logged only in ver.3.03\nThis version can logged only in ver2.11"
                     android:textSize="12sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView31" />
@@ -316,8 +316,8 @@
                     android:id="@+id/textView18"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Satellite systems to be logged"
+                    android:layout_marginLeft="16dp"
+                    android:text="Satellite systems to be logged\nThis version can log only GPS to RINEX"
                     android:textSize="12sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView39" />
