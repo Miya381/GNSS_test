@@ -801,7 +801,7 @@ public class FileLogger implements GnssListener {
                                 L1C = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, " ", " ");
                             }
                         }
-                        String D1C = String.format("%14.3f%s%s", measurement.getPseudorangeRateMetersPerSecond() / GPS_L1_WAVELENGTH, " ", " ");
+                        String D1C = String.format("%14.3f%s%s", -measurement.getPseudorangeRateMetersPerSecond() / GPS_L1_WAVELENGTH, " ", " ");
                         String S1C = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
                         //Fix用チェック
                         if (SettingsFragment.CarrierPhase) {
