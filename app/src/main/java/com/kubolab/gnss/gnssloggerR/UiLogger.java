@@ -164,15 +164,19 @@ public class UiLogger implements GnssListener {
         int maxSat = gnssStatus.getSatelliteCount();
         for(int i = 0;i < maxSat;i++){
             if(gnssStatus.getConstellationType(i) == GnssStatus.CONSTELLATION_GPS) {
-                SVID[i] ="G" + String.valueOf(gnssStatus.getSvid(i));
+                SVID[i] ="G" + String.format("%02d",gnssStatus.getSvid(i));
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i);
                 pos[i][1] = gnssStatus.getElevationDegrees(i);
             }else if(gnssStatus.getConstellationType(i) == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ){
-                SVID[i] ="J" + String.valueOf(gnssStatus.getSvid(i));
+                SVID[i] ="J" + String.format("%02d",gnssStatus.getSvid(i) - 192);
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i);
                 pos[i][1] = gnssStatus.getElevationDegrees(i);
             }else if(gnssStatus.getConstellationType(i) == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL){
-                SVID[i] ="R" + String.valueOf(gnssStatus.getSvid(i));
+                SVID[i] ="R" + String.format("%02d",gnssStatus.getSvid(i));
+                pos[i][0] = gnssStatus.getAzimuthDegrees(i);
+                pos[i][1] = gnssStatus.getElevationDegrees(i);
+            }else if(gnssStatus.getConstellationType(i) == GnssStatus.CONSTELLATION_GALILEO && SettingsFragment.useGA){
+                SVID[i] ="E" + String.format("%02d",gnssStatus.getSvid(i));
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i);
                 pos[i][1] = gnssStatus.getElevationDegrees(i);
             }
@@ -426,6 +430,22 @@ public class UiLogger implements GnssListener {
             }
             double tRxSeconds = tRxNanos*1e-9;
             double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
+            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
+                Double rd = new Double(tRxSeconds);
+                Integer ri = new Integer(rd.intValue());
+                Double rd2 = new Double(ri.doubleValue());
+                tRxSeconds = tRxSeconds - rd2.doubleValue();
+                Double td = new Double(tTxSeconds);
+                Integer ti = new Integer(td.intValue());
+                Double td2 = new Double(ti.doubleValue());
+                tTxSeconds = tTxSeconds - td2.doubleValue();
+                if((tRxSeconds - tTxSeconds) < 0 ){
+                    tRxSeconds = tRxSeconds + 1;
+                }
+                //double GLONASSTINT = tTxSeconds.
+                //tTxSeconds = tTxSeconds + 16;
+            }
+            Log.d("PRN",String.format("%s%2d",getConstellationName(measurement.getConstellationType()),measurement.getSvid()));
             Log.d("tRxSeconds",String.valueOf(tRxSeconds));
             Log.d("tTxSeconds",String.valueOf(tTxSeconds));
             /*急場の変更！！*/
@@ -456,11 +476,11 @@ public class UiLogger implements GnssListener {
             double prm = prSeconds * 2.99792458e8;
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
                 //Log.d("QZSS","QZSS Detected");
-                array[arrayRow][0] = "J" + String.valueOf(measurement.getSvid());
+                array[arrayRow][0] = "J" + String.format("%02d",measurement.getSvid() - 192);
             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                array[arrayRow][0] = "R" + String.valueOf(measurement.getSvid());
+                array[arrayRow][0] = "R" + String.format("%02d",measurement.getSvid());
             }else {
-                array[arrayRow][0] = "G" + String.valueOf(measurement.getSvid());
+                array[arrayRow][0] = "G" + String.format("%02d",measurement.getSvid());
             }
             //Log.d("STATE",String.valueOf(measurement.getState());
             if(iRollover){

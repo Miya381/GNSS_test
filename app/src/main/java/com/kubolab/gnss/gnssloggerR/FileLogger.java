@@ -256,73 +256,133 @@ public class FileLogger implements GnssListener {
 
             // initialize the contents of the file
             try {
-                //RINEX Version Type
-                currentFileWriter.write("     2.11           OBSERVATION DATA    G (GPS)             RINEX VERSION / TYPE");
-                currentFileWriter.newLine();
-                //PGM RUNBY DATE
-                String PGM = String.format("%-20s","AndroidGNSSReceiver");
-                String RUNBY = String.format("%-20s","RITSUMEIKAN KUBOLAB");
-                String DATE = String.format("%-20s", now.getTime());
-                currentFileWriter.write(PGM + RUNBY + DATE +  "PGM / RUN BY / DATE");
-                currentFileWriter.newLine();
-                //COMMENT
-                //String COMMENT = String.format("%-60s","Android Ver7.0 Nougat");
-                //currentFileWriter.write( COMMENT +  "COMMENT");
-                //currentFileWriter.newLine();
-                //MARKER NAME
-                String MARKERNAME = String.format("%-60s",Build.DEVICE);
-                currentFileWriter.write(MARKERNAME +  "MARKER NAME");
-                currentFileWriter.newLine();
-                //MARKER NUMBER
-                //OBSERVER AGENCY
-                String OBSERVER = String.format("%-20s","GRitzLogger");
-                String AGENCY = String.format("%-40s","KUBOLAB");
-                currentFileWriter.write(OBSERVER + AGENCY +  "OBSERVER / AGENCY");
-                currentFileWriter.newLine();
-                //REC TYPE VERS
-                String REC = String.format("%-20s","0");
-                String TYPE = String.format("%-20s","Android Receiver");
-                String VERS = String.format("%-20s", Build.VERSION.BASE_OS);
-                currentFileWriter.write(REC + TYPE + VERS + "REC # / TYPE / VERS");
-                currentFileWriter.newLine();
-                //ANT TYPE
-                String ANT = String.format("%-20s","0");
-                String ANTTYPE = String.format("%-40s","Android Anttena");
-                currentFileWriter.write(ANT + ANTTYPE + "ANT # / TYPE");
-                currentFileWriter.newLine();
-                //APPROX POSITION XYZ
-                String X = String.format("%14.4f",0.0);
-                String Y = String.format("%14.4f",0.0);
-                String Z = String.format("%14.4f",0.0);
-                currentFileWriter.write(X + Y + Z + "                  " + "APPROX POSITION XYZ");
-                currentFileWriter.newLine();
-                //ANTENNA: DELTA H/E/N
-                String H = String.format("%14.4f",0.0);
-                String E = String.format("%14.4f",0.0);
-                String N = String.format("%14.4f",0.0);
-                currentFileWriter.write(H + E + N + "                  " + "ANTENNA: DELTA H/E/N");
-                currentFileWriter.newLine();
-                //WAVELENGTH FACT L1/2
-                String WAVELENGTH = String.format("%-6d%-54d",1,0);
-                currentFileWriter.write(WAVELENGTH + "WAVELENGTH FACT L1/2");
-                currentFileWriter.newLine();
-                //# / TYPES OF OBSERV
-                if(SettingsFragment.CarrierPhase) {
-                    String NUMBEROFOBS = String.format("%-6d", 3);
-                    String OBSERV = String.format("%-54s", "    L1    C1    S1");
-                    currentFileWriter.write(NUMBEROFOBS + OBSERV + "# / TYPES OF OBSERV");
+                //RINEX ver3.03
+                if(SettingsFragment.RINEX303){
+                    //RINEX Version Type
+                    currentFileWriter.write(String.format("     %3.2f           OBSERVATION DATA    M                   RINEX VERSION / TYPE",3.03));
                     currentFileWriter.newLine();
-                }else {
-                    String NUMBEROFOBS = String.format("%-6d", 2);
-                    String OBSERV = String.format("%-54s", "    C1    S1");
-                    currentFileWriter.write(NUMBEROFOBS + OBSERV + "# / TYPES OF OBSERV");
+                    currentFileWriter.write("G = GPS  R = GLONASS  E = GALILEO  J = QZSS  C = BDS        COMMENT             ");
+                    currentFileWriter.newLine();
+                    currentFileWriter.write("S = SBAS payload  M = Mixed                                 COMMENT             ");
+                    currentFileWriter.newLine();
+                    String PGM = String.format("%-20s", "AndroidGNSSReceiver");
+                    String RUNBY = String.format("%-20s", "RITSUMEIKAN KUBOLAB");
+                    String DATE = String.format("%-20s", now.getTime());
+                    currentFileWriter.write(PGM + RUNBY + DATE + "UTC PGM / RUN BY / DATE");
+                    currentFileWriter.newLine();
+                    currentFileWriter.write("                                                            MARKER NAME         ");
+                    currentFileWriter.newLine();
+                    currentFileWriter.write("                                                            MARKER NUMBER       ");
+                    currentFileWriter.newLine();
+                    currentFileWriter.write("                                                            OBSERVER / AGENCY   ");
+                    currentFileWriter.newLine();
+                    currentFileWriter.write("                                                            REC # / TYPE / VERS ");
+                    currentFileWriter.newLine();
+                    currentFileWriter.write("                                                            ANT # / TYPE        ");
+                    currentFileWriter.newLine();
+                    String X = String.format("%14.4f", 0.0);
+                    String Y = String.format("%14.4f", 0.0);
+                    String Z = String.format("%14.4f", 0.0);
+                    currentFileWriter.write(X + Y + Z + "                  " + "APPROX POSITION XYZ");
+                    currentFileWriter.newLine();
+                    currentFileWriter.write("        0.0000        0.0000        0.0000                  ANTENNA: DELTA H/E/N");
+                    currentFileWriter.newLine();
+                    currentFileWriter.write("     0                                                      RCV CLOCK OFFS APPL ");
+                    currentFileWriter.newLine();
+                    if(SettingsFragment.CarrierPhase){
+                        currentFileWriter.write("G    4 L1C C1C D1C S1C                                      SYS / # / OBS TYPES ");
+                        currentFileWriter.newLine();
+                    }else {
+                        currentFileWriter.write("G    3 C1C D1C S1C                                          SYS / # / OBS TYPES ");
+                        currentFileWriter.newLine();
+                    }
+                    if(SettingsFragment.useGL){
+                        if(SettingsFragment.CarrierPhase){
+                            currentFileWriter.write("R    4 L1C C1C D1C S1C                                      SYS / # / OBS TYPES ");
+                            currentFileWriter.newLine();
+                        }else {
+                            currentFileWriter.write("R    3 C1C D1C S1C                                          SYS / # / OBS TYPES ");
+                            currentFileWriter.newLine();
+                        }
+                    }
+                    if(SettingsFragment.useQZ){
+                        if(SettingsFragment.CarrierPhase){
+                            currentFileWriter.write("J    4 L1C C1C D1C S1C                                      SYS / # / OBS TYPES ");
+                            currentFileWriter.newLine();
+                        }else {
+                            currentFileWriter.write("J    3 C1C D1C S1C                                          SYS / # / OBS TYPES ");
+                            currentFileWriter.newLine();
+                        }
+                    }
+                }//RINEX ver2.11
+                else {
+                    //RINEX Version Type
+                    currentFileWriter.write("     2.11           OBSERVATION DATA    G (GPS)             RINEX VERSION / TYPE");
+                    currentFileWriter.newLine();
+                    //PGM RUNBY DATE
+                    String PGM = String.format("%-20s", "AndroidGNSSReceiver");
+                    String RUNBY = String.format("%-20s", "RITSUMEIKAN KUBOLAB");
+                    String DATE = String.format("%-20s", now.getTime());
+                    currentFileWriter.write(PGM + RUNBY + DATE + "PGM / RUN BY / DATE");
+                    currentFileWriter.newLine();
+                    //COMMENT
+                    //String COMMENT = String.format("%-60s","Android Ver7.0 Nougat");
+                    //currentFileWriter.write( COMMENT +  "COMMENT");
+                    //currentFileWriter.newLine();
+                    //MARKER NAME
+                    String MARKERNAME = String.format("%-60s", Build.DEVICE);
+                    currentFileWriter.write(MARKERNAME + "MARKER NAME");
+                    currentFileWriter.newLine();
+                    //MARKER NUMBER
+                    //OBSERVER AGENCY
+                    String OBSERVER = String.format("%-20s", "GRitzLogger");
+                    String AGENCY = String.format("%-40s", "KUBOLAB");
+                    currentFileWriter.write(OBSERVER + AGENCY + "OBSERVER / AGENCY");
+                    currentFileWriter.newLine();
+                    //REC TYPE VERS
+                    String REC = String.format("%-20s", "0");
+                    String TYPE = String.format("%-20s", "Android Receiver");
+                    String VERS = String.format("%-20s", Build.VERSION.BASE_OS);
+                    currentFileWriter.write(REC + TYPE + VERS + "REC # / TYPE / VERS");
+                    currentFileWriter.newLine();
+                    //ANT TYPE
+                    String ANT = String.format("%-20s", "0");
+                    String ANTTYPE = String.format("%-40s", "Android Anttena");
+                    currentFileWriter.write(ANT + ANTTYPE + "ANT # / TYPE");
+                    currentFileWriter.newLine();
+                    //APPROX POSITION XYZ
+                    String X = String.format("%14.4f", 0.0);
+                    String Y = String.format("%14.4f", 0.0);
+                    String Z = String.format("%14.4f", 0.0);
+                    currentFileWriter.write(X + Y + Z + "                  " + "APPROX POSITION XYZ");
+                    currentFileWriter.newLine();
+                    //ANTENNA: DELTA H/E/N
+                    String H = String.format("%14.4f", 0.0);
+                    String E = String.format("%14.4f", 0.0);
+                    String N = String.format("%14.4f", 0.0);
+                    currentFileWriter.write(H + E + N + "                  " + "ANTENNA: DELTA H/E/N");
+                    currentFileWriter.newLine();
+                    //WAVELENGTH FACT L1/2
+                    String WAVELENGTH = String.format("%-6d%-54d", 1, 0);
+                    currentFileWriter.write(WAVELENGTH + "WAVELENGTH FACT L1/2");
+                    currentFileWriter.newLine();
+                    //# / TYPES OF OBSERV
+                    if (SettingsFragment.CarrierPhase) {
+                        String NUMBEROFOBS = String.format("%-6d", 3);
+                        String OBSERV = String.format("%-54s", "    L1    C1    S1");
+                        currentFileWriter.write(NUMBEROFOBS + OBSERV + "# / TYPES OF OBSERV");
+                        currentFileWriter.newLine();
+                    } else {
+                        String NUMBEROFOBS = String.format("%-6d", 2);
+                        String OBSERV = String.format("%-54s", "    C1    S1");
+                        currentFileWriter.write(NUMBEROFOBS + OBSERV + "# / TYPES OF OBSERV");
+                        currentFileWriter.newLine();
+                    }
+                    //INTERVAL
+                    String INTERVAL = String.format("%-60.3f", 1.0);
+                    currentFileWriter.write(INTERVAL + "INTERVAL");
                     currentFileWriter.newLine();
                 }
-                //INTERVAL
-                String INTERVAL = String.format("%-60.3f",1.0);
-                currentFileWriter.write(INTERVAL + "INTERVAL");
-
-                currentFileWriter.newLine();
                 firsttime = true;
             } catch (IOException e) {
                 Toast.makeText(mContext, "Count not initialize observation file", Toast.LENGTH_SHORT).show();
@@ -521,11 +581,24 @@ public class FileLogger implements GnssListener {
                         }
                         GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
                         ReturnValue value = gpswStoGPST.method(weekNumber , tRxSeconds);
-                        String StartTimeOBS = String.format("%6d%6d%6d%6d%6d%13.7f     %3s         TIME OF FIRST OBS\n",value.Y,value.M,value.D,value.h,value.m,value.s,"GPS");
-                        //END OF HEADER
-                        String ENDOFHEADER = String.format("%73s","END OF HEADER");
-                        mFileWriter.write(StartTimeOBS + ENDOFHEADER);
-                        mFileWriter.newLine();
+                        if(SettingsFragment.RINEX303){
+                            mFileWriter.write(String.format("  %4d    %2d    %2d    %2d    %2d   %10.7f     GPS         TIME OF FIRST OBS   ",value.Y,value.M,value.D,value.h,value.m,value.s));
+                            mFileWriter.newLine();
+                            mFileWriter.write(" 18 R01  1 R02  2 R03  3 R04  4 R05  5 R06 -6 R07 -5 R08 -4 GLONASS SLOT / FRQ #");
+                            mFileWriter.newLine();
+                            mFileWriter.write("    R09 -3 R10 -2 R11 -1 R12  0 R13  1 R14  2 R15  3 R16  4 GLONASS SLOT / FRQ #");
+                            mFileWriter.newLine();
+                            mFileWriter.write("    R17  5 R18 -5                                           GLONASS SLOT / FRQ #");
+                            mFileWriter.newLine();
+                            mFileWriter.write("                                                            END OF HEADER       ");
+                            mFileWriter.newLine();
+                        }else {
+                            String StartTimeOBS = String.format("%6d%6d%6d%6d%6d%13.7f     %3s         TIME OF FIRST OBS\n", value.Y, value.M, value.D, value.h, value.m, value.s, "GPS");
+                            //END OF HEADER
+                            String ENDOFHEADER = String.format("%73s", "END OF HEADER");
+                            mFileWriter.write(StartTimeOBS + ENDOFHEADER);
+                            mFileWriter.newLine();
+                        }
                         firsttime = false;
                     }
                     else{
@@ -643,94 +716,200 @@ public class FileLogger implements GnssListener {
         String SensorStream = "";
         boolean firstOBS = true;
         int satnumber = 0;
-        for ( GnssMeasurement measurement : event.getMeasurements()) {
-            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
-                GnssClock gnssClock = event.getClock();
-                double weekNumber = Math.floor(- (gnssClock.getFullBiasNanos() * 1e-9 / 604800));
-                double weekNumberNanos = weekNumber * 604800 * 1e9;
-                double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
-                if (gnssClock.hasBiasNanos()) {
-                    tRxNanos = tRxNanos - gnssClock.getBiasNanos();
-                }
-                if (measurement.getTimeOffsetNanos() != 0){
-                    tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
-                }
-                double tRxSeconds = tRxNanos*1e-9;
-                double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
-                //GPS週のロールオーバーチェック
-                double prSeconds = tRxSeconds - tTxSeconds;
-                boolean iRollover = prSeconds > 604800 / 2;
-                if (iRollover) {
-                    double delS = Math.round(prSeconds / 604800) * 604800;
-                    double prS = prSeconds - delS;
-                    double maxBiasSeconds = 10;
-                    if (prS > maxBiasSeconds) {
-                        Log.e("RollOver", "Rollover Error");
-                        iRollover = true;
-                    } else {
-                        tRxSeconds = tRxSeconds - delS;
-                        prSeconds = tRxSeconds - tTxSeconds;
-                        iRollover = false;
+        if(SettingsFragment.RINEX303){
+            String OBSTime = "";
+            for (GnssMeasurement measurement : event.getMeasurements()) {
+                if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS&& SettingsFragment.useQZ)) {
+                    GnssClock gnssClock = event.getClock();
+                    double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
+                    double weekNumberNanos = weekNumber * 604800 * 1e9;
+                    double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
+                    if (gnssClock.hasBiasNanos()) {
+                        tRxNanos = tRxNanos - gnssClock.getBiasNanos();
                     }
-                }
+                    if (measurement.getTimeOffsetNanos() != 0) {
+                        tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
+                    }
+                    double tRxSeconds = tRxNanos * 1e-9;
+                    double tTxSeconds = measurement.getReceivedSvTimeNanos() * 1e-9;
+                    //GLONASSTからGPSTへ(ｶｯｺｶﾘ)
+                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
+                        Double rd = new Double(tRxSeconds);
+                        Integer ri = new Integer(rd.intValue());
+                        Double rd2 = new Double(ri.doubleValue());
+                        tRxSeconds = tRxSeconds - rd2.doubleValue();
+                        Double td = new Double(tTxSeconds);
+                        Integer ti = new Integer(td.intValue());
+                        Double td2 = new Double(ti.doubleValue());
+                        tTxSeconds = tTxSeconds - td2.doubleValue();
+                        if((tRxSeconds - tTxSeconds) < 0 ){
+                            tRxSeconds = tRxSeconds + 1;
+                        }
+                        //double GLONASSTINT = tTxSeconds.
+                        //tTxSeconds = tTxSeconds + 16;
+                    }
+                    //GPS週のロールオーバーチェック
+                    double prSeconds = tRxSeconds - tTxSeconds;
+                    boolean iRollover = prSeconds > 604800 / 2;
+                    if (iRollover) {
+                        double delS = Math.round(prSeconds / 604800) * 604800;
+                        double prS = prSeconds - delS;
+                        double maxBiasSeconds = 10;
+                        if (prS > maxBiasSeconds) {
+                            Log.e("RollOver", "Rollover Error");
+                            iRollover = true;
+                        } else {
+                            tRxSeconds = tRxSeconds - delS;
+                            prSeconds = tRxSeconds - tTxSeconds;
+                            iRollover = false;
+                        }
+                    }
 
-                //GPS週・週秒から年月日時分秒に変換
-                GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
-                ReturnValue value = gpswStoGPST.method(weekNumber, tRxSeconds);
+                    //GPS週・週秒から年月日時分秒に変換
+                    GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
+                    ReturnValue value = gpswStoGPST.method(weekNumber, tRxSeconds);
                 /*急場の変更！！*/
-                String DeviceName = Build.DEVICE;
-                //Log.d("DEVICE",DeviceName);
+                    String DeviceName = Build.DEVICE;
+                    //Log.d("DEVICE",DeviceName);
                 /*急場の変更！！*/
-                double prm = prSeconds * 2.99792458e8;
-                //コード擬似距離の計算
-                if(iRollover == false && prm > 0 && prSeconds < 0.5) {
-                    if (firstOBS == true) {
-                        String OBSTime = String.format(" %2d %2d %2d %2d %2d%11.7f  0", value.Y - 2000, value.M, value.D, value.h, value.m, value.s);
-                        SensorStream =
-                                String.format("%6d,%6d,%6d,%6d,%6d,%13.7f", value.Y, value.M, value.D, value.h, value.m, value.s);
-                        Time.append(OBSTime);
-                        firstOBS = false;
-                    }
-                    //GPSのPRN番号と時刻用String
-                    String prn = String.format("G%2d", measurement.getSvid());
-                    satnumber = satnumber + 1;
-                    Prn.append(prn);
-                    String PrmStrings = String.format("%14.3f%s%s", prm, " ", " ");
-                    String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
-                    if (SettingsFragment.CarrierPhase == true) {
-                        if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                            DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, "1", " ");
-                        } else {
-                            DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, " ", " ");
+                    double prm = prSeconds * 2.99792458e8;
+                    //コード擬似距離の計算
+                    if (iRollover == false && prm > 0 && prSeconds < 0.5) {
+                        if (firstOBS == true) {
+                            OBSTime = String.format("> %4d %2d %2d %2d %2d%11.7f  0", value.Y, value.M, value.D, value.h, value.m, value.s);
+                            SensorStream =
+                                    String.format("%6d,%6d,%6d,%6d,%6d,%13.7f", value.Y, value.M, value.D, value.h, value.m, value.s);
+                            //firstOBS = false;
                         }
-                    }
-                    //Fix用チェック
-                    if (ReadUseInFixArray(measurement.getSvid())) {
-                        String DbHz = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
-                        if (SettingsFragment.CarrierPhase) {
-                            Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + "\n");
-                        } else {
-                            Measurements.append(PrmStrings + DbHz + "\n");
+                        //GPSのPRN番号と時刻用String
+                        String prn = "";
+                        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
+                            prn = String.format("G%02d", measurement.getSvid());
+                        }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
+                            prn = String.format("R%02d", measurement.getSvid());
+                        }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
+                            prn = String.format("J%02d", measurement.getSvid() - 192);
                         }
-                    }
-                    //Google側でFixとして使われていない場合は信号強度を0に
-                    else {
-                        String DbHz = String.format("%14.3f%s%s", 0.0, " ", " ");
+                        satnumber = satnumber + 1;
+                        //Measurements.append(prn);
+                        String C1C = String.format("%14.3f%s%s", prm, " ", " ");
+                        String L1C = String.format("%14.3f%s%s", 0.0, " ", " ");
+                        if (SettingsFragment.CarrierPhase == true) {
+                            if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
+                                L1C = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, "1", " ");
+                            } else {
+                                L1C = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, " ", " ");
+                            }
+                        }
+                        String D1C = String.format("%14.3f%s%s", measurement.getPseudorangeRateMetersPerSecond() / GPS_L1_WAVELENGTH, " ", " ");
+                        String S1C = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
+                        //Fix用チェック
                         if (SettingsFragment.CarrierPhase) {
-                            Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + "\n");
+                            if(firstOBS) {
+                                Measurements.append(prn + L1C + C1C + D1C + S1C);
+                                firstOBS = false;
+                            }else {
+                                Measurements.append("\n" + prn + L1C + C1C + D1C + S1C);
+                            }
                         } else {
-                            Measurements.append(PrmStrings + DbHz + "\n");
+                            if(firstOBS) {
+                                Measurements.append(prn + C1C + D1C + S1C);
+                                firstOBS = false;
+                            }else{
+                                Measurements.append("\n" + prn + C1C + D1C + S1C);
+                            }
                         }
                     }
                 }
             }
-        }
-        Prn.insert(0,String.format("%3d",satnumber));
-        mFileWriter.write(Time.toString() + Prn.toString() + "\n");
-        mFileWriter.write(Measurements.toString());
-        if(SettingsFragment.ResearchMode) {
-            mFileAccAzWriter.write(SensorStream);
-            mFileAccAzWriter.newLine();
+            mFileWriter.write(OBSTime + String.format("%3d", satnumber));
+            mFileWriter.newLine();
+            mFileWriter.write(Measurements.toString());
+            mFileWriter.newLine();
+            firstOBS = false;
+            if (SettingsFragment.ResearchMode) {
+                mFileAccAzWriter.write(SensorStream);
+                mFileAccAzWriter.newLine();
+            }
+        }else {
+            for (GnssMeasurement measurement : event.getMeasurements()) {
+                if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
+                    GnssClock gnssClock = event.getClock();
+                    double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
+                    double weekNumberNanos = weekNumber * 604800 * 1e9;
+                    double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
+                    if (gnssClock.hasBiasNanos()) {
+                        tRxNanos = tRxNanos - gnssClock.getBiasNanos();
+                    }
+                    if (measurement.getTimeOffsetNanos() != 0) {
+                        tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
+                    }
+                    double tRxSeconds = tRxNanos * 1e-9;
+                    double tTxSeconds = measurement.getReceivedSvTimeNanos() * 1e-9;
+                    //GPS週のロールオーバーチェック
+                    double prSeconds = tRxSeconds - tTxSeconds;
+                    boolean iRollover = prSeconds > 604800 / 2;
+                    if (iRollover) {
+                        double delS = Math.round(prSeconds / 604800) * 604800;
+                        double prS = prSeconds - delS;
+                        double maxBiasSeconds = 10;
+                        if (prS > maxBiasSeconds) {
+                            Log.e("RollOver", "Rollover Error");
+                            iRollover = true;
+                        } else {
+                            tRxSeconds = tRxSeconds - delS;
+                            prSeconds = tRxSeconds - tTxSeconds;
+                            iRollover = false;
+                        }
+                    }
+
+                    //GPS週・週秒から年月日時分秒に変換
+                    GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
+                    ReturnValue value = gpswStoGPST.method(weekNumber, tRxSeconds);
+                /*急場の変更！！*/
+                    String DeviceName = Build.DEVICE;
+                    //Log.d("DEVICE",DeviceName);
+                /*急場の変更！！*/
+                    double prm = prSeconds * 2.99792458e8;
+                    //コード擬似距離の計算
+                    if (iRollover == false && prm > 0 && prSeconds < 0.5) {
+                        if (firstOBS == true) {
+                            String OBSTime = String.format(" %2d %2d %2d %2d %2d%11.7f  0", value.Y - 2000, value.M, value.D, value.h, value.m, value.s);
+                            SensorStream =
+                                    String.format("%6d,%6d,%6d,%6d,%6d,%13.7f", value.Y, value.M, value.D, value.h, value.m, value.s);
+                            Time.append(OBSTime);
+                            firstOBS = false;
+                        }
+                        //GPSのPRN番号と時刻用String
+                        String prn = String.format("G%2d", measurement.getSvid());
+                        satnumber = satnumber + 1;
+                        Prn.append(prn);
+                        String PrmStrings = String.format("%14.3f%s%s", prm, " ", " ");
+                        String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
+                        if (SettingsFragment.CarrierPhase == true) {
+                            if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
+                                DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, "1", " ");
+                            } else {
+                                DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, " ", " ");
+                            }
+                        }
+                        //Fix用チェック
+                            String DbHz = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
+                            if (SettingsFragment.CarrierPhase) {
+                                Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + "\n");
+                            } else {
+                                Measurements.append(PrmStrings + DbHz + "\n");
+                            }
+                    }
+                }
+            }
+            Prn.insert(0, String.format("%3d", satnumber));
+            mFileWriter.write(Time.toString() + Prn.toString() + "\n");
+            mFileWriter.write(Measurements.toString());
+            if (SettingsFragment.ResearchMode) {
+                mFileAccAzWriter.write(SensorStream);
+                mFileAccAzWriter.newLine();
+            }
         }
     }
 

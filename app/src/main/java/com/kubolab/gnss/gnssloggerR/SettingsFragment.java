@@ -53,6 +53,7 @@ private TextView mAccSpecView;
     public static boolean CarrierPhase = false;
     public static boolean useQZ = false;
     public static boolean useGL = false;
+    public static boolean useGA = false;
     public static boolean GNSSClockSync = false;
     public static boolean useDeviceSensor = false;
     public static boolean ResearchMode = false;
@@ -74,6 +75,9 @@ private TextView mAccSpecView;
     public static boolean registerGNSS = false;
 
     public static boolean EnableLogging = false;
+
+    //RINEX記述モード
+    public static boolean RINEX303 = false;
 
 
     public void setGpsContainer(GnssContainer value) {
@@ -114,8 +118,27 @@ private TextView mAccSpecView;
         mPressAvView = (TextView) view.findViewById(R.id.pressAvView);
 
         //ダミーラジオボタン、スイッチの初期設定
-        RadioButton rb = (RadioButton) view.findViewById(R.id.radioButtonRinex3);
-        rb.setEnabled(false);
+        final RadioButton rbrinex303 = (RadioButton) view.findViewById(R.id.RINEXMODE303);
+        final RadioButton rbrinex211 = (RadioButton) view.findViewById(R.id.RINEXMODE211);
+        rbrinex303.setEnabled(false);
+        rbrinex303.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    RINEX303 = true;
+                    rbrinex211.setChecked(false);
+                }
+            }
+        });
+        rbrinex211.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    RINEX303 = false;
+                    rbrinex303.setChecked(false);
+                }
+            }
+        });
         CheckBox cb = (CheckBox) view.findViewById(R.id.checkBoxPseudorange);
         cb.setEnabled(false);
         cb = (CheckBox) view.findViewById(R.id.useGPS);
@@ -164,6 +187,14 @@ private TextView mAccSpecView;
 
         });
 
+        useGAL.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                useGA = useGAL.isChecked();
+            }
+
+        });
+
         final Switch ResearchModeSwitch = (Switch) view.findViewById(R.id.ResearchMode);
 
         ResearchModeSwitch.setChecked(false);
@@ -173,8 +204,15 @@ private TextView mAccSpecView;
 
                 if (isChecked) {
                     ResearchMode = true;
+                    rbrinex303.setEnabled(true);
+                    useGAL.setEnabled(true);
                 } else {
                     ResearchMode = false;
+                    rbrinex303.setEnabled(false);
+                    rbrinex303.setChecked(false);
+                    rbrinex211.setChecked(true);
+                    useGAL.setEnabled(false);
+                    RINEX303 = false;
                 }
             }
 

@@ -116,10 +116,11 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView32" />
 
                 <RadioButton
-                    android:id="@+id/radioButton2"
+                    android:id="@+id/RINEXMODE211"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="8dp"
                     android:checked="true"
                     android:text="2.11"
                     android:textSize="16sp"
@@ -127,14 +128,14 @@
                     app:layout_constraintTop_toTopOf="@+id/textView31" />
 
                 <RadioButton
-                    android:id="@+id/radioButtonRinex3"
+                    android:id="@+id/RINEXMODE303"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="15dp"
                     android:text="3.03"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/radioButton2" />
+                    app:layout_constraintTop_toBottomOf="@+id/RINEXMODE211" />
 
                 <TextView
                     android:id="@+id/textView34"
@@ -152,7 +153,7 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="4dp"
                     android:background="@android:color/darker_gray"
-                    app:layout_constraintTop_toBottomOf="@+id/radioButtonRinex3" />
+                    app:layout_constraintTop_toBottomOf="@+id/RINEXMODE303" />
 
                 <TextView
                     android:id="@+id/textView35"
@@ -172,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     app:layout_constraintBottom_toBottomOf="@+id/textView35"
-                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView35" />
 
                 <TextView
@@ -214,7 +215,7 @@
                     android:layout_height="0dp"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView37"
-                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView37"
                     app:layout_constraintVertical_bias="1.0" />
 
@@ -356,7 +357,7 @@
                     android:layout_weight="1"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView41"
-                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView41" />
 
                 <TextView
@@ -669,7 +670,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintBottom_toBottomOf="@+id/textView56"
                     app:layout_constraintTop_toTopOf="@+id/textView56" />
 
@@ -712,7 +713,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@+id/textView58"
-                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView58" />
 
                 <TextView
@@ -755,7 +756,7 @@
                     android:layout_height="wrap_content"
                     android:checked="false"
                     app:layout_constraintBottom_toBottomOf="@+id/textView62"
-                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView62" />
 
                 <TextView
@@ -801,7 +802,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     app:layout_constraintBottom_toBottomOf="@+id/textView65"
-                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView65" />
 
                 <TextView
@@ -854,7 +855,7 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     app:layout_constraintBottom_toBottomOf="@+id/textView54"
-                    app:layout_constraintStart_toStartOf="@+id/radioButtonRinex3"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView54" />
 
 
