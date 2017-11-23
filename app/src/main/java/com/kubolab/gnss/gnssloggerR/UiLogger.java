@@ -30,6 +30,7 @@ public class UiLogger implements GnssListener {
     private static final int USED_COLOR = Color.rgb(0x4a, 0x5f, 0x70);
     private double trueAzimuth;
     private double Declination;
+    private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
 
     private boolean gnssStatusReady = false;
 
@@ -415,7 +416,7 @@ public class UiLogger implements GnssListener {
         }
         int arrayRow = 0;
         for (GnssMeasurement measurement : event.getMeasurements()) {
-        if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true))) {
+        if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true)) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA))) {
             double weekNumber = Math.floor(- (gnssClock.getFullBiasNanos() * 1e-9 / 604800));
             //Log.d("WeekNumber",String.valueOf(weekNumber));
             double weekNumberNanos = weekNumber * 604800 * 1e9;
@@ -479,8 +480,10 @@ public class UiLogger implements GnssListener {
                 array[arrayRow][0] = "J" + String.format("%02d",measurement.getSvid() - 192);
             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                 array[arrayRow][0] = "R" + String.format("%02d",measurement.getSvid());
-            }else {
+            }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS){
                 array[arrayRow][0] = "G" + String.format("%02d",measurement.getSvid());
+            }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
+                array[arrayRow][0] = "E" + String.format("%02d",measurement.getSvid());
             }
             //Log.d("STATE",String.valueOf(measurement.getState());
             if(iRollover){
@@ -509,10 +512,22 @@ public class UiLogger implements GnssListener {
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_UNKNOWN) {
                     array[arrayRow][2] = "ADR_STATE_UNKNOWN";
                 }else{
-                    if(measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
-                        array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
-                    }else {
-                        array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH);
+                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
+                        if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
+                            array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
+                        } else {
+                            array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH);
+                        }
+                    }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
+                        if(measurement.getSvid() <= 24) {
+                            if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
+                                array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
+                            } else {
+                                array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()));
+                            }
+                        }else {
+                            array[arrayRow][2] = String.format("%14.3f", 0.0);
+                        }
                     }
                 }
             }else{
@@ -583,6 +598,10 @@ public class UiLogger implements GnssListener {
             default:
                 return "UNKNOWN";
         }
+    }
+
+    private double GLONASSG1WAVELENGTH(int svid){
+        return SPEED_OF_LIGHT/((1602 * 10e6) + GLONASSFREQ[svid]*9/16);
     }
 
     private static int calcspent(Calendar Start , Calendar End){
