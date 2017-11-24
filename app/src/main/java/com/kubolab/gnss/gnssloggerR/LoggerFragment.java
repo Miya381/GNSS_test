@@ -95,6 +95,7 @@ public class LoggerFragment extends Fragment {
 
         startLog.setText("ClockSync...");
         startLog.setEnabled(false);
+//        startLog.setEnabled(true);
 
         mGNSSClockView = (TextView) newView.findViewById(R.id.GNSSClockView);
 

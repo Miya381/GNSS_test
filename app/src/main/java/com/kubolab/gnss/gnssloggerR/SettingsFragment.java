@@ -49,6 +49,7 @@ private TextView mAccSpecView;
     public static String FILE_PREFIX = "/" + SAVE_LOCATION + "/RINEX";
     public static String FILE_PREFIXSUB = "/" + SAVE_LOCATION + "/KML";
     public static String FILE_PREFIXACCAZI = "/" + SAVE_LOCATION + "/CSV";
+    public static String FILE_PREFIXNMEA = "/" + SAVE_LOCATION + "/NMEA";
     public static String FILE_NAME = "AndroidOBS";
     public static boolean CarrierPhase = false;
     public static boolean useQZ = false;

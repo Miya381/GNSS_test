@@ -47,12 +47,15 @@ public class FileLogger implements GnssListener {
     private final Object mFileLock = new Object();
     private  final Object mFileSubLock = new Object();
     private final Object mFileAccAzLock = new Object();
+    private final Object mFileNmeaLock = new Object();
     private BufferedWriter mFileWriter;
     private BufferedWriter mFileSubWriter;
     private BufferedWriter mFileAccAzWriter;
+    private BufferedWriter mFileNmeaWriter;
     private File mFile;
     private File mFileSub;
     private File mFileAccAzi;
+    private File mFileNmea;
     private boolean firsttime;
     private UIFragmentComponent mUiComponent;
     private boolean notenoughsat = false;
@@ -419,6 +422,76 @@ public class FileLogger implements GnssListener {
                 }
             }
         }
+
+        //NMEA
+        synchronized (mFileNmeaLock){
+            if(SettingsFragment.ResearchMode) {
+                File baseNmeaDirectory;
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    baseNmeaDirectory = new File(Environment.getExternalStorageDirectory(), SettingsFragment.FILE_PREFIXNMEA);
+                    baseNmeaDirectory.mkdirs();
+                } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                    logError("Cannot write to external storage.");
+                    return;
+                } else {
+                    logError("Cannot read external storage.");
+                    return;
+                }
+
+                Date now = new Date();
+                String fileNameNmea = String.format(SettingsFragment.FILE_NAME + ".nmea", SettingsFragment.FILE_PREFIXNMEA);
+                File currentFileNmea = new File(baseNmeaDirectory, fileNameNmea);
+                String currentFileNmeaPath = currentFileNmea.getAbsolutePath();
+                BufferedWriter currentFileNmeaWriter;
+                try {
+                    currentFileNmeaWriter = new BufferedWriter(new FileWriter(currentFileNmea));
+                } catch (IOException e) {
+                    logException("Could not open NMEA file: " + currentFileNmea, e);
+                    return;
+                }
+
+                // NMEAファイルへのヘッダ書き出し
+/*
+                try {
+                    currentFileNmeaWriter.write("NMEA");
+                    currentFileNmeaWriter.newLine();
+                } catch (IOException e) {
+                    Toast.makeText(mContext, "Count not initialize Sub observation file", Toast.LENGTH_SHORT).show();
+                    logException("Count not initialize NMEA file: " + currentFileNmeaPath, e);
+                    return;
+                }
+*/
+                if (mFileNmeaWriter != null) {
+                    try {
+                        mFileNmeaWriter.close();
+                    } catch (IOException e) {
+                        logException("Unable to close NMEA file streams.", e);
+                        return;
+                    }
+                }
+                mFileNmea = currentFileNmea;
+                mFileNmeaWriter = currentFileNmeaWriter;
+                Toast.makeText(mContext, "File opened: " + currentFileNmeaPath, Toast.LENGTH_SHORT).show();
+
+                // To make sure that files do not fill up the external storage:
+                // - Remove all empty files
+                FileFilter filter = new FileToDeleteFilter(mFileNmea);
+                for (File existingFile : baseNmeaDirectory.listFiles(filter)) {
+                    existingFile.delete();
+                }
+                // - Trim the number of files with data
+                File[] existingFiles = baseNmeaDirectory.listFiles();
+                int filesToDeleteCount = existingFiles.length - MAX_FILES_STORED;
+                if (filesToDeleteCount > 0) {
+                    Arrays.sort(existingFiles);
+                    for (int i = 0; i < filesToDeleteCount; ++i) {
+                        existingFiles[i].delete();
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -434,6 +507,9 @@ public class FileLogger implements GnssListener {
         }
         if(mFileAccAzi == null && SettingsFragment.ResearchMode){
                 return;
+        }
+        if(mFileNmea == null && SettingsFragment.ResearchMode){
+            return;
         }
         try {
             mFileSubWriter.write("    </coordinates>\n  </LineString>\n</Placemark>\n</Document>\n</kml>\n");
@@ -505,6 +581,18 @@ public class FileLogger implements GnssListener {
                 }
             }
         }
+        if(mFileNmeaWriter != null) {
+            try {
+                mFileNmeaWriter.close();
+                Intent mediaScanIntentSub = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.fromFile(mFileNmea));
+                mContext.sendBroadcast(mediaScanIntentSub);
+                mFileNmeaWriter = null;
+            } catch (IOException e) {
+                logException("Unable to close NMEA file streams.", e);
+                return;
+            }
+        }
+
     }
 
     @Override
@@ -685,7 +773,23 @@ public class FileLogger implements GnssListener {
     }
 
     @Override
-    public void onNmeaReceived(long timestamp, String s) {}
+    public void onNmeaReceived(long timestamp, String s) {
+        synchronized (mFileNmeaLock) {
+            if (mFileNmeaWriter == null) {
+                return;
+            }
+            else{
+                try {
+                    String NmeaStream = String.format("%s", s);
+                    mFileNmeaWriter.write(NmeaStream);
+//                    mFileNmeaWriter.newLine();
+                }catch (IOException e){
+                    Toast.makeText(mContext, "ERROR_WRITING_FILE", Toast.LENGTH_SHORT).show();
+                    logException(ERROR_WRITING_FILE, e);
+                }
+            }
+        }
+    }
 
     @Override
     public void onListenerRegistration(String listener, boolean result) {}
