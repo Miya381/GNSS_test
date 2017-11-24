@@ -119,6 +119,7 @@ public class LoggerFragment extends Fragment {
                             Toast.makeText(getContext(), "Sending file...", Toast.LENGTH_LONG).show();
                             mFileLogger.send();
                             FileLogging = false;
+                            SettingsFragment.EnableLogging = false;
                             startLog.setText("Start Log");
                         }
                     }

@@ -121,13 +121,21 @@ private TextView mAccSpecView;
         //ダミーラジオボタン、スイッチの初期設定
         final RadioButton rbrinex303 = (RadioButton) view.findViewById(R.id.RINEXMODE303);
         final RadioButton rbrinex211 = (RadioButton) view.findViewById(R.id.RINEXMODE211);
-        rbrinex303.setEnabled(false);
+        final TextView RINEXDescription = (TextView) view.findViewById(R.id.RINEXDescription);
+        //rbrinex303.setEnabled(false);
         rbrinex303.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     RINEX303 = true;
                     rbrinex211.setChecked(false);
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("WARINING")
+                            .setMessage("The function to write to RINEX 3.03 is a beta version.\nOperation and file integrity are not guaranteed.")
+                            .setPositiveButton("OK", null)
+                            .show();
+                    RINEXDescription.setText("Writing to RINEX 3.03 is beta.\n" +
+                            "It can log Satellite System that you choose in.");
                 }
             }
         });
@@ -137,6 +145,7 @@ private TextView mAccSpecView;
                 if(isChecked){
                     RINEX303 = false;
                     rbrinex303.setChecked(false);
+                    RINEXDescription.setText("This version can log only GPS to RINEX2.11");
                 }
             }
         });
@@ -197,7 +206,8 @@ private TextView mAccSpecView;
         });
 
         final Switch ResearchModeSwitch = (Switch) view.findViewById(R.id.ResearchMode);
-
+        //リリース時
+        ResearchModeSwitch.setEnabled(false);
         ResearchModeSwitch.setChecked(false);
         ResearchModeSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
             @Override
@@ -205,15 +215,15 @@ private TextView mAccSpecView;
 
                 if (isChecked) {
                     ResearchMode = true;
-                    rbrinex303.setEnabled(true);
+                    //rbrinex303.setEnabled(true);
                     useGAL.setEnabled(true);
                 } else {
                     ResearchMode = false;
-                    rbrinex303.setEnabled(false);
-                    rbrinex303.setChecked(false);
-                    rbrinex211.setChecked(true);
+                    //rbrinex303.setEnabled(false);
+                    //rbrinex303.setChecked(false);
+                    //rbrinex211.setChecked(true);
                     useGAL.setEnabled(false);
-                    RINEX303 = false;
+                    //RINEX303 = false;
                 }
             }
 
