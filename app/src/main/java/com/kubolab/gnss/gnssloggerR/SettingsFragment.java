@@ -55,6 +55,7 @@ private TextView mAccSpecView;
     public static boolean useQZ = false;
     public static boolean useGL = false;
     public static boolean useGA = false;
+    public static boolean usePseudorangeSmoother = false;
     public static boolean GNSSClockSync = false;
     public static boolean useDeviceSensor = false;
     public static boolean ResearchMode = false;
@@ -129,13 +130,12 @@ private TextView mAccSpecView;
                 if(isChecked){
                     RINEX303 = true;
                     rbrinex211.setChecked(false);
-                    new AlertDialog.Builder(getContext())
+                    /*new AlertDialog.Builder(getContext())
                             .setTitle("WARINING")
                             .setMessage("The function to write to RINEX 3.03 is a beta version.\nOperation and file integrity are not guaranteed.")
                             .setPositiveButton("OK", null)
-                            .show();
-                    RINEXDescription.setText("Writing to RINEX 3.03 is beta.\n" +
-                            "It can log Satellite System that you choose in.");
+                            .show();*/
+                    RINEXDescription.setText("It can log Satellite System that you choose in.");
                 }
             }
         });
@@ -162,7 +162,8 @@ private TextView mAccSpecView;
         cb = (CheckBox) view.findViewById(R.id.outputSensor);
         cb.setEnabled(false);
 
-
+        final CheckBox PseudorangeSmoother = (CheckBox) view.findViewById(R.id.checkBoxPseSmoother);
+        PseudorangeSmoother.setEnabled(false);
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
         final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
         final CheckBox useGLO = (CheckBox) view.findViewById(R.id.useGLO);
@@ -175,8 +176,28 @@ private TextView mAccSpecView;
             @Override
             public void onClick(View v){
                 CarrierPhase = CarrierPhaseChkBox.isChecked();
+                if(CarrierPhaseChkBox.isChecked()){
+                    PseudorangeSmoother.setEnabled(true);
+                }else {
+                    PseudorangeSmoother.setEnabled(false);
+                    PseudorangeSmoother.setChecked(false);
+                }
             }
 
+        });
+
+        PseudorangeSmoother.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                usePseudorangeSmoother = PseudorangeSmoother.isChecked();
+                if(PseudorangeSmoother.isChecked()){
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("WARINING")
+                            .setMessage("Pseudorange Smoother is Beta function.\nOperation and file integrity are not guaranteed.")
+                            .setPositiveButton("OK", null)
+                            .show();
+                }
+            }
         });
 
         useQZSS.setChecked(false);

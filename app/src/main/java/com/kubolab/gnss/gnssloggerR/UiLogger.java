@@ -31,6 +31,11 @@ public class UiLogger implements GnssListener {
     private double trueAzimuth;
     private double Declination;
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
+    private double LAST_CARRIER_PHASE = 0;
+    private double DIFF_CARRIER_PHASE = 0;
+    private double SMOOTHED_PSEUDORANGE = 0.0;
+    private int SMOOTHER_RATE = 1;
+    private int SMOOTHER_RATE_MAX = 10;
 
     private boolean gnssStatusReady = false;
 
@@ -488,8 +493,10 @@ public class UiLogger implements GnssListener {
             //Log.d("STATE",String.valueOf(measurement.getState());
             if(iRollover){
                 array[arrayRow][1] = "ROLLOVER_ERROR";
+                prm = 0.0;
             }else if(prSeconds < 0 || prSeconds > 0.5){
                 array[arrayRow][1] = "INVALID_VALUE";
+                prm = 0.0;
             }
             else if(getStateName(measurement.getState()) == "1") {
                 array[arrayRow][1] = String.format("%14.3f", prm);
@@ -507,6 +514,7 @@ public class UiLogger implements GnssListener {
                 Log.d("Carrier Phase",String.valueOf(measurement.getCarrierFrequencyHz()));
                 if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
                     array[arrayRow][2] = "ADR_STATE_CYCLE_SLIP";
+                    SMOOTHER_RATE = 1;
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_RESET) {
                     array[arrayRow][2] = "ADR_STATE_RESET";
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_UNKNOWN) {
@@ -515,8 +523,12 @@ public class UiLogger implements GnssListener {
                     if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                         if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
                             array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
+                            DIFF_CARRIER_PHASE = measurement.getCarrierCycles() + measurement.getCarrierPhase() - LAST_CARRIER_PHASE;
+                            LAST_CARRIER_PHASE = measurement.getCarrierCycles() + measurement.getCarrierPhase();
                         } else {
                             array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH);
+                            LAST_CARRIER_PHASE = measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH;
+                            DIFF_CARRIER_PHASE = (measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH) - LAST_CARRIER_PHASE;
                         }
                     }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                         if(measurement.getSvid() <= 24) {
@@ -530,6 +542,10 @@ public class UiLogger implements GnssListener {
                         }
                     }
                 }
+                if(SettingsFragment.usePseudorangeSmoother && getStateName(measurement.getState()) == "1" && measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS && prm != 0.0){
+                    SMOOTHED_PSEUDORANGE = (prm + (SMOOTHER_RATE - 1)*(SMOOTHED_PSEUDORANGE + (measurement.getPseudorangeRateMetersPerSecond()))) / SMOOTHER_RATE;
+                    array[arrayRow][1] = String.format("%14.3f (FIX)", SMOOTHED_PSEUDORANGE);
+                }
             }else{
                 array[arrayRow][2] = "0";
             }
@@ -537,6 +553,10 @@ public class UiLogger implements GnssListener {
             arrayRow++;
         }
     }
+        SMOOTHER_RATE++;
+        if(SMOOTHER_RATE > SMOOTHER_RATE_MAX){
+            SMOOTHER_RATE = SMOOTHER_RATE_MAX;
+        }
         return array;
 }
 
