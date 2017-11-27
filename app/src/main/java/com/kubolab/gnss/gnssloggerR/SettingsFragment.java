@@ -207,7 +207,7 @@ private TextView mAccSpecView;
 
         final Switch ResearchModeSwitch = (Switch) view.findViewById(R.id.ResearchMode);
         //リリース時
-        ResearchModeSwitch.setEnabled(false);
+        //ResearchModeSwitch.setEnabled(false);
         ResearchModeSwitch.setChecked(false);
         ResearchModeSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
             @Override
