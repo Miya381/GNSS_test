@@ -319,6 +319,15 @@ public class FileLogger implements GnssListener {
                             currentFileWriter.newLine();
                         }
                     }
+                    if(SettingsFragment.useGA){
+                        if(SettingsFragment.CarrierPhase){
+                            currentFileWriter.write("E    4 L1C C1C D1C S1C                                      SYS / # / OBS TYPES ");
+                            currentFileWriter.newLine();
+                        }else {
+                            currentFileWriter.write("E    3 C1C D1C S1C                                          SYS / # / OBS TYPES ");
+                            currentFileWriter.newLine();
+                        }
+                    }
                 }//RINEX ver2.11
                 else {
                     //RINEX Version Type
@@ -825,7 +834,7 @@ public class FileLogger implements GnssListener {
         if(SettingsFragment.RINEX303){
             String OBSTime = "";
             for (GnssMeasurement measurement : event.getMeasurements()) {
-                if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS&& SettingsFragment.useQZ)) {
+                if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS&& SettingsFragment.useQZ) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA))) {
                     GnssClock gnssClock = event.getClock();
                     double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
                     double weekNumberNanos = weekNumber * 604800 * 1e9;
@@ -895,6 +904,8 @@ public class FileLogger implements GnssListener {
                             prn = String.format("R%02d", measurement.getSvid());
                         }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
                             prn = String.format("J%02d", measurement.getSvid() - 192);
+                        }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
+                            prn = String.format("E%02d", measurement.getSvid());
                         }
                         satnumber = satnumber + 1;
                         //Measurements.append(prn);
