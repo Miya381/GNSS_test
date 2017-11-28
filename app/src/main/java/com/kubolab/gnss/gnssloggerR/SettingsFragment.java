@@ -193,7 +193,7 @@ private TextView mAccSpecView;
                 if(PseudorangeSmoother.isChecked()){
                     new AlertDialog.Builder(getContext())
                             .setTitle("WARINING")
-                            .setMessage("Pseudorange Smoother is Beta function.\nOperation and file integrity are not guaranteed.")
+                            .setMessage("Pseudorange Smoother is Beta function.\nIf cannot get accumulated delta range, it not works.")
                             .setPositiveButton("OK", null)
                             .show();
                 }
@@ -228,7 +228,7 @@ private TextView mAccSpecView;
 
         final Switch ResearchModeSwitch = (Switch) view.findViewById(R.id.ResearchMode);
         //リリース時
-        //ResearchModeSwitch.setEnabled(false);
+        ResearchModeSwitch.setEnabled(false);
         ResearchModeSwitch.setChecked(false);
         ResearchModeSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
             @Override
