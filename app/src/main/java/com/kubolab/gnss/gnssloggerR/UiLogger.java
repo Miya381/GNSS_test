@@ -14,9 +14,10 @@ import android.util.Log;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-
+import java.util.Arrays;
 /**
  * A class representing a UI logger for the application. Its responsibility is show information in
  * the UI.
@@ -31,11 +32,14 @@ public class UiLogger implements GnssListener {
     private double trueAzimuth;
     private double Declination;
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
-    private double LAST_CARRIER_PHASE = 0;
-    private double DIFF_CARRIER_PHASE = 0;
-    private double SMOOTHED_PSEUDORANGE = 0.0;
-    private int SMOOTHER_RATE = 1;
-    private int SMOOTHER_RATE_MAX = 10;
+    //private double LAST_CARRIER_PHASE = 0;
+    //private double DIFF_CARRIER_PHASE = 0;
+    //private double SMOOTHED_PSEUDORANGE = 0.0;
+    private double SMOOTHER_RATE = 0.01;
+    private double[] CURRENT_SMOOTHER_RATE = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+    private double[] LAST_DELTARANGE = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+    private double[] LAST_SMOOTHED_PSEUDORANGE = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+    //private int SMOOTHER_RATE_MAX = 10;
 
     private boolean gnssStatusReady = false;
 
@@ -514,21 +518,25 @@ public class UiLogger implements GnssListener {
                 Log.d("Carrier Phase",String.valueOf(measurement.getCarrierFrequencyHz()));
                 if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
                     array[arrayRow][2] = "ADR_STATE_CYCLE_SLIP";
-                    SMOOTHER_RATE = 1;
+                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
+                        CURRENT_SMOOTHER_RATE[measurement.getSvid()] = 1.0;
+                    }
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_RESET) {
                     array[arrayRow][2] = "ADR_STATE_RESET";
+                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
+                        CURRENT_SMOOTHER_RATE[measurement.getSvid()] = 1.0;
+                    }
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_UNKNOWN) {
                     array[arrayRow][2] = "ADR_STATE_UNKNOWN";
+                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
+                        CURRENT_SMOOTHER_RATE[measurement.getSvid()] = 1.0;
+                    }
                 }else{
                     if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                         if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
                             array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
-                            DIFF_CARRIER_PHASE = measurement.getCarrierCycles() + measurement.getCarrierPhase() - LAST_CARRIER_PHASE;
-                            LAST_CARRIER_PHASE = measurement.getCarrierCycles() + measurement.getCarrierPhase();
                         } else {
                             array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH);
-                            LAST_CARRIER_PHASE = measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH;
-                            DIFF_CARRIER_PHASE = (measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH) - LAST_CARRIER_PHASE;
                         }
                     }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                         if(measurement.getSvid() <= 24) {
@@ -542,9 +550,14 @@ public class UiLogger implements GnssListener {
                         }
                     }
                 }
-                if(SettingsFragment.usePseudorangeSmoother && getStateName(measurement.getState()) == "1" && measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS && prm != 0.0){
-                    SMOOTHED_PSEUDORANGE = (prm + (SMOOTHER_RATE - 1)*(SMOOTHED_PSEUDORANGE + (measurement.getPseudorangeRateMetersPerSecond()))) / SMOOTHER_RATE;
-                    array[arrayRow][1] = String.format("%14.3f (FIX)", SMOOTHED_PSEUDORANGE);
+                if(SettingsFragment.usePseudorangeSmoother && getStateName(measurement.getState()) == "1" && measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS && prm != 0.0 && measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
+                    LAST_SMOOTHED_PSEUDORANGE[measurement.getSvid()] = CURRENT_SMOOTHER_RATE[measurement.getSvid()] * prm + (1 - CURRENT_SMOOTHER_RATE[measurement.getSvid()])*(LAST_SMOOTHED_PSEUDORANGE[measurement.getSvid()] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[measurement.getSvid()]);
+                    LAST_DELTARANGE[measurement.getSvid()] = measurement.getAccumulatedDeltaRangeMeters();
+                    CURRENT_SMOOTHER_RATE[measurement.getSvid()] = CURRENT_SMOOTHER_RATE[measurement.getSvid()] - SMOOTHER_RATE;
+                    if(CURRENT_SMOOTHER_RATE[measurement.getSvid()] <= 0){
+                        CURRENT_SMOOTHER_RATE[measurement.getSvid()] = SMOOTHER_RATE;
+                    }
+                    array[arrayRow][1] = String.format("%14.3f (FIX)", LAST_SMOOTHED_PSEUDORANGE[measurement.getSvid()]);
                 }
             }else{
                 array[arrayRow][2] = "0";
@@ -553,10 +566,6 @@ public class UiLogger implements GnssListener {
             arrayRow++;
         }
     }
-        SMOOTHER_RATE++;
-        if(SMOOTHER_RATE > SMOOTHER_RATE_MAX){
-            SMOOTHER_RATE = SMOOTHER_RATE_MAX;
-        }
         return array;
 }
 
