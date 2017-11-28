@@ -169,8 +169,8 @@ public class UiLogger implements GnssListener {
         if(gnssStatusReady == false){
             return;
         }
-        String[] SVID = new String[30];
-        float[][] pos = new float[30][2];
+        String[] SVID = new String[50];
+        float[][] pos = new float[50][2];
         int maxSat = gnssStatus.getSatelliteCount();
         for(int i = 0;i < maxSat;i++){
             if(gnssStatus.getConstellationType(i) == GnssStatus.CONSTELLATION_GPS) {
