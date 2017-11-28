@@ -191,8 +191,7 @@ public class UiLogger implements GnssListener {
                 pos[i][1] = gnssStatus.getElevationDegrees(i);
             }
         }
-        int satNumber = maxSat;
-        component2.log2TextFragment(SVID,pos,satNumber);
+        component2.log2TextFragment(SVID,pos,maxSat);
         //logStatusEvent("onGnssStatusChanged: " + gnssStatusToString(gnssStatus));
     }
 

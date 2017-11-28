@@ -34,7 +34,7 @@ public class Logger2Fragment extends Fragment {
     private float[][] SkyPlotPos = new float[50][2];
     private float[] NorthPos = new float[2];
     private String[] SkyPlotSvid = new String[50];
-    private int satNumber = 0;
+    private int msatNumber = 0;
     private float deviceAzimuth = 0;
     private Bitmap skyplotbg = null;
 
@@ -158,7 +158,7 @@ public class Logger2Fragment extends Fragment {
             paint.setTextSize(50);
             paint.setStyle(Paint.Style.FILL);
             paint.setAntiAlias(true);
-            for(int i = 0;i < satNumber;i++){
+            for(int i = 0; i < msatNumber; i++){
                 if(SkyPlotSvid[i] != null) {
                     if(SkyPlotSvid[i].indexOf("R") != -1) {
                         paint.setColor(Color.GREEN);
@@ -252,7 +252,7 @@ public class Logger2Fragment extends Fragment {
                                     DevAzimuth = DevAzimuth + 360;
                                 }
                             }
-                            satNumber = satnumber;
+                            msatNumber = satnumber;
                         }
                     });
         }
