@@ -1108,7 +1108,7 @@ public class FileLogger implements GnssListener {
         }
     }
     private double GLONASSG1WAVELENGTH(int svid){
-        return SPEED_OF_LIGHT/((1602 * 10e6) + GLONASSFREQ[svid]*9/16);
+        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid]*9/16) * 10e6);
     }
 
     //GPS週秒からGPS時への変換
