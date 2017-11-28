@@ -64,6 +64,11 @@ public class FileLogger implements GnssListener {
 
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
 
+    private double[] CURRENT_SMOOTHER_RATE = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+    private double[] LAST_DELTARANGE = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+    private double[] LAST_SMOOTHED_PSEUDORANGE = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+    private double SMOOTHER_RATE = 0.01;
+
     public synchronized UIFragmentComponent getUiComponent() {
         return mUiComponent;
     }
@@ -927,6 +932,19 @@ public class FileLogger implements GnssListener {
                                     L1C = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
                                 }
                             }
+                        }
+                        if(measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
+                            CURRENT_SMOOTHER_RATE[measurement.getSvid()] = 1.0;
+                        }
+                        //Pseudorange Smoother
+                        if(SettingsFragment.usePseudorangeSmoother && measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS && prm != 0.0 && measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
+                            LAST_SMOOTHED_PSEUDORANGE[measurement.getSvid()] = CURRENT_SMOOTHER_RATE[measurement.getSvid()] * prm + (1 - CURRENT_SMOOTHER_RATE[measurement.getSvid()])*(LAST_SMOOTHED_PSEUDORANGE[measurement.getSvid()] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[measurement.getSvid()]);
+                            LAST_DELTARANGE[measurement.getSvid()] = measurement.getAccumulatedDeltaRangeMeters();
+                            CURRENT_SMOOTHER_RATE[measurement.getSvid()] = CURRENT_SMOOTHER_RATE[measurement.getSvid()] - SMOOTHER_RATE;
+                            if(CURRENT_SMOOTHER_RATE[measurement.getSvid()] <= 0){
+                                CURRENT_SMOOTHER_RATE[measurement.getSvid()] = SMOOTHER_RATE;
+                            }
+                            C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[measurement.getSvid()], " ", " ");
                         }
                         String D1C = String.format("%14.3f%s%s", -measurement.getPseudorangeRateMetersPerSecond() / GPS_L1_WAVELENGTH, " ", " ");
                         String S1C = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
