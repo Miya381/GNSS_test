@@ -1088,6 +1088,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView"

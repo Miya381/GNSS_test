@@ -83,6 +83,7 @@ private TextView mAccSpecView;
 
     //計測時間
     public static int timer = 0;
+    public static boolean enableTimer = false;
 
 
     public void setGpsContainer(GnssContainer value) {

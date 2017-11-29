@@ -100,10 +100,19 @@ public class LoggerFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString() == ""){
+                String inputStr = s.toString();
+                if(inputStr == ""){
                     SettingsFragment.timer = 0;
+                    SettingsFragment.enableTimer = false;
                 }else {
-                    SettingsFragment.timer = Integer.parseInt(s.toString());
+                    try {
+                        SettingsFragment.timer = Integer.parseInt(inputStr);
+                        SettingsFragment.enableTimer = true;
+                    }catch (NumberFormatException e){
+                        Log.e("ParseInt","Number format Exception!!!");
+                        SettingsFragment.timer = 0;
+                        SettingsFragment.enableTimer = false;
+                    }
                 }
             }
         });
@@ -138,6 +147,7 @@ public class LoggerFragment extends Fragment {
                             mFileLogger.startNewLog();
                             FileLogging = true;
                             SettingsFragment.EnableLogging = true;
+                            EditTimer.setEnabled(false);
                             startLog.setText("End Log");
                         }else {
                             //startLog.setEnabled(true);
@@ -146,6 +156,7 @@ public class LoggerFragment extends Fragment {
                             mFileLogger.send();
                             FileLogging = false;
                             SettingsFragment.EnableLogging = false;
+                            EditTimer.setEnabled(true);
                             startLog.setText("Start Log");
                         }
                     }
@@ -254,6 +265,30 @@ public class LoggerFragment extends Fragment {
                             mLocationLatitude.setText(latitude);
                             mLocationLongitude.setText(longitude);
                             mLocationAltitude.setText(altitude);
+                        }
+                    });
+        }
+
+        public synchronized void RefreshTimer(){
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            if(SettingsFragment.timer == 0){
+                                Toast.makeText(getContext(), "Sending file...", Toast.LENGTH_LONG).show();
+                                mFileLogger.send();
+                                FileLogging = false;
+                                SettingsFragment.EnableLogging = false;
+                                EditTimer.setEnabled(true);
+                                startLog.setText("Start Log");
+                                SettingsFragment.enableTimer = false;
+                            }else {
+                                EditTimer.setText(String.valueOf(SettingsFragment.timer));
+                            }
                         }
                     });
         }

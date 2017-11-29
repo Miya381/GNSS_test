@@ -724,6 +724,10 @@ public class FileLogger implements GnssListener {
             }
             try {
                 writeGnssMeasurementToFile(gnssClock,event);
+                if(SettingsFragment.enableTimer){
+                    SettingsFragment.timer = SettingsFragment.timer - 1;
+                    getUiComponent().RefreshTimer();
+                }
             } catch (IOException e){
                 logException(ERROR_WRITING_FILE, e);
             }
