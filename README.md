@@ -9,7 +9,8 @@ GNSSLoggerR v0.0.1a
 磁気コンパスにおいて地磁気と真北とのズレ（磁気偏角）の計算及びその補正
 RINEX ver2.11の出力
 
-アルファ版
-11月10日更新
-センサー表示用のページを追加
-アプリの起動時にGNSSMeasurementsのCallbackをまとめて登録するよう修正
+ver1.2更新内容一覧  
+Pseudorange Smootherの適用範囲をGLONASS,QZSSに拡大.  
+NMEAの出力に対応.  
+観測時間する時間を秒単位で設定する機能を追加.  
+Huawei Honor 8でのバグを修正.
