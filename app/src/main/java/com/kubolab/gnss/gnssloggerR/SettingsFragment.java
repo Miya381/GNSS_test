@@ -81,6 +81,9 @@ private TextView mAccSpecView;
     //RINEX記述モード
     public static boolean RINEX303 = false;
 
+    //計測時間
+    public static int timer = 0;
+
 
     public void setGpsContainer(GnssContainer value) {
         mGpsContainer = value;

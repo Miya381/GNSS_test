@@ -11,6 +11,7 @@ import android.location.LocationProvider;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -43,6 +44,7 @@ public class UiLogger implements GnssListener {
 
     private boolean gnssStatusReady = false;
     private boolean initialize = false;
+
 
     String array[][] = new String[19][4];
 

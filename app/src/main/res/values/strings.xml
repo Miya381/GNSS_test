@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">G-RitZ Logger</string>
-    <string name="app_version">v0.0.1</string>
+    <string name="app_version">v1.2</string>
 
     <string name="title_settings">Settings</string>
     <string name="title_log">Log</string>   

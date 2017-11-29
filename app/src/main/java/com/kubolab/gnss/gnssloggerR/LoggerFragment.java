@@ -5,7 +5,9 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,8 @@ public class LoggerFragment extends Fragment {
     private Button startLog;
     private Button sendFile;
     private boolean FileLogging;
+
+    private TextView EditTimer;
 
     //表用ID
     int Rid[][]={{R.id.textView1_1,R.id.textView1_2,R.id.textView1_3,R.id.textView1_4},{R.id.textView2_1,R.id.textView2_2,R.id.textView2_3,R.id.textView2_4},
@@ -81,6 +85,28 @@ public class LoggerFragment extends Fragment {
                 //Log.d("Array", i + "," + j);
             }
         }
+        EditTimer = (TextView) newView.findViewById(R.id.editTimer);
+        EditTimer.setText("0");
+        EditTimer.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.toString() == ""){
+                    SettingsFragment.timer = 0;
+                }else {
+                    SettingsFragment.timer = Integer.parseInt(s.toString());
+                }
+            }
+        });
 
         UiLogger currentUiLogger = mUiLogger;
         if (currentUiLogger != null) {
