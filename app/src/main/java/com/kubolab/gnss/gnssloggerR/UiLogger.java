@@ -435,7 +435,7 @@ public class UiLogger implements GnssListener {
                 tRxNanos = tRxNanos - gnssClock.getBiasNanos();
             }
             if (measurement.getTimeOffsetNanos() != 0){
-                tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
+                tRxNanos = tRxNanos + measurement.getTimeOffsetNanos();
             }
             double tRxSeconds = tRxNanos*1e-9;
             double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
