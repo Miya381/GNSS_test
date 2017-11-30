@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -227,9 +228,10 @@ public class Logger2Fragment extends Fragment {
                                 //まずは仰角を変換
                                 double Altitude = 1 - pos[i][1]/90;
                                 Altitude = Altitude * (MaxCanvusWidth/2);
-                                float azimuth = (float) Math.toDegrees(pos[i][0]);
-                                azimuth = azimuth + 90;
-                                if(azimuth < 360){
+                                float azimuth = pos[i][0];
+                                Log.d("Azimuth",String.valueOf(azimuth));
+                                azimuth = azimuth - 90;
+                                if(azimuth < 0){
                                     azimuth = azimuth + 360;
                                 }
                                 if(SettingsFragment.useDeviceSensor) {
