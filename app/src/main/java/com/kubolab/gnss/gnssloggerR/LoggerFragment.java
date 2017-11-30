@@ -100,18 +100,26 @@ public class LoggerFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String inputStr = s.toString();
-                if(inputStr == ""){
-                    SettingsFragment.timer = 0;
-                    SettingsFragment.enableTimer = false;
-                }else {
-                    try {
-                        SettingsFragment.timer = Integer.parseInt(inputStr);
-                        SettingsFragment.enableTimer = true;
-                    }catch (NumberFormatException e){
-                        Log.e("ParseInt","Number format Exception!!!");
+                if(SettingsFragment.enableTimer == false) {
+                    String inputStr = s.toString();
+                    if (inputStr == "") {
                         SettingsFragment.timer = 0;
                         SettingsFragment.enableTimer = false;
+                    } else {
+                        try {
+                            int timer = Integer.parseInt(inputStr);
+                            if(timer > 0) {
+                                SettingsFragment.timer = Integer.parseInt(inputStr) + 1;
+                                Log.i("Timer", String.valueOf(SettingsFragment.timer));
+                            }else {
+                                SettingsFragment.timer = 0;
+                                SettingsFragment.enableTimer = false;
+                            }
+                        } catch (NumberFormatException e) {
+                            Log.e("ParseInt", "Number format Exception!!!");
+                            SettingsFragment.timer = 0;
+                            SettingsFragment.enableTimer = false;
+                        }
                     }
                 }
             }
@@ -149,9 +157,18 @@ public class LoggerFragment extends Fragment {
                             SettingsFragment.EnableLogging = true;
                             EditTimer.setEnabled(false);
                             startLog.setText("End Log");
+                            if(SettingsFragment.timer > 0){
+                                SettingsFragment.enableTimer = true;
+                            }
                         }else {
                             //startLog.setEnabled(true);
                             //sendFile.setEnabled(false);
+                            if(SettingsFragment.enableTimer){
+                                Toast.makeText(getContext(), "Timer stopped by user", Toast.LENGTH_LONG).show();
+                                SettingsFragment.enableTimer = false;
+                                SettingsFragment.timer = 0;
+                                EditTimer.setText("0");
+                            }
                             Toast.makeText(getContext(), "Sending file...", Toast.LENGTH_LONG).show();
                             mFileLogger.send();
                             FileLogging = false;
@@ -205,10 +222,16 @@ public class LoggerFragment extends Fragment {
                                         }
                                     }else if(j == 3){
                                         if(array[i][j] != null) {
-                                            if (Float.parseFloat(array[i][j]) < 15.0) {
+                                            float dBHz = 0.0f;
+                                            try{
+                                                dBHz = Float.parseFloat(array[i][j]);
+                                            }catch (NumberFormatException e){
+                                                Log.e("dBHz","parseFloat Error");
+                                            }
+                                            if (dBHz < 15.0) {
                                                 mTextView[i][j].setTextColor(Color.RED);
                                                 mTextView[i][j].setText(array[i][j]);
-                                            } else if (Float.parseFloat(array[i][j]) < 25.0) {
+                                            } else if (dBHz < 25.0) {
                                                 mTextView[i][j].setTextColor(Color.parseColor("#FF9900"));
                                                 mTextView[i][j].setText(array[i][j]);
                                             } else {
@@ -286,6 +309,7 @@ public class LoggerFragment extends Fragment {
                                 EditTimer.setEnabled(true);
                                 startLog.setText("Start Log");
                                 SettingsFragment.enableTimer = false;
+                                EditTimer.setText(String.valueOf(SettingsFragment.timer));
                             }else {
                                 EditTimer.setText(String.valueOf(SettingsFragment.timer));
                             }
