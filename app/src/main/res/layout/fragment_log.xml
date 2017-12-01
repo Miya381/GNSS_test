@@ -65,13 +65,13 @@
                         android:id="@+id/textView5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pseudorange (CA)" />
+                        android:text="Pseudorange [m]" />
 
                     <TextView
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="CarrierPhase (L1)" />
+                        android:text="CarrierPhase  [cycles]" />
 
                     <TextView
                         android:id="@+id/textView7"
