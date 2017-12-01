@@ -13,4 +13,5 @@ ver1.2更新内容一覧
 Pseudorange Smootherの適用範囲をGLONASS,QZSSに拡大.  
 NMEAの出力に対応.  
 観測する時間を秒単位で設定する機能を追加.  
-Huawei Honor 8でのバグを修正.
+Huawei Honor 8でのバグを修正.  
+SkyPlotの表示バグを修正.
