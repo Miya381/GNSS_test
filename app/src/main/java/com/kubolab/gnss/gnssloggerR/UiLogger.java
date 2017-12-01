@@ -398,11 +398,6 @@ public class UiLogger implements GnssListener {
             SettingsFragment.FTP_SERVER_DIRECTORY = String.format("%4d/brdc/brdc%03d0.%2dn.Z",value.Y,spent,value.Y - 2000);
             component.SettingFTPDirectory(String.format("%4d/brdc/brdc%03d0.%2dn.Z",value.Y,spent,value.Y - 2000));
             final Calendar calendar = Calendar.getInstance();
-            if(String.valueOf(value.Y).indexOf(String.valueOf(calendar.YEAR)) != -1){
-                SettingsFragment.GNSSClockSync = true;
-            }else{
-                SettingsFragment.GNSSClockSync = false;
-            }
             Log.d("GNSSClock",gnssClock.toString());
         }
         return ClockStr;
@@ -433,6 +428,7 @@ public class UiLogger implements GnssListener {
             return array;
         }
         int arrayRow = 0;
+        boolean CheckClockSync = false;
         for (GnssMeasurement measurement : event.getMeasurements()) {
         if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true)) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA))) {
             double weekNumber = Math.floor(- (gnssClock.getFullBiasNanos() * 1e-9 / 604800));
@@ -513,6 +509,7 @@ public class UiLogger implements GnssListener {
             }
             else if(getStateName(measurement.getState()) == "1") {
                 array[arrayRow][1] = String.format("%14.3f", prm);
+                CheckClockSync = true;
             }else {
                 array[arrayRow][1] = getStateName(measurement.getState());
             }
@@ -574,6 +571,11 @@ public class UiLogger implements GnssListener {
             array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
             arrayRow++;
         }
+    }
+    if(CheckClockSync){
+        SettingsFragment.GNSSClockSync = true;
+    }else{
+        SettingsFragment.GNSSClockSync = false;
     }
         return array;
 }

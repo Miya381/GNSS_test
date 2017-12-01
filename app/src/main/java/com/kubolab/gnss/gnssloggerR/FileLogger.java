@@ -450,7 +450,6 @@ public class FileLogger implements GnssListener {
 
         //NMEA
         synchronized (mFileNmeaLock){
-            if(SettingsFragment.ResearchMode) {
                 File baseNmeaDirectory;
                 String state = Environment.getExternalStorageState();
                 if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -514,7 +513,6 @@ public class FileLogger implements GnssListener {
                         existingFiles[i].delete();
                     }
                 }
-            }
         }
 
     }
@@ -533,7 +531,7 @@ public class FileLogger implements GnssListener {
         if(mFileAccAzi == null && SettingsFragment.ResearchMode){
                 return;
         }
-        if(mFileNmea == null && SettingsFragment.ResearchMode){
+        if(mFileNmea == null){
             return;
         }
         try {
@@ -665,54 +663,62 @@ public class FileLogger implements GnssListener {
             GnssClock gnssClock = event.getClock();
             for (GnssMeasurement measurement : event.getMeasurements()) {
                 try {
-                    if(firsttime == true){
-                        double weekNumber = Math.floor( - (double)(gnssClock.getFullBiasNanos())*1e-9/604800);
-
-                        long weekNumberNanos = (long)weekNumber*(long)(604800*1e9);
-
-                        double tRxNanos = gnssClock.getTimeNanos() -gnssClock.getFullBiasNanos() - weekNumberNanos;
-                        double tRxSeconds = 0;
-                        if(gnssClock.hasBiasNanos() == false) {
-                            tRxSeconds = (tRxNanos - measurement.getTimeOffsetNanos()) * 1e-9;
+                    if(firsttime == true && measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS){
+                        gnssClock = event.getClock();
+                        double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
+                        double weekNumberNanos = weekNumber * 604800 * 1e9;
+                        double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
+                        if (gnssClock.hasBiasNanos()) {
+                            tRxNanos = tRxNanos - gnssClock.getBiasNanos();
                         }
-                        else{
-                            tRxSeconds = (tRxNanos - measurement.getTimeOffsetNanos() - gnssClock.getBiasNanos()) * 1e-9;
+                        if (measurement.getTimeOffsetNanos() != 0) {
+                            tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
                         }
-                        double tTxSeconds  = (measurement.getReceivedSvTimeNanos())*1e-9;
+                        double tRxSeconds = tRxNanos * 1e-9;
+                        double tTxSeconds = measurement.getReceivedSvTimeNanos() * 1e-9;
                         //GPS週のロールオーバーチェック
-                        double prSeconds  = tRxSeconds - tTxSeconds;
-                        if(prSeconds > 604800/2) {
+                        double prSeconds = tRxSeconds - tTxSeconds;
+                        boolean iRollover = prSeconds > 604800 / 2;
+                        if (iRollover) {
                             double delS = Math.round(prSeconds / 604800) * 604800;
                             double prS = prSeconds - delS;
                             double maxBiasSeconds = 10;
-                            if(prS > maxBiasSeconds) {
-                                Toast.makeText(mContext, "RollOverError", Toast.LENGTH_SHORT).show();
-                            }
-                            else{
+                            if (prS > maxBiasSeconds) {
+                                Log.e("RollOver", "Rollover Error");
+                                iRollover = true;
+                            } else {
                                 tRxSeconds = tRxSeconds - delS;
+                                prSeconds = tRxSeconds - tTxSeconds;
+                                iRollover = false;
                             }
                         }
+
+                        //GPS週・週秒から年月日時分秒に変換
                         GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
-                        ReturnValue value = gpswStoGPST.method(weekNumber , tRxSeconds);
-                        if(SettingsFragment.RINEX303){
-                            mFileWriter.write(String.format("  %4d    %2d    %2d    %2d    %2d   %10.7f     GPS         TIME OF FIRST OBS   ",value.Y,value.M,value.D,value.h,value.m,value.s));
-                            mFileWriter.newLine();
-                            mFileWriter.write(" 24 R01  1 R02 -4 R03  5 R04  6 R05  1 R06 -4 R07  5 R08  6 GLONASS SLOT / FRQ #");
-                            mFileWriter.newLine();
-                            mFileWriter.write("    R09 -2 R10 -7 R11  0 R12 -1 R13 -2 R14 -7 R15  0 R16 -1 GLONASS SLOT / FRQ #");
-                            mFileWriter.newLine();
-                            mFileWriter.write("    R17  4 R18 -3 R19  3 R20  2 R21  4 R22 -3 R23  3 R24  2 GLONASS SLOT / FRQ #");
-                            mFileWriter.newLine();
-                            mFileWriter.write("                                                            END OF HEADER       ");
-                            mFileWriter.newLine();
-                        }else {
-                            String StartTimeOBS = String.format("%6d%6d%6d%6d%6d%13.7f     %3s         TIME OF FIRST OBS\n", value.Y, value.M, value.D, value.h, value.m, value.s, "GPS");
-                            //END OF HEADER
-                            String ENDOFHEADER = String.format("%73s", "END OF HEADER");
-                            mFileWriter.write(StartTimeOBS + ENDOFHEADER);
-                            mFileWriter.newLine();
+                        ReturnValue value = gpswStoGPST.method(weekNumber, tRxSeconds);
+                        double prm = prSeconds * 2.99792458e8;
+                        //コード擬似距離の計算
+                        if (iRollover == false && prm > 0 && prSeconds < 0.5) {
+                            if (SettingsFragment.RINEX303) {
+                                mFileWriter.write(String.format("  %4d    %2d    %2d    %2d    %2d   %10.7f     GPS         TIME OF FIRST OBS   ", value.Y, value.M, value.D, value.h, value.m, value.s));
+                                mFileWriter.newLine();
+                                mFileWriter.write(" 24 R01  1 R02 -4 R03  5 R04  6 R05  1 R06 -4 R07  5 R08  6 GLONASS SLOT / FRQ #");
+                                mFileWriter.newLine();
+                                mFileWriter.write("    R09 -2 R10 -7 R11  0 R12 -1 R13 -2 R14 -7 R15  0 R16 -1 GLONASS SLOT / FRQ #");
+                                mFileWriter.newLine();
+                                mFileWriter.write("    R17  4 R18 -3 R19  3 R20  2 R21  4 R22 -3 R23  3 R24  2 GLONASS SLOT / FRQ #");
+                                mFileWriter.newLine();
+                                mFileWriter.write("                                                            END OF HEADER       ");
+                                mFileWriter.newLine();
+                            } else {
+                                String StartTimeOBS = String.format("%6d%6d%6d%6d%6d%13.7f     %3s         TIME OF FIRST OBS\n", value.Y, value.M, value.D, value.h, value.m, value.s, "GPS");
+                                //END OF HEADER
+                                String ENDOFHEADER = String.format("%73s", "END OF HEADER");
+                                mFileWriter.write(StartTimeOBS + ENDOFHEADER);
+                                mFileWriter.newLine();
+                            }
+                            firsttime = false;
                         }
-                        firsttime = false;
                     }
                     else{
 

@@ -228,10 +228,10 @@ public class LoggerFragment extends Fragment {
                                             }catch (NumberFormatException e){
                                                 Log.e("dBHz","parseFloat Error" + array[i][j]);
                                             }
-                                            if (dBHz < 15.0) {
+                                            if (dBHz < 12.0) {
                                                 mTextView[i][j].setTextColor(Color.RED);
                                                 mTextView[i][j].setText(array[i][j]);
-                                            } else if (dBHz < 25.0) {
+                                            } else if (dBHz < 29.0) {
                                                 mTextView[i][j].setTextColor(Color.parseColor("#FF9900"));
                                                 mTextView[i][j].setText(array[i][j]);
                                             } else {

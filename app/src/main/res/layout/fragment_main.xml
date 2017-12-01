@@ -142,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:text="This version can log only GPS to RINEX2.11"
+                    android:text="RINEX2.11 mode can log only GPS"
                     android:textSize="12sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView31" />
@@ -745,6 +745,7 @@
                     android:id="@+id/outputNmea"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     app:layout_constraintBottom_toBottomOf="@+id/textView58"
                     app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView58" />

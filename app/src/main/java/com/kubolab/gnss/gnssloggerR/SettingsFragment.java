@@ -75,7 +75,7 @@ private TextView mAccSpecView;
 
     public static boolean PermissionOK = false;
     public static boolean registerGNSS = false;
-
+    public static boolean FileLoggingOK = false;
     public static boolean EnableLogging = false;
 
     //RINEX記述モード
@@ -139,7 +139,7 @@ private TextView mAccSpecView;
                             .setMessage("The function to write to RINEX 3.03 is a beta version.\nOperation and file integrity are not guaranteed.")
                             .setPositiveButton("OK", null)
                             .show();*/
-                    RINEXDescription.setText("It can log Satellite System that you choose in.");
+                    RINEXDescription.setText("RINEX3.03 mode can log all satellites");
                 }
             }
         });
@@ -149,7 +149,7 @@ private TextView mAccSpecView;
                 if(isChecked){
                     RINEX303 = false;
                     rbrinex303.setChecked(false);
-                    RINEXDescription.setText("This version can log only GPS to RINEX2.11");
+                    RINEXDescription.setText("RINEX2.11 mode can log only GPS");
                 }
             }
         });
