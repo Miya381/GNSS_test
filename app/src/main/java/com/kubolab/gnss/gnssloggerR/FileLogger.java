@@ -671,6 +671,9 @@ public class FileLogger implements GnssListener {
                         if (gnssClock.hasBiasNanos()) {
                             tRxNanos = tRxNanos - gnssClock.getBiasNanos();
                         }
+                        //GPS週・週秒から年月日時分秒に変換
+                        GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
+                        ReturnValue value = gpswStoGPST.method(weekNumber, tRxNanos * 1e-9);
                         if (measurement.getTimeOffsetNanos() != 0) {
                             tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
                         }
@@ -692,10 +695,6 @@ public class FileLogger implements GnssListener {
                                 iRollover = false;
                             }
                         }
-
-                        //GPS週・週秒から年月日時分秒に変換
-                        GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
-                        ReturnValue value = gpswStoGPST.method(weekNumber, tRxSeconds);
                         double prm = prSeconds * 2.99792458e8;
                         //コード擬似距離の計算
                         if (iRollover == false && prm > 0 && prSeconds < 0.5) {
@@ -866,6 +865,9 @@ public class FileLogger implements GnssListener {
                     if (gnssClock.hasBiasNanos()) {
                         tRxNanos = tRxNanos - gnssClock.getBiasNanos();
                     }
+                    //GPS週・週秒から年月日時分秒に変換
+                    GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
+                    ReturnValue value = gpswStoGPST.method(weekNumber, tRxNanos * 1e-9);
                     if (measurement.getTimeOffsetNanos() != 0) {
                         tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
                     }
@@ -904,9 +906,6 @@ public class FileLogger implements GnssListener {
                         }
                     }
 
-                    //GPS週・週秒から年月日時分秒に変換
-                    GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
-                    ReturnValue value = gpswStoGPST.method(weekNumber, tRxSeconds);
                 /*急場の変更！！*/
                     String DeviceName = Build.DEVICE;
                     //Log.d("DEVICE",DeviceName);
