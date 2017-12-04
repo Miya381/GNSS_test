@@ -524,7 +524,7 @@ public class FileLogger implements GnssListener {
                 File baseNmeaDirectory;
                 String state = Environment.getExternalStorageState();
                 if (Environment.MEDIA_MOUNTED.equals(state)) {
-                    baseNmeaDirectory = new File(Environment.getExternalStorageDirectory(), SettingsFragment.FILE_PREFIXNMEA);
+                    baseNmeaDirectory = new File(Environment.getExternalStorageDirectory(), SettingsFragment.FILE_PREFIXNAV);
                     baseNmeaDirectory.mkdirs();
                 } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
                     logError("Cannot write to external storage.");
@@ -536,7 +536,7 @@ public class FileLogger implements GnssListener {
 
                 Date now = new Date();
                 int observation = now.getYear() - 100;
-                String fileNameNav = String.format(SettingsFragment.FILE_NAME + "." + observation + "n", SettingsFragment.FILE_PREFIXNMEA);
+                String fileNameNav = String.format(SettingsFragment.FILE_NAME + "." + observation + "n", SettingsFragment.FILE_PREFIXNAV);
                 File currentFileNav = new File(baseNmeaDirectory, fileNameNav);
                 String currentFileNavPath = currentFileNav.getAbsolutePath();
                 BufferedWriter currentFileNavWriter;
@@ -826,8 +826,10 @@ public class FileLogger implements GnssListener {
                     if(RINEX_NAV_ION_OK == false) {
                         StringBuilder NAV_ION = new StringBuilder();
                         GnssNavigationConv mGnssNavigationConv = new GnssNavigationConv();
-                        NAV_ION.append(mGnssNavigationConv.onNavMessageReported((byte) navigationMessage.getSvid(),(byte)navigationMessage.getType(),(short) navigationMessage.getMessageId(),navigationMessage.getData()));
-                        if(NAV_ION != null) {
+                        StringBuilder ION = mGnssNavigationConv.onNavMessageReported((byte) navigationMessage.getSvid(),(byte)navigationMessage.getType(),(short) navigationMessage.getMessageId(),navigationMessage.getData());
+                        if(ION != null && ION.toString().indexOf("null") == -1) {
+                            NAV_ION.append(ION);
+                            Log.d("NAV",ION.toString());
                             mFileNavWriter.write(NAV_ION.toString());
                             RINEX_NAV_ION_OK = true;
                         }
@@ -920,22 +922,19 @@ public class FileLogger implements GnssListener {
         int satnumber = 0;
         if(SettingsFragment.RINEX303){
             String OBSTime = "";
+            GnssClock gnssClock = event.getClock();
+            double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
+            double weekNumberNanos = weekNumber * 604800 * 1e9;
+            double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
+            if (gnssClock.hasBiasNanos()) {
+                tRxNanos = tRxNanos - gnssClock.getBiasNanos();
+            }
+            //GPS週・週秒から年月日時分秒に変換
+            GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
+            ReturnValue value = gpswStoGPST.method(weekNumber, tRxNanos * 1e-9);
             for (GnssMeasurement measurement : event.getMeasurements()) {
                 if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS&& SettingsFragment.useQZ) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA))) {
-                    GnssClock gnssClock = event.getClock();
-                    double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
-                    double weekNumberNanos = weekNumber * 604800 * 1e9;
-                    double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
-                    if (gnssClock.hasBiasNanos()) {
-                        tRxNanos = tRxNanos - gnssClock.getBiasNanos();
-                    }
-                    //GPS週・週秒から年月日時分秒に変換
-                    GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
-                    ReturnValue value = gpswStoGPST.method(weekNumber, tRxNanos * 1e-9);
-                    if (measurement.getTimeOffsetNanos() != 0) {
-                        tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
-                    }
-                    double tRxSeconds = tRxNanos * 1e-9;
+                    double tRxSeconds = (tRxNanos - measurement.getTimeOffsetNanos()) * 1e-9;
                     double tTxSeconds = measurement.getReceivedSvTimeNanos() * 1e-9;
                     //GLONASSTからGPSTへ(ｶｯｺｶﾘ)
                     if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){

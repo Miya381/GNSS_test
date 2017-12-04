@@ -1,5 +1,7 @@
 package com.kubolab.gnss.gnssloggerR;
 
+import android.util.Log;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -141,6 +143,7 @@ public class GnssNavigationConv {
                     break;*/
                 case 4:
                     NavMessage.append(handleFourthSubframe(rawData));
+                    Log.d("Navigation 4th Subframe",NavMessage.toString());
                     break;
                 case 5:
                     break;
@@ -292,6 +295,7 @@ public class GnssNavigationConv {
         byte pageId = (byte) extractBits(62, 6, rawData);
         if (pageId != IONOSPHERIC_PARAMETERS_PAGE_18_SV_ID) {
             // We only care to decode ionospheric parameters for now
+            Log.d("NAV_4th","Not found IONOSPHERIC DATA");
             return null;
         }
 
