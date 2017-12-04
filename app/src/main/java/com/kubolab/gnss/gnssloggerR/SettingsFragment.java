@@ -78,6 +78,8 @@ private TextView mAccSpecView;
     public static boolean FileLoggingOK = false;
     public static boolean EnableLogging = false;
 
+    public static boolean RINEXNAVLOG = false;
+
     //RINEX記述モード
     public static boolean RINEX303 = false;
 
@@ -273,6 +275,15 @@ private TextView mAccSpecView;
                         }
                     }
                 });
+
+        final CheckBox RINEXNAVCheck = (CheckBox) view.findViewById(R.id.outputRINESNAV);
+        RINEXNAVCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RINEXNAVLOG = RINEXNAVCheck.isChecked();
+            }
+        });
+
         Date now = new Date();
         int observation = now.getYear() - 100;
         //final TextView FileName = (TextView) view.findViewById(R.id.FileName);

@@ -657,7 +657,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:text="RINEX"
+                    android:text="RINEX Observation"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -686,6 +686,48 @@
                     app:layout_constraintTop_toBottomOf="@+id/FileExtension" />
 
                 <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="RINEX Navigation"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toBottomOf="@+id/view17"
+                    tools:layout_editor_absoluteX="16dp" />
+
+                <TextView
+                    android:id="@+id/fileExtension"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text='$log/RINEX/"prefix".xxn'
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView26" />
+
+                <CheckBox
+                    android:id="@+id/outputRINESNAV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="false"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView26"
+                    app:layout_constraintStart_toStartOf="@+id/outputRINEX"
+                    app:layout_constraintTop_toTopOf="@+id/textView26"
+                    app:layout_constraintVertical_bias="0.625" />
+
+                <View
+                    android:id="@+id/view9"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintTop_toBottomOf="@+id/fileExtension"
+                    tools:layout_editor_absoluteX="0dp" />
+
+                <TextView
                     android:id="@+id/textView56"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -696,7 +738,7 @@
                     android:textSize="18sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/view17" />
+                    app:layout_constraintTop_toBottomOf="@+id/view9" />
 
                 <CheckBox
                     android:id="@+id/outputKML"

@@ -48,19 +48,23 @@ public class FileLogger implements GnssListener {
     private  final Object mFileSubLock = new Object();
     private final Object mFileAccAzLock = new Object();
     private final Object mFileNmeaLock = new Object();
+    private final Object mFileNavLock = new Object();
     private BufferedWriter mFileWriter;
     private BufferedWriter mFileSubWriter;
     private BufferedWriter mFileAccAzWriter;
     private BufferedWriter mFileNmeaWriter;
+    private BufferedWriter mFileNavWriter;
     private File mFile;
     private File mFileSub;
     private File mFileAccAzi;
     private File mFileNmea;
+    private File mFileNav;
     private boolean firsttime;
     private UIFragmentComponent mUiComponent;
     private boolean notenoughsat = false;
     private boolean firstOBSforAcc = true;
     private ArrayList<Integer> UsedInFixList = new ArrayList<Integer>() ;
+    private boolean RINEX_NAV_ION_OK = false;
 
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
 
@@ -514,6 +518,85 @@ public class FileLogger implements GnssListener {
                     }
                 }
         }
+        //RINEXNAV
+        if(SettingsFragment.RINEXNAVLOG) {
+            synchronized (mFileNavLock) {
+                File baseNmeaDirectory;
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    baseNmeaDirectory = new File(Environment.getExternalStorageDirectory(), SettingsFragment.FILE_PREFIXNMEA);
+                    baseNmeaDirectory.mkdirs();
+                } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                    logError("Cannot write to external storage.");
+                    return;
+                } else {
+                    logError("Cannot read external storage.");
+                    return;
+                }
+
+                Date now = new Date();
+                int observation = now.getYear() - 100;
+                String fileNameNav = String.format(SettingsFragment.FILE_NAME + "." + observation + "n", SettingsFragment.FILE_PREFIXNMEA);
+                File currentFileNav = new File(baseNmeaDirectory, fileNameNav);
+                String currentFileNavPath = currentFileNav.getAbsolutePath();
+                BufferedWriter currentFileNavWriter;
+                try {
+                    currentFileNavWriter = new BufferedWriter(new FileWriter(currentFileNav));
+                } catch (IOException e) {
+                    logException("Could not open NMEA file: " + currentFileNav, e);
+                    return;
+                }
+                try {
+                    currentFileNavWriter.write("     3.03           N: GNSS NAV DATA    M: MIXED            RINEX VERSION / TYPE");
+                    currentFileNavWriter.newLine();
+                    currentFileNavWriter.write("                                                            PGM / RUN BY / DATE");
+                    currentFileNavWriter.newLine();
+                } catch (IOException e) {
+                    Toast.makeText(mContext, "Count not initialize observation file", Toast.LENGTH_SHORT).show();
+                    logException("Count not initialize file: " + currentFileNavPath, e);
+                    return;
+                }
+
+                // NMEAファイルへのヘッダ書き出し
+/*
+                try {
+                    currentFileNmeaWriter.write("NMEA");
+                    currentFileNmeaWriter.newLine();
+                } catch (IOException e) {
+                    Toast.makeText(mContext, "Count not initialize Sub observation file", Toast.LENGTH_SHORT).show();
+                    logException("Count not initialize NMEA file: " + currentFileNmeaPath, e);
+                    return;
+                }
+*/
+                if (mFileNavWriter != null) {
+                    try {
+                        mFileNavWriter.close();
+                    } catch (IOException e) {
+                        logException("Unable to close Nav file streams.", e);
+                        return;
+                    }
+                }
+                mFileNav = currentFileNav;
+                mFileNavWriter = currentFileNavWriter;
+                Toast.makeText(mContext, "File opened: " + currentFileNavPath, Toast.LENGTH_SHORT).show();
+
+                // To make sure that files do not fill up the external storage:
+                // - Remove all empty files
+                FileFilter filter = new FileToDeleteFilter(mFileNav);
+                for (File existingFile : baseNmeaDirectory.listFiles(filter)) {
+                    existingFile.delete();
+                }
+                // - Trim the number of files with data
+                File[] existingFiles = baseNmeaDirectory.listFiles();
+                int filesToDeleteCount = existingFiles.length - MAX_FILES_STORED;
+                if (filesToDeleteCount > 0) {
+                    Arrays.sort(existingFiles);
+                    for (int i = 0; i < filesToDeleteCount; ++i) {
+                        existingFiles[i].delete();
+                    }
+                }
+            }
+        }
 
     }
 
@@ -534,38 +617,15 @@ public class FileLogger implements GnssListener {
         if(mFileNmea == null){
             return;
         }
+        if(mFileNav == null && SettingsFragment.RINEXNAVLOG){
+            return;
+        }
         try {
             mFileSubWriter.write("    </coordinates>\n  </LineString>\n</Placemark>\n</Document>\n</kml>\n");
             mFileSubWriter.newLine();
         }catch (IOException e){
             Toast.makeText(mContext, "ERROR_WRITINGFOTTER_FILE", Toast.LENGTH_SHORT).show();
             logException(ERROR_WRITING_FILE, e);
-        }
-        if(SettingsFragment.SendMode) {
-            Intent emailIntent = new Intent(Intent.ACTION_SEND);
-            emailIntent.setType("*/*");
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SensorLog");
-            emailIntent.putExtra(Intent.EXTRA_TEXT, "");
-            // attach the file
-            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFile));
-            getUiComponent().startActivity(Intent.createChooser(emailIntent, "Send RINEX.."));
-
-            Intent emailIntentSub = new Intent(Intent.ACTION_SEND);
-            emailIntentSub.setType("*/*");
-            emailIntentSub.putExtra(Intent.EXTRA_SUBJECT, "SensorSubLog");
-            emailIntentSub.putExtra(Intent.EXTRA_TEXT, "");
-            // attach the file
-            emailIntentSub.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFileSub));
-            getUiComponent().startActivity(Intent.createChooser(emailIntentSub, "Send KML.."));
-            if (SettingsFragment.ResearchMode) {
-                Intent emailIntentAccAzi = new Intent(Intent.ACTION_SEND);
-                emailIntentAccAzi.setType("*/*");
-                emailIntentAccAzi.putExtra(Intent.EXTRA_SUBJECT, "SensorAccAziLog");
-                emailIntentAccAzi.putExtra(Intent.EXTRA_TEXT, "");
-                // attach the file
-                emailIntentAccAzi.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mFileAccAzi));
-                getUiComponent().startActivity(Intent.createChooser(emailIntentAccAzi, "Send SensorLog ..."));
-            }
         }
 
         if (mFileWriter != null) {
@@ -612,6 +672,18 @@ public class FileLogger implements GnssListener {
                 mFileNmeaWriter = null;
             } catch (IOException e) {
                 logException("Unable to close NMEA file streams.", e);
+                return;
+            }
+        }
+        if(SettingsFragment.RINEXNAVLOG){
+            try {
+                mFileNavWriter.close();
+                Intent mediaScanIntentSub = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,Uri.fromFile(mFileNav));
+                mContext.sendBroadcast(mediaScanIntentSub);
+                mFileNavWriter = null;
+                RINEX_NAV_ION_OK = false;
+            } catch (IOException e) {
+                logException("Unable to close NAV file streams.", e);
                 return;
             }
         }
@@ -745,35 +817,27 @@ public class FileLogger implements GnssListener {
 
     @Override
     public void onGnssNavigationMessageReceived(GnssNavigationMessage navigationMessage) {
-        /*synchronized (mFileLock) {
-            if (mFileWriter == null) {
-                return;
+        if(SettingsFragment.RINEXNAVLOG){
+            synchronized (mFileNavLock){
+                if(mFileNavWriter == null){
+                    return;
+                }
+                try {
+                    if(RINEX_NAV_ION_OK == false) {
+                        StringBuilder NAV_ION = new StringBuilder();
+                        GnssNavigationConv mGnssNavigationConv = new GnssNavigationConv();
+                        NAV_ION.append(mGnssNavigationConv.onNavMessageReported((byte) navigationMessage.getSvid(),(byte)navigationMessage.getType(),(short) navigationMessage.getMessageId(),navigationMessage.getData()));
+                        if(NAV_ION != null) {
+                            mFileNavWriter.write(NAV_ION.toString());
+                            RINEX_NAV_ION_OK = true;
+                        }
+                    }
+                }catch (IOException e){
+                    Toast.makeText(mContext, "ERROR_WRITING_FILE", Toast.LENGTH_SHORT).show();
+                    logException(ERROR_WRITING_FILE, e);
+                }
             }
-            StringBuilder builder = new StringBuilder("Nav");
-            builder.append(RECORD_DELIMITER);
-            builder.append(navigationMessage.getSvid());
-            builder.append(RECORD_DELIMITER);
-            builder.append(navigationMessage.getType());
-            builder.append(RECORD_DELIMITER);
-
-            int status = navigationMessage.getStatus();
-            builder.append(status);
-            builder.append(RECORD_DELIMITER);
-            builder.append(navigationMessage.getMessageId());
-            builder.append(RECORD_DELIMITER);
-            builder.append(navigationMessage.getSubmessageId());
-            byte[] data = navigationMessage.getData();
-            for (byte word : data) {
-                builder.append(RECORD_DELIMITER);
-                builder.append(word);
-            }
-            try {
-                mFileWriter.write(builder.toString());
-                mFileWriter.newLine();
-            } catch (IOException e) {
-                logException(ERROR_WRITING_FILE, e);
-            }
-        }*/
+        }
     }
     public void onSensorListener(String listener,float azimuth,float accZ,float altitude){
         synchronized (mFileAccAzLock) {
