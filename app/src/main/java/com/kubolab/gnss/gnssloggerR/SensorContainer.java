@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import java.util.List;
 
@@ -49,9 +50,13 @@ public class SensorContainer {
     private float Pressure;
     private float LastAltitude = 0.0f;
     /** X軸の回転角度 */
-    private double mPitchX;
+    private double mPitchX = 0;
+    private double mPitchAX = 0;
+    private double mPitchGX = 0;
     /** Y軸の回転角度 */
-    private double mRollY;
+    private double mRollY = 0;
+    private double mRollAY = 0;
+    private double mRollGY = 0;
     /** Z軸の回転角度(方位角) */
     private double mAzimuthZ;
     private final Context mContext;
@@ -267,8 +272,25 @@ public class SensorContainer {
                     double Gx = -y;
                     double Gy = x;
                     double Gz = z;
-                    mRollY = Math.atan2(Gy,Gz);
-                    mPitchX  = Math.atan( -Gx / (Gy * Math.sin(mRollY) + Gz * Math.cos(mRollY)));
+                    mRollAY = Math.atan2(Gy,Gz);
+                    mPitchAX  = Math.atan( -Gx / (Gy * Math.sin(mRollY) + Gz * Math.cos(mRollY)));
+                    mRollGY = mRollGY + ((GyroY * 0.1)/2);
+                    Log.d("Gyro",GyroX + "," + GyroY);
+                    if(mRollGY > 2 * Math.PI){
+                        mRollGY = mRollGY - 2 * Math.PI;
+                    }
+                    if(mRollGY < 0.0){
+                        mRollGY = mRollGY + 2 * Math.PI;
+                    }
+                    mPitchGX = mPitchGX + ((GyroX * 0.1)/2);
+                    if(mPitchGX > 2 * Math.PI){
+                        mPitchGX = mPitchGX - 2 * Math.PI;
+                    }
+                    if(mPitchGX < 0.0){
+                        mPitchGX = mPitchGX + 2 * Math.PI;
+                    }
+                    mRollY = mRollGY;
+                    mPitchX = mPitchGX;
                     /*double tmp = mRollY;
                     mRollY = mPitchX;
                     mPitchX = tmp;*/

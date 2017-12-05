@@ -746,8 +746,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
+                    android:enabled="false"
                     app:layout_constraintBottom_toBottomOf="@+id/textView56"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView56" />
 
                 <TextView
@@ -789,6 +790,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
+                    android:enabled="false"
                     app:layout_constraintBottom_toBottomOf="@+id/textView58"
                     app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView58" />
@@ -931,6 +933,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
+                    android:enabled="false"
                     app:layout_constraintBottom_toBottomOf="@+id/textView54"
                     app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView54" />

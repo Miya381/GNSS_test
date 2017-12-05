@@ -79,6 +79,8 @@ private TextView mAccSpecView;
     public static boolean FileLoggingOK = false;
     public static boolean EnableLogging = false;
 
+    public static boolean EnableSensorLog = false;
+
     public static boolean RINEXNAVLOG = false;
 
     //RINEX記述モード
@@ -156,7 +158,7 @@ private TextView mAccSpecView;
                 }
             }
         });
-        CheckBox cb = (CheckBox) view.findViewById(R.id.checkBoxPseudorange);
+        /*CheckBox cb = (CheckBox) view.findViewById(R.id.checkBoxPseudorange);
         cb.setEnabled(false);
         cb = (CheckBox) view.findViewById(R.id.useGPS);
         cb.setEnabled(false);
@@ -165,9 +167,7 @@ private TextView mAccSpecView;
         cb = (CheckBox) view.findViewById(R.id.outputKML);
         cb.setEnabled(false);
         cb = (CheckBox) view.findViewById(R.id.outputNmea);
-        cb.setEnabled(false);
-        cb = (CheckBox) view.findViewById(R.id.outputSensor);
-        cb.setEnabled(false);
+        cb.setEnabled(false);*/
 
         final CheckBox PseudorangeSmoother = (CheckBox) view.findViewById(R.id.checkBoxPseSmoother);
         PseudorangeSmoother.setEnabled(false);
@@ -282,6 +282,14 @@ private TextView mAccSpecView;
             @Override
             public void onClick(View v) {
                 RINEXNAVLOG = RINEXNAVCheck.isChecked();
+            }
+        });
+
+        final CheckBox outPutSensor = (CheckBox) view.findViewById(R.id.outputSensor);
+        outPutSensor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EnableSensorLog = outPutSensor.isChecked();
             }
         });
 

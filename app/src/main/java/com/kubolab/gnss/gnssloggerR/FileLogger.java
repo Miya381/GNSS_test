@@ -74,6 +74,8 @@ public class FileLogger implements GnssListener {
     private double SMOOTHER_RATE = 0.01;
     private boolean initialize = false;
 
+    private double constFullBiasNanos = 0.0;
+
     public synchronized UIFragmentComponent getUiComponent() {
         return mUiComponent;
     }
@@ -212,8 +214,13 @@ public class FileLogger implements GnssListener {
 
                 // サブ観測ファイルへのヘッダ書き出し
                 try {
-                    currentFileAccAziWriter.write("Android Acc\nEast,North ");
-                    currentFileAccAziWriter.newLine();
+                    if(SettingsFragment.EnableSensorLog) {
+                        currentFileAccAziWriter.write("Android Acc\nEast,North ");
+                        currentFileAccAziWriter.newLine();
+                    }else {
+                        currentFileAccAziWriter.write("PseudorangeRate,PseudorangeRate (Carrier Phase),PseudorangeRate (Doppler) ");
+                        currentFileAccAziWriter.newLine();
+                    }
                 } catch (IOException e) {
                     Toast.makeText(mContext, "Count not initialize Sub observation file", Toast.LENGTH_SHORT).show();
                     logException("Count not initialize subobservation file: " + currentFileAccAziPath, e);
@@ -788,6 +795,12 @@ public class FileLogger implements GnssListener {
                                 mFileWriter.write(StartTimeOBS + ENDOFHEADER);
                                 mFileWriter.newLine();
                             }
+                            //FullBiasNanosを固定する.
+                            if(gnssClock.hasBiasNanos()) {
+                                constFullBiasNanos = gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
+                            }else {
+                                constFullBiasNanos = gnssClock.getFullBiasNanos();
+                            }
                             firsttime = false;
                         }
                     }
@@ -843,7 +856,7 @@ public class FileLogger implements GnssListener {
     }
     public void onSensorListener(String listener,float azimuth,float accZ,float altitude){
         synchronized (mFileAccAzLock) {
-            if (mFileAccAzWriter == null || SettingsFragment.ResearchMode == false) {
+            if (mFileAccAzWriter == null || SettingsFragment.ResearchMode == false || !SettingsFragment.EnableSensorLog) {
                 return;
             }
             else{
@@ -925,10 +938,15 @@ public class FileLogger implements GnssListener {
             GnssClock gnssClock = event.getClock();
             double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
             double weekNumberNanos = weekNumber * 604800 * 1e9;
-            double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
-            if (gnssClock.hasBiasNanos()) {
-                tRxNanos = tRxNanos - gnssClock.getBiasNanos();
+            //FullBiasNanosがリセットされたら再計算
+            if(constFullBiasNanos == 0.0){
+                if(gnssClock.hasBiasNanos()) {
+                    constFullBiasNanos = gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
+                }else {
+                    constFullBiasNanos = gnssClock.getFullBiasNanos();
+                }
             }
+            double tRxNanos = gnssClock.getTimeNanos() - constFullBiasNanos - weekNumberNanos;
             //GPS週・週秒から年月日時分秒に変換
             GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
             ReturnValue value = gpswStoGPST.method(weekNumber, tRxNanos * 1e-9);
@@ -1058,6 +1076,9 @@ public class FileLogger implements GnssListener {
             mFileWriter.newLine();
             mFileWriter.write(Measurements.toString());
             mFileWriter.newLine();
+            if(firstOBS == false){
+                constFullBiasNanos = 0.0;
+            }
             firstOBS = false;
             if (SettingsFragment.ResearchMode) {
                 mFileAccAzWriter.write(SensorStream);
@@ -1069,10 +1090,15 @@ public class FileLogger implements GnssListener {
                     GnssClock gnssClock = event.getClock();
                     double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
                     double weekNumberNanos = weekNumber * 604800 * 1e9;
-                    double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
-                    if (gnssClock.hasBiasNanos()) {
-                        tRxNanos = tRxNanos - gnssClock.getBiasNanos();
+                    //FullBiasNanosがリセットされたら再計算
+                    if(constFullBiasNanos == 0.0){
+                        if(gnssClock.hasBiasNanos()) {
+                            constFullBiasNanos = gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
+                        }else {
+                            constFullBiasNanos = gnssClock.getFullBiasNanos();
+                        }
                     }
+                    double tRxNanos = gnssClock.getTimeNanos() - constFullBiasNanos - weekNumberNanos;
                     if (measurement.getTimeOffsetNanos() != 0) {
                         tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
                     }
