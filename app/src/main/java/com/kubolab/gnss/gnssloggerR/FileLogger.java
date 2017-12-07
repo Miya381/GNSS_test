@@ -860,14 +860,16 @@ public class FileLogger implements GnssListener {
                 return;
             }
             else{
-                try {
-                    String SensorStream =
-                            String.format("%f,%f,%f", (float)(accZ * Math.sin(azimuth)),(float)(accZ * Math.cos(azimuth)),altitude);
-                    mFileAccAzWriter.write(SensorStream);
-                    mFileAccAzWriter.newLine();
-                }catch (IOException e){
-                    Toast.makeText(mContext, "ERROR_WRITING_FILE", Toast.LENGTH_SHORT).show();
-                    logException(ERROR_WRITING_FILE, e);
+                if(listener == "") {
+                    try {
+                        String SensorStream =
+                                String.format("%f,%f,%f", (float) (accZ * Math.sin(azimuth)), (float) (accZ * Math.cos(azimuth)), altitude);
+                        mFileAccAzWriter.write(SensorStream);
+                        mFileAccAzWriter.newLine();
+                    } catch (IOException e) {
+                        Toast.makeText(mContext, "ERROR_WRITING_FILE", Toast.LENGTH_SHORT).show();
+                        logException(ERROR_WRITING_FILE, e);
+                    }
                 }
             }
         }
@@ -1015,20 +1017,22 @@ public class FileLogger implements GnssListener {
                         //Measurements.append(prn);
                         String C1C = String.format("%14.3f%s%s", prm, " ", " ");
                         String L1C = String.format("%14.3f%s%s", 0.0, " ", " ");
+                        //搬送波の謎バイアスを補正したい
+                        double ADR = measurement.getAccumulatedDeltaRangeState();
                         if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                             if (SettingsFragment.CarrierPhase == true) {
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                    L1C = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, "1", " ");
+                                    L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
                                 } else {
-                                    L1C = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, " ", " ");
+                                    L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
                                 }
                             }
                         }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                             if(measurement.getSvid() <= 24){
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                    L1C = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
+                                    L1C = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
                                 } else {
-                                    L1C = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
+                                    L1C = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
                                 }
                             }
                         }
@@ -1145,18 +1149,19 @@ public class FileLogger implements GnssListener {
                         String PrmStrings = String.format("%14.3f%s%s", prm, " ", " ");
                         String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
                         if (SettingsFragment.CarrierPhase == true) {
+                            double ADR = measurement.getAccumulatedDeltaRangeState();
                             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                    DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, "1", " ");
+                                    DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
                                 } else {
-                                    DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH, " ", " ");
+                                    DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
                                 }
                             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                                 if(measurement.getSvid() <= 24) {
                                     if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                        DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
+                                        DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
                                     } else {
-                                        DeltaRangeStrings = String.format("%14.3f%s%s", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
+                                        DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
                                     }
                                 }else {
                                     DeltaRangeStrings = String.format("%14.3f%s%s",0.0, " ", " ");

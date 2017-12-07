@@ -172,6 +172,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
+                    android:enabled="false"
                     app:layout_constraintBottom_toBottomOf="@+id/textView35"
                     app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView35" />
@@ -291,6 +292,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:checked="true"
+                    android:enabled="false"
                     android:layoutDirection="ltr"
                     android:text="GPS"
                     android:textSize="16sp"
@@ -714,6 +716,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:checked="false"
+                    android:enabled="false"
                     app:layout_constraintBottom_toBottomOf="@+id/textView26"
                     app:layout_constraintStart_toStartOf="@+id/outputRINEX"
                     app:layout_constraintTop_toTopOf="@+id/textView26"
@@ -834,6 +837,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
+                    android:enabled="false"
                     app:layout_constraintBottom_toBottomOf="@+id/textView62"
                     app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
                     app:layout_constraintTop_toTopOf="@+id/textView62" />

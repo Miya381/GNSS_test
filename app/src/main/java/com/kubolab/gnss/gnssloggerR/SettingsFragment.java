@@ -139,11 +139,6 @@ private TextView mAccSpecView;
                 if(isChecked){
                     RINEX303 = true;
                     rbrinex211.setChecked(false);
-                    /*new AlertDialog.Builder(getContext())
-                            .setTitle("WARINING")
-                            .setMessage("The function to write to RINEX 3.03 is a beta version.\nOperation and file integrity are not guaranteed.")
-                            .setPositiveButton("OK", null)
-                            .show();*/
                     RINEXDescription.setText("RINEX3.03 mode can log all satellites");
                 }
             }
@@ -158,16 +153,6 @@ private TextView mAccSpecView;
                 }
             }
         });
-        /*CheckBox cb = (CheckBox) view.findViewById(R.id.checkBoxPseudorange);
-        cb.setEnabled(false);
-        cb = (CheckBox) view.findViewById(R.id.useGPS);
-        cb.setEnabled(false);
-        cb = (CheckBox) view.findViewById(R.id.outputRINEX);
-        cb.setEnabled(false);
-        cb = (CheckBox) view.findViewById(R.id.outputKML);
-        cb.setEnabled(false);
-        cb = (CheckBox) view.findViewById(R.id.outputNmea);
-        cb.setEnabled(false);*/
 
         final CheckBox PseudorangeSmoother = (CheckBox) view.findViewById(R.id.checkBoxPseSmoother);
         PseudorangeSmoother.setEnabled(false);
@@ -233,32 +218,6 @@ private TextView mAccSpecView;
 
         });
 
-        final Switch ResearchModeSwitch = (Switch) view.findViewById(R.id.ResearchMode);
-        //リリース時
-        if(BuildConfig.DEBUG == false) {
-            ResearchModeSwitch.setEnabled(false);
-        }
-        ResearchModeSwitch.setChecked(false);
-        ResearchModeSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (isChecked) {
-                    ResearchMode = true;
-                    //rbrinex303.setEnabled(true);
-                    useGAL.setEnabled(true);
-                } else {
-                    ResearchMode = false;
-                    //rbrinex303.setEnabled(false);
-                    //rbrinex303.setChecked(false);
-                    //rbrinex211.setChecked(true);
-                    useGAL.setEnabled(false);
-                    //RINEX303 = false;
-                }
-            }
-
-        });
-
         final Switch registerSensor = (Switch) view.findViewById(R.id.register_sensor);
         registerSensor.setChecked(false);
         registerSensor.setOnCheckedChangeListener(
@@ -295,8 +254,6 @@ private TextView mAccSpecView;
 
         Date now = new Date();
         int observation = now.getYear() - 100;
-        //final TextView FileName = (TextView) view.findViewById(R.id.FileName);
-        //FileName.setText(FILE_NAME);
         final TextView FileExtension = (TextView) view.findViewById(R.id.FileExtension);
         FileExtension.setText("$log/RINEX/\"prefix\"." + observation + "o");
 
@@ -325,103 +282,34 @@ private TextView mAccSpecView;
             }
         });
 
-//        final TextView testtextview = (TextView) view.findViewById(R.id.textView11);
-//        testtextview.setText("tesettest");
-
-
-
-        final Switch SendFileSwitch = (Switch) view.findViewById(R.id.FileSend);
-        SendFileSwitch.setChecked(false);
-        SendFileSwitch.setOnCheckedChangeListener(
-                new OnCheckedChangeListener() {
-
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                        if (isChecked) {
-                            SendMode = true;
-                        } else {
-                            SendMode = false;
-                        }
-                    }
-                });
-        /*Button resetGNSSClock = (Button) view.findViewById(R.id.rstbutton);
-
-        resetGNSSClock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                GnssClock Clock = null;
-                try {
-                    Clock = GnssClock.class.newInstance();
-                } catch (java.lang.InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                Method method_clock = null;
-                try {
-                    method_clock = Clock.getClass().getMethod("reset");
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-                if(Clock != null) {
-                    try {
-                        Object reset = method_clock.invoke(Clock);
-                        Log.d("Invoke Complete", "GNSS Clock Reset Complete");
-                    } catch (IllegalArgumentException e) {
-                        //呼び出し：引数が異なる
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        //呼び出し：アクセス違反、保護されている
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        //ターゲットとなるメソッド自身の例外処理
-                        e.printStackTrace();
-                    }
-
-                }
-                else {
-                    Log.e("Invoke Error", "GNSSClock Instance is null");
-                }
-            }
-        });
-
-        Button exit = (Button) view.findViewById(R.id.exit);
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().finishAffinity();
-            }
-        });*/
-
-        TextView swInfo = (TextView) view.findViewById(R.id.sw_info);
-
-        java.lang.reflect.Method method;
-        LocationManager locationManager = mGpsContainer.getLocationManager();
-        try {
-            method = locationManager.getClass().getMethod("getGnssYearOfHardware");
-            int hwYear = (int) method.invoke(locationManager);
-            if (hwYear == 0) {
-                swInfo.append("HW Year: " + "2015 or older \n");
-            } else {
-                swInfo.append("HW Year: " + hwYear + "\n");
-            }
-
-        } catch (NoSuchMethodException e) {
-            logException("No such method exception: ", e);
-            return null;
-        } catch (IllegalAccessException e) {
-            logException("Illegal Access exception: ", e);
-            return null;
-        } catch (InvocationTargetException e) {
-            logException("Invocation Target Exception: ", e);
-            return null;
+        final Switch ResearchModeSwitch = (Switch) view.findViewById(R.id.ResearchMode);
+        //リリース時
+        if(BuildConfig.DEBUG == false) {
+            ResearchModeSwitch.setEnabled(false);
         }
+        ResearchModeSwitch.setChecked(false);
+        ResearchModeSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-        String platfromVersionString = Build.VERSION.RELEASE;
-        swInfo.append("Platform: " + platfromVersionString + "\n");
-        int apiLivelInt = Build.VERSION.SDK_INT;
-        swInfo.append("Api Level: " + apiLivelInt);
+                if (isChecked) {
+                    ResearchMode = true;
+                    //rbrinex303.setEnabled(true);
+                    useGAL.setEnabled(true);
+                    RINEXNAVCheck.setEnabled(true);
+
+                } else {
+                    ResearchMode = false;
+                    //rbrinex303.setEnabled(false);
+                    //rbrinex303.setChecked(false);
+                    //rbrinex211.setChecked(true);
+                    useGAL.setEnabled(false);
+                    RINEXNAVCheck.setEnabled(false);
+                    //RINEX303 = false;
+                }
+            }
+
+        });
         UiLogger currentUiLogger = mUiLogger;
         if (currentUiLogger != null) {
             //Log.d("mUILogger","Pointer OK");
@@ -467,11 +355,6 @@ private TextView mAccSpecView;
             //Log.d("GNSSStatus","GNSSMeasurements Status Ready");
             Toast.makeText(getContext(),"GNSS Measurements Ready",Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void logException(String errorMessage, Exception e) {
-        //Log.e(GnssContainer.TAG + TAG, errorMessage, e);
-        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
     }
 
     public class UIFragmentSettingComponent {
@@ -562,4 +445,3 @@ private TextView mAccSpecView;
         }
     }
 }
-//aaa

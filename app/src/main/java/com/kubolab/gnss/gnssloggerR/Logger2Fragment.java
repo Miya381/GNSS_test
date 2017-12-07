@@ -229,7 +229,7 @@ public class Logger2Fragment extends Fragment {
                                 double Altitude = 1 - pos[i][1]/90;
                                 Altitude = Altitude * (MaxCanvusWidth/2);
                                 float azimuth = pos[i][0];
-                                Log.d("Azimuth",String.valueOf(azimuth));
+                                //Log.d("Azimuth",String.valueOf(azimuth));
                                 azimuth = azimuth - 90;
                                 if(azimuth < 0){
                                     azimuth = azimuth + 360;

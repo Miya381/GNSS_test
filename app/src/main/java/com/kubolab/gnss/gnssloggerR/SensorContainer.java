@@ -63,6 +63,11 @@ public class SensorContainer {
     private final UiLogger mLogger;
     private final FileLogger mFileLogger;
 
+    private float LAST_STEP = (float) 0.0;
+    private float NOW_STEP = (float) 0.0;
+
+    private long LAST_GYRONANOS = -1;
+
     // ローパスフィルタ用変数
     private float currentOrientationZValues = 0.0f;
     private float currentAccelerationZValues = 0.0f;
@@ -106,6 +111,8 @@ public class SensorContainer {
         mManager.registerListener(listener,mManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 100000);
         //ジャイロセンサーuncalibrated登録
         mManager.registerListener(listener,mManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE_UNCALIBRATED), 100000);
+        //ステップカウンター登録
+        mManager.registerListener(listener,mManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),100000);
 
         Sensor sensor;
         String[] strTmp = new String[4];
@@ -196,6 +203,7 @@ public class SensorContainer {
         @Override
         public void onSensorChanged(SensorEvent event) {
             // センサーイベント
+            long timeEspNanos = 0;
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_MAGNETIC_FIELD:
                     // 地磁気センサー
@@ -225,6 +233,13 @@ public class SensorContainer {
                     break;
                 case Sensor.TYPE_GYROSCOPE:
                     //ジャイロ
+                    if(LAST_GYRONANOS < 0){
+                        LAST_GYRONANOS = event.timestamp;
+                    }else {
+                        timeEspNanos = event.timestamp - LAST_GYRONANOS;
+                        LAST_GYRONANOS = event.timestamp;
+                        Log.d("TimeStamp",String.valueOf(timeEspNanos));
+                    }
                     mGyroValues = event.values.clone();
                     GyroX  = mGyroValues[0];
                     GyroY  = mGyroValues[1];
@@ -240,6 +255,10 @@ public class SensorContainer {
                     GyroDriftY  = mGyroUncalibratedValues[4];
                     GyroDriftZ  = mGyroUncalibratedValues[5];
                     break;
+                case Sensor.TYPE_STEP_DETECTOR:
+                    if(!SettingsFragment.ResearchMode){
+
+                    }
                 default:
                     // それ以外は無視
                     return;
@@ -272,25 +291,48 @@ public class SensorContainer {
                     double Gx = -y;
                     double Gy = x;
                     double Gz = z;
-                    mRollAY = Math.atan2(Gy,Gz);
-                    mPitchAX  = Math.atan( -Gx / (Gy * Math.sin(mRollY) + Gz * Math.cos(mRollY)));
-                    mRollGY = mRollGY + ((GyroY * 0.1)/2);
-                    Log.d("Gyro",GyroX + "," + GyroY);
-                    if(mRollGY > 2 * Math.PI){
+                    mRollAY = Math.atan2(Gy, Gz);
+                    if (mRollAY > 2 * Math.PI) {
+                        mRollAY = mRollAY - 2 * Math.PI;
+                    }
+                    if (mRollAY < 0.0) {
+                        mRollAY = mRollAY + 2 * Math.PI;
+                    }
+                    mPitchAX = Math.atan(-Gx / (Gy * Math.sin(mRollY) + Gz * Math.cos(mRollY)));
+                    if (mPitchAX > 2 * Math.PI) {
+                        mPitchAX = mPitchAX - 2 * Math.PI;
+                    }
+                    if (mPitchAX < 0.0) {
+                        mPitchAX = mPitchAX + 2 * Math.PI;
+                    }
+
+                    if(mRollGY == 0){
+                        mRollGY = mRollAY;
+                        Log.d("Sensor","initialize");
+                    }
+                    if(mPitchGX == 0){
+                        mPitchGX = mPitchAX;
+                        Log.d("Sensor","initialize");
+                    }
+                    mRollGY = mRollGY + ((GyroY * (timeEspNanos * 1e-9)) / 2);
+                    //Log.d("Gyro", GyroX + "," + GyroY);
+                    if (mRollGY > 2 * Math.PI) {
                         mRollGY = mRollGY - 2 * Math.PI;
                     }
-                    if(mRollGY < 0.0){
+                    if (mRollGY < 0.0) {
                         mRollGY = mRollGY + 2 * Math.PI;
                     }
-                    mPitchGX = mPitchGX + ((GyroX * 0.1)/2);
-                    if(mPitchGX > 2 * Math.PI){
+                    mPitchGX = mPitchGX + ((GyroX * (timeEspNanos * 1e-9)) / 2);
+                    if (mPitchGX > 2 * Math.PI) {
                         mPitchGX = mPitchGX - 2 * Math.PI;
                     }
-                    if(mPitchGX < 0.0){
+                    if (mPitchGX < 0.0) {
                         mPitchGX = mPitchGX + 2 * Math.PI;
                     }
-                    mRollY = mRollGY;
-                    mPitchX = mPitchGX;
+                    Log.d("Sensor Mag",String.valueOf(Math.toDegrees(mPitchGX)) + "," + String.valueOf(Math.toDegrees(mRollGY)));
+                    Log.d("Sensor Acc",String.valueOf(Math.toDegrees(mPitchAX)) + "," + String.valueOf(Math.toDegrees(mRollAY)));
+                    mRollY = (0.95)*mRollGY + (0.05) * mRollAY ;
+                    mPitchX = (0.95)*mPitchGX + (0.05) * mPitchAX;
                     /*double tmp = mRollY;
                     mRollY = mPitchX;
                     mPitchX = tmp;*/
@@ -301,36 +343,36 @@ public class SensorContainer {
                     double GxOff = 0;
                     double GyOff = 0;
                     double GzOff = 0;
-                    mAzimuthZ = Math.atan2((((Bz - GzOff)*Math.sin(mRollY)) - ((By - GyOff)*Math.cos(mRollY))) , ((Bx - GxOff)*Math.cos(mPitchX) + (By - GyOff)*Math.sin(mPitchX)*Math.sin(mRollY) + (Bz - GzOff)*Math.sin(mPitchX)*Math.cos(mRollY)));
+                    mAzimuthZ = Math.atan2((((Bz - GzOff) * Math.sin(mRollY)) - ((By - GyOff) * Math.cos(mRollY))), ((Bx - GxOff) * Math.cos(mPitchX) + (By - GyOff) * Math.sin(mPitchX) * Math.sin(mRollY) + (Bz - GzOff) * Math.sin(mPitchX) * Math.cos(mRollY)));
                     //mAzimuthZ = -mAzimuthZ;
-                    //加速度センサーのWGS84系での下向きの加速度を求める
-                    double az = - RawX * Math.sin(mRollY) + RawY * Math.sin((mPitchX)) + RawZ * Math.cos((mPitchX)) * Math.cos(mRollY);
-                    double bx = RawX * Math.cos(mRollY) + RawZ * Math.sin(mRollY);
-                    double by = RawX * Math.sin(mPitchX) * Math.sin(mRollY) + RawY * Math.cos(mPitchX) - RawZ * Math.sin(mPitchX) * Math.cos(mRollY);
-                    double ax = bx * Math.cos(mAzimuthZ) - by * Math.sin(mAzimuthZ);
-                    double ay = bx * Math.sin(mAzimuthZ) + by * Math.cos(mAzimuthZ);
+                }
+                //加速度センサーのWGS84系での下向きの加速度を求める
+                double az = - RawX * Math.sin(mRollY) + RawY * Math.sin((mPitchX)) + RawZ * Math.cos((mPitchX)) * Math.cos(mRollY);
+                double bx = RawX * Math.cos(mRollY) + RawZ * Math.sin(mRollY);
+                double by = RawX * Math.sin(mPitchX) * Math.sin(mRollY) + RawY * Math.cos(mPitchX) - RawZ * Math.sin(mPitchX) * Math.cos(mRollY);
+                double ax = bx * Math.cos(mAzimuthZ) - by * Math.sin(mAzimuthZ);
+                double ay = bx * Math.sin(mAzimuthZ) + by * Math.cos(mAzimuthZ);
 
-                    currentOrientationZValues = (float)az * 0.1f + currentOrientationZValues * (1.0f - 0.1f);
-                    currentAccelerationZValues = (float)az - currentOrientationZValues;
-                    currentOrientationXValues = (float)ax * 0.1f + currentOrientationXValues * (1.0f - 0.1f);
-                    currentAccelerationXValues = (float)ax - currentOrientationXValues;
-                    currentOrientationYValues = (float)ay * 0.1f + currentOrientationYValues * (1.0f - 0.1f);
-                    currentAccelerationYValues = (float)ay - currentOrientationYValues;
-                    if(passcounter == true) {
-                        if (currentAccelerationZValues <= -1.5) {
-                            counter++;
-                            passcounter = false;
-                            mFileLogger.onSensorListener("", (float) mAzimuthZ,(float)0.72,Altitude);
-                        }
-                    }else{
-                        if (currentAccelerationZValues >= 1.0) {
-                            passcounter = true;
-                        }
+                currentOrientationZValues = (float)az * 0.1f + currentOrientationZValues * (1.0f - 0.1f);
+                currentAccelerationZValues = (float)az - currentOrientationZValues;
+                currentOrientationXValues = (float)ax * 0.1f + currentOrientationXValues * (1.0f - 0.1f);
+                currentAccelerationXValues = (float)ax - currentOrientationXValues;
+                currentOrientationYValues = (float)ay * 0.1f + currentOrientationYValues * (1.0f - 0.1f);
+                currentAccelerationYValues = (float)ay - currentOrientationYValues;
+                if(passcounter == true) {
+                    if (currentAccelerationZValues <= -1.5) {
+                        counter++;
+                        passcounter = false;
+                        mFileLogger.onSensorListener("", (float) mAzimuthZ,1,Altitude);
                     }
-                    if(Math.abs(currentAccelerationYValues) >= 0.00000000001 || Math.abs(currentAccelerationXValues) >= 0.0000000000001) {
-                        double AccAziRad = Math.atan(currentAccelerationYValues / currentAccelerationXValues);
-                        AccAzi = radianToDegrees((float) AccAziRad);
+                }else{
+                    if (currentAccelerationZValues >= 1.0) {
+                        passcounter = true;
                     }
+                }
+                if(Math.abs(currentAccelerationYValues) >= 0.00000000001 || Math.abs(currentAccelerationXValues) >= 0.0000000000001) {
+                    double AccAziRad = Math.atan(currentAccelerationYValues / currentAccelerationXValues);
+                    AccAzi = radianToDegrees((float) AccAziRad);
                 }
                 //気圧から高度を算出
                 if(mPressureValues != null){

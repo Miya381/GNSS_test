@@ -398,7 +398,7 @@ public class UiLogger implements GnssListener {
             SettingsFragment.FTP_SERVER_DIRECTORY = String.format("%4d/brdc/brdc%03d0.%2dn.Z",value.Y,spent,value.Y - 2000);
             component.SettingFTPDirectory(String.format("%4d/brdc/brdc%03d0.%2dn.Z",value.Y,spent,value.Y - 2000));
             final Calendar calendar = Calendar.getInstance();
-            Log.d("GNSSClock",gnssClock.toString());
+            Log.d("GNSSClock",String.valueOf(gnssClock.getBiasUncertaintyNanos()));
         }
         return ClockStr;
     }
@@ -460,9 +460,10 @@ public class UiLogger implements GnssListener {
                 //double GLONASSTINT = tTxSeconds.
                 //tTxSeconds = tTxSeconds + 16;
             }
-            Log.d("PRN",String.format("%s%2d",getConstellationName(measurement.getConstellationType()),measurement.getSvid()));
-            Log.d("tRxSeconds",String.valueOf(tRxSeconds));
-            Log.d("tTxSeconds",String.valueOf(tTxSeconds));
+            /*Log.d("PRN",String.format("%s%2d",getConstellationName(measurement.getConstellationType()),measurement.getSvid()));
+            Log.d("ADRUnc",String.valueOf(measurement.getAccumulatedDeltaRangeUncertaintyMeters()));
+            Log.d("DoppUnc",String.valueOf(measurement.getPseudorangeRateUncertaintyMetersPerSecond()));
+            Log.d("SvTimeUnc",String.valueOf(measurement.getReceivedSvTimeUncertaintyNanos()));*/
             /*急場の変更！！*/
             String DeviceName = Build.DEVICE;
             //Log.d("DEVICE",DeviceName);
@@ -521,7 +522,7 @@ public class UiLogger implements GnssListener {
             builder.append("tTxSeconds = ").append(tTxSeconds).append("\n");*/
             //builder.append("FullCarrierCycles = ").append(measurement.getCarrierCycles() + measurement.getCarrierPhase()).append("\n");
             if(SettingsFragment.CarrierPhase == true) {
-                Log.d("Carrier Phase",String.valueOf(measurement.getCarrierFrequencyHz()));
+                //Log.d("Carrier Phase",String.valueOf(measurement.getCarrierFrequencyHz()));
                 if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
                     array[arrayRow][2] = "ADR_STATE_CYCLE_SLIP";
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_RESET) {
