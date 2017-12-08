@@ -225,7 +225,9 @@ public class UiLogger implements GnssListener {
         if(TrueAzimuth >= 360){
             TrueAzimuth = 360 - TrueAzimuth;
         }
-        component2.log2SensorFragment(azimuth);
+        if(component2 != null) {
+            component2.log2SensorFragment(azimuth);
+        }
         if(component3 != null) {
             component3.log3TextFragment(listener);
         }

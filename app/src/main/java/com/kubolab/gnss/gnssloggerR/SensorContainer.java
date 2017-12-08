@@ -273,12 +273,18 @@ public class SensorContainer {
                 SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_Y, remapedMatrix);
                 SensorManager.getOrientation(remapedMatrix, orientationValues);
                 //ローパsフィルタ
-                x = (x * 0.9 + RawX * 0.1);
+                /*x = (x * 0.9 + RawX * 0.1);
                 y = (y * 0.9 + RawY * 0.1);
                 z = (z * 0.9 + RawZ * 0.1);
                 mx = (mx * 0.9 + MagX * 0.1);
                 my = (my * 0.9 + MagY * 0.1);
-                mz = (mz * 0.9 + MagZ * 0.1);
+                mz = (mz * 0.9 + MagZ * 0.1);*/
+                x = RawX;
+                y = RawY;
+                z = RawZ;
+                mx = MagX;
+                my = MagY;
+                mz = MagZ;
                 // ラジアン値を変換し、それぞれの回転角度を取得する
                 if(!SettingsFragment.ResearchMode) {
                     //Androidオリジナルシステム
@@ -298,7 +304,7 @@ public class SensorContainer {
                     if (mRollAY < 0.0) {
                         mRollAY = mRollAY + 2 * Math.PI;
                     }
-                    mPitchAX = Math.atan(-Gx / (Gy * Math.sin(mRollY) + Gz * Math.cos(mRollY)));
+                    mPitchAX = Math.atan((-Gx) / (Gy * Math.sin(mRollY) + Gz * Math.cos(mRollY)));
                     if (mPitchAX > 2 * Math.PI) {
                         mPitchAX = mPitchAX - 2 * Math.PI;
                     }
@@ -329,8 +335,8 @@ public class SensorContainer {
                     if (mPitchGX < 0.0) {
                         mPitchGX = mPitchGX + 2 * Math.PI;
                     }
-                    Log.d("Sensor Mag",String.valueOf(Math.toDegrees(mPitchGX)) + "," + String.valueOf(Math.toDegrees(mRollGY)));
-                    Log.d("Sensor Acc",String.valueOf(Math.toDegrees(mPitchAX)) + "," + String.valueOf(Math.toDegrees(mRollAY)));
+                    //Log.d("Sensor Mag",String.valueOf(Math.toDegrees(mPitchGX)) + "," + String.valueOf(Math.toDegrees(mRollGY)));
+                    //Log.d("Sensor Acc",String.valueOf(Math.toDegrees(mPitchAX)) + "," + String.valueOf(Math.toDegrees(mRollAY)));
                     mRollY = (0.95)*mRollGY + (0.05) * mRollAY ;
                     mPitchX = (0.95)*mPitchGX + (0.05) * mPitchAX;
                     /*double tmp = mRollY;
@@ -346,6 +352,12 @@ public class SensorContainer {
                     mAzimuthZ = Math.atan2((((Bz - GzOff) * Math.sin(mRollY)) - ((By - GyOff) * Math.cos(mRollY))), ((Bx - GxOff) * Math.cos(mPitchX) + (By - GyOff) * Math.sin(mPitchX) * Math.sin(mRollY) + (Bz - GzOff) * Math.sin(mPitchX) * Math.cos(mRollY)));
                     //mAzimuthZ = -mAzimuthZ;
                 }
+                //気圧から高度を算出
+                if(mPressureValues != null){
+                    Altitude = (float) -(((Math.pow((mPressureValues[0]/1023.0),(1/5.257)) - 1)*(6.6 + 273.15)) / 0.0065);
+                    sensorRaw[5] = String.format("Ambient Pressure = %7.2f", Pressure);
+                }
+
                 //加速度センサーのWGS84系での下向きの加速度を求める
                 double az = - RawX * Math.sin(mRollY) + RawY * Math.sin((mPitchX)) + RawZ * Math.cos((mPitchX)) * Math.cos(mRollY);
                 double bx = RawX * Math.cos(mRollY) + RawZ * Math.sin(mRollY);
@@ -363,7 +375,7 @@ public class SensorContainer {
                     if (currentAccelerationZValues <= -1.5) {
                         counter++;
                         passcounter = false;
-                        mFileLogger.onSensorListener("", (float) mAzimuthZ,1,Altitude);
+                        mFileLogger.onSensorListener("", (float) mAzimuthZ,1,LastAltitude - Altitude);
                     }
                 }else{
                     if (currentAccelerationZValues >= 1.0) {
@@ -373,11 +385,6 @@ public class SensorContainer {
                 if(Math.abs(currentAccelerationYValues) >= 0.00000000001 || Math.abs(currentAccelerationXValues) >= 0.0000000000001) {
                     double AccAziRad = Math.atan(currentAccelerationYValues / currentAccelerationXValues);
                     AccAzi = radianToDegrees((float) AccAziRad);
-                }
-                //気圧から高度を算出
-                if(mPressureValues != null){
-                    Altitude = (float) -(((Math.pow((mPressureValues[0]/1023.0),(1/5.257)) - 1)*(6.6 + 273.15)) / 0.0065);
-                    sensorRaw[5] = String.format("Ambient Pressure = %7.2f", Pressure);
                 }
 
                 if(mMagneticValues != null){
