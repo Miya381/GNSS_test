@@ -113,7 +113,10 @@ private TextView mAccSpecView;
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false /* attachToRoot */);
+        return inflater.inflate(R.layout.fragment_main, container, false /* attachToRoot */);
+    }
+
+    public  void onViewCreated(View view, Bundle savedInstanceState){
 
         mRawDataIsOk = (TextView) view.findViewById(R.id.rawDataIsOk);
         mLocationIsOk = (TextView) view.findViewById(R.id.locationIsOk);
@@ -325,8 +328,6 @@ private TextView mAccSpecView;
         }else{
             CheckGNSSMeasurementsReady(GNSSMeasurementReadyMode, FIRST_CHECK);
         }
-
-        return view;
     }
 
     private void CheckGNSSMeasurementsReady(int status, boolean FIRST_CHECK){

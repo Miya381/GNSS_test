@@ -948,6 +948,9 @@ public class FileLogger implements GnssListener {
                     constFullBiasNanos = gnssClock.getFullBiasNanos();
                 }
             }
+            Log.d("ConstBias",String.valueOf(constFullBiasNanos%1e5));
+            Log.d("InstBias",String.valueOf((gnssClock.getFullBiasNanos()%1e5)));
+            Log.d("TimeNanosBias",String.valueOf(((gnssClock.getFullBiasNanos()%1e5) - (constFullBiasNanos%1e5))));
             double tRxNanos = gnssClock.getTimeNanos() - constFullBiasNanos - weekNumberNanos;
             //GPS週・週秒から年月日時分秒に変換
             GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
@@ -1018,7 +1021,7 @@ public class FileLogger implements GnssListener {
                         String C1C = String.format("%14.3f%s%s", prm, " ", " ");
                         String L1C = String.format("%14.3f%s%s", 0.0, " ", " ");
                         //搬送波の謎バイアスを補正したい
-                        double ADR = measurement.getAccumulatedDeltaRangeState();
+                        double ADR = measurement.getAccumulatedDeltaRangeMeters();
                         if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                             if (SettingsFragment.CarrierPhase == true) {
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
@@ -1080,10 +1083,10 @@ public class FileLogger implements GnssListener {
             mFileWriter.newLine();
             mFileWriter.write(Measurements.toString());
             mFileWriter.newLine();
-            if(firstOBS == false){
+            //衛星が１基も観測できていない場合, FullBiasNanos定数をリセットする.
+            if(firstOBS){
                 constFullBiasNanos = 0.0;
             }
-            firstOBS = false;
             if (SettingsFragment.ResearchMode) {
                 mFileAccAzWriter.write(SensorStream);
                 mFileAccAzWriter.newLine();
@@ -1149,7 +1152,7 @@ public class FileLogger implements GnssListener {
                         String PrmStrings = String.format("%14.3f%s%s", prm, " ", " ");
                         String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
                         if (SettingsFragment.CarrierPhase == true) {
-                            double ADR = measurement.getAccumulatedDeltaRangeState();
+                            double ADR = measurement.getAccumulatedDeltaRangeMeters();
                             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
                                     DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");

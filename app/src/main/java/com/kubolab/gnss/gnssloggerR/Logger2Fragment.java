@@ -50,23 +50,17 @@ public class Logger2Fragment extends Fragment {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View newView = inflater.inflate(R.layout.fragment_log2, container, false /* attachToRoot */);
-        FrameLayout frameLayout = (FrameLayout) newView.findViewById(R.id.fragment);
+        return inflater.inflate(R.layout.fragment_log2, container, false /* attachToRoot */);
+    }
+
+    public  void onViewCreated(View view, Bundle savedInstanceState){
+        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.fragment);
         frameLayout.addView(new TestView(this.getActivity()));
-        SkyplotBG = (ImageView) newView.findViewById(R.id.skyplotview);
-        //int ImageWidth = SkyplotBG.getDrawable().getBounds().width();
-        //int ImageHeight = SkyplotBG.getDrawable().getBounds().height();
-        //Matrix mtx = new Matrix();
-        //mtx.postTranslate(-ImageWidth/2 , -ImageHeight/2);
-        //mtx.postRotate(deviceAzimuth);
-        //.d("Rotate",String.valueOf(deviceAzimuth));
-        //mtx.postTranslate(ImageWidth/2 , ImageHeight/2);
-        //SkyplotBG.setImageMatrix(mtx);
+        SkyplotBG = (ImageView) view.findViewById(R.id.skyplotview);
         UiLogger currentUiLogger = mUiLogger;
         if (currentUiLogger != null) {
             currentUiLogger.setUiFragment2Component(mUiComponent);
         }
-        return newView;
     }
 
     public class TestView extends SurfaceView implements SurfaceHolder.Callback, Runnable{

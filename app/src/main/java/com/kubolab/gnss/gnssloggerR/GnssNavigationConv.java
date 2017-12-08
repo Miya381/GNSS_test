@@ -1,8 +1,10 @@
 package com.kubolab.gnss.gnssloggerR;
 
 import android.util.Log;
+import android.location.GnssNavigationMessage;
 
 import java.util.concurrent.TimeUnit;
+
 
 /**
  * Created by KuboLab on 2017/12/04.
@@ -126,24 +128,28 @@ public class GnssNavigationConv {
     private static final int I1UTC_INDEX = 150;
 
 
-    public StringBuilder onNavMessageReported(byte prn, byte type, short id, byte[] rawData) {
+    public StringBuilder onNavMessageReported(int prn, int type, int id, byte[] rawData) {
         if(rawData != null && rawData.length == L1_CA_MESSAGE_LENGTH_BYTES){
             return null;
         }
+        Log.d("Navigation",String.valueOf(id));
         StringBuilder NavMessage = new StringBuilder();
             switch (id) {
-                /*case 1:
-                    handleFirstSubframe(prn, rawData);
+                case 1:
+                    //handleFirstSubframe(prn, rawData);
+                    Log.d("Navigation",getNAVType(type) + String.valueOf(prn) + "First SubFrame Detected");
                     break;
                 case 2:
-                    handleSecondSubframe(prn, rawData);
+                    //handleSecondSubframe(prn, rawData);
+                    Log.d("Navigation",getNAVType(type) + String.valueOf(prn) + "Second SubFrame Detected");
                     break;
                 case 3:
-                    handleThirdSubframe(prn, rawData);
-                    break;*/
+                    //handleThirdSubframe(prn, rawData);
+                    Log.d("Navigation",getNAVType(type) + String.valueOf(prn) + "Third SubFrame Detected");
+                    break;
                 case 4:
                     NavMessage.append(handleFourthSubframe(rawData));
-                    Log.d("Navigation 4th Subframe",NavMessage.toString());
+                    Log.d("Navigation",getNAVType(type) + String.valueOf(prn) + "Forth SubFrame Detected\n" + NavMessage.toString());
                     break;
                 case 5:
                     break;
@@ -292,12 +298,12 @@ public class GnssNavigationConv {
     }*/
 
     private StringBuilder handleFourthSubframe(byte[] rawData) {
-        byte pageId = (byte) extractBits(62, 6, rawData);
+        /*byte pageId = (byte) extractBits(62, 6, rawData);
         if (pageId != IONOSPHERIC_PARAMETERS_PAGE_18_SV_ID) {
             // We only care to decode ionospheric parameters for now
-            Log.d("NAV_4th","Not found IONOSPHERIC DATA");
+            Log.d("Navigation","Not found IONOSPHERIC DATA");
             return null;
-        }
+        }*/
 
         StringBuilder FourthSubframe = new StringBuilder();
 
@@ -383,10 +389,17 @@ public class GnssNavigationConv {
         return result;
     }
 
-
-
-
-
-
+    private static String getNAVType(int type){
+        switch (type){
+            case GnssNavigationMessage.TYPE_GPS_L1CA:
+                return "GPS_L1CA";
+            case GnssNavigationMessage.TYPE_GLO_L1CA:
+                return "GLO_L1CA";
+            case GnssNavigationMessage.TYPE_GPS_L5CNAV:
+                return "GPS_L5CNAV";
+            default:
+                return "UNKNOWN";
+        }
+    }
 
 }

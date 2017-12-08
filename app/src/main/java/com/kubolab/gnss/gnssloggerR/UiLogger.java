@@ -166,6 +166,8 @@ public class UiLogger implements GnssListener {
     @Override
     public void onGnssNavigationMessageReceived(GnssNavigationMessage event) {
         //logNavigationMessageEvent("onGnssNavigationMessageReceived: " + event);
+        GnssNavigationConv mGnssNavigationConv = new GnssNavigationConv();
+        StringBuilder ION = mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getData());
     }
 
     @Override

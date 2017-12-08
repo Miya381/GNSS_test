@@ -69,23 +69,26 @@ public class LoggerFragment extends Fragment {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View newView = inflater.inflate(R.layout.fragment_log, container, false /* attachToRoot */);
+       return inflater.inflate(R.layout.fragment_log, container, false /* attachToRoot */);
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState){
         //mLogView = (TextView) newView.findViewById(R.id.lo);
-        mLocationProvider = (TextView) newView.findViewById(R.id.location_prov);
-        mLocationLatitude = (TextView) newView.findViewById(R.id.location_lat);
-        mLocationLongitude = (TextView) newView.findViewById(R.id.location_lon);
-        mLocationAltitude = (TextView) newView.findViewById(R.id.location_alt);
+        mLocationProvider = (TextView) view.findViewById(R.id.location_prov);
+        mLocationLatitude = (TextView) view.findViewById(R.id.location_lat);
+        mLocationLongitude = (TextView) view.findViewById(R.id.location_lon);
+        mLocationAltitude = (TextView) view.findViewById(R.id.location_alt);
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);
-        mTable = (ViewGroup) newView.findViewById(R.id.TableLayout);
+        mTable = (ViewGroup) view.findViewById(R.id.TableLayout);
         //表の初期化
         for(int i = 0;i < 29;i++){
             for(int j = 0;j < 4;j++){
                 Log.d("Array", i + "," + j);
-                mTextView[i][j]=(TextView) newView.findViewById(Rid[i][j]);
+                mTextView[i][j]=(TextView) view.findViewById(Rid[i][j]);
                 //Log.d("Array", i + "," + j);
             }
         }
-        EditTimer = (TextView) newView.findViewById(R.id.editTimer);
+        EditTimer = (TextView) view.findViewById(R.id.editTimer);
         EditTimer.setText("0");
         EditTimer.addTextChangedListener(new TextWatcher() {
             @Override
@@ -134,13 +137,13 @@ public class LoggerFragment extends Fragment {
             currentFileLogger.setUiComponent(mUiComponent);
         }
 
-        startLog = (Button) newView.findViewById(R.id.start_logs);
+        startLog = (Button) view.findViewById(R.id.start_logs);
 
         startLog.setText("ClockSync...");
         startLog.setEnabled(false);
 //        startLog.setEnabled(true);
 
-        mGNSSClockView = (TextView) newView.findViewById(R.id.GNSSClockView);
+        mGNSSClockView = (TextView) view.findViewById(R.id.GNSSClockView);
 
         FileLogging = false;
 
@@ -178,7 +181,6 @@ public class LoggerFragment extends Fragment {
                         }
                     }
                 });
-        return newView;
     }
 
     /**

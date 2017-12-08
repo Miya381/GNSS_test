@@ -42,24 +42,16 @@ public class Logger3Fragment extends Fragment {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View newView = inflater.inflate(R.layout.fragment_log3, container, false /* attachToRoot */);
-        FrameLayout frameLayout = (FrameLayout) newView.findViewById(R.id.fragment);
-        mSensorLogView = (TextView) newView.findViewById(R.id.sensorview);
-        mSensorRawAccView = (TextView) newView.findViewById(R.id.sensorAccView);
-        mSensorRawPressView = (TextView) newView.findViewById(R.id.sensorPressView);
-        mSensorRawMagView = (TextView) newView.findViewById(R.id.sensorMagView);
-//        mSensorRawMagUncalibratedView = (TextView) newView.findViewById(R.id.sensorMagUncalibratedView);
-        mSensorRawGyroView = (TextView) newView.findViewById(R.id.sensorGyroView);
-//        mSensorRawGyroUncalibratedView = (TextView) newView.findViewById(R.id.sensorGyroUncalibratedView);
-        //int ImageWidth = SkyplotBG.getDrawable().getBounds().width();
-        //int ImageHeight = SkyplotBG.getDrawable().getBounds().height();
-        //Matrix mtx = new Matrix();
-        //mtx.postTranslate(-ImageWidth/2 , -ImageHeight/2);
-        //mtx.postRotate(deviceAzimuth);
-        //.d("Rotate",String.valueOf(deviceAzimuth));
-        //mtx.postTranslate(ImageWidth/2 , ImageHeight/2);
-        //SkyplotBG.setImageMatrix(mtx);
-        return newView;
+        return inflater.inflate(R.layout.fragment_log3, container, false /* attachToRoot */);
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.fragment);
+        mSensorLogView = (TextView) view.findViewById(R.id.sensorview);
+        mSensorRawAccView = (TextView) view.findViewById(R.id.sensorAccView);
+        mSensorRawPressView = (TextView) view.findViewById(R.id.sensorPressView);
+        mSensorRawMagView = (TextView) view.findViewById(R.id.sensorMagView);
+        mSensorRawGyroView = (TextView) view.findViewById(R.id.sensorGyroView);
     }
 
     public class UIFragment3Component {
