@@ -700,7 +700,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/view17" />
 
                 <TextView
-                    android:id="@+id/fileExtension"
+                    android:id="@+id/fileExtensionNav"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -728,7 +728,7 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="8dp"
                     android:background="@android:color/darker_gray"
-                    app:layout_constraintTop_toBottomOf="@+id/fileExtension"
+                    app:layout_constraintTop_toBottomOf="@+id/fileExtensionNav"
                     tools:layout_editor_absoluteX="0dp" />
 
                 <TextView

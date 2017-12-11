@@ -261,6 +261,8 @@ private TextView mAccSpecView;
         int observation = now.getYear() - 100;
         final TextView FileExtension = (TextView) view.findViewById(R.id.FileExtension);
         FileExtension.setText("$log/RINEX/\"prefix\"." + observation + "o");
+        final TextView FileExtensionNav = (TextView) view.findViewById(R.id.fileExtensionNav);
+        FileExtensionNav.setText("$log/RINEX/\"prefix\"." + observation + "n");
 
 //        FTPDirectory = (TextView) view.findViewById(R.id.FTPDirectory);
 
