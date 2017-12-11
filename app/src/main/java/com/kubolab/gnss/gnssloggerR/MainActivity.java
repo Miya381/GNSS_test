@@ -61,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
         if(hasPermissions(this)) {
             mGnssContainer.registerAll();
             GNSSRegister = true;
-        }
-        if(SettingsFragment.useDeviceSensor){
-            mSensorContainer.registerSensor();
+            if(SettingsFragment.useDeviceSensor){
+                mSensorContainer.registerSensor();
+            }
         }
     }
     @Override
@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
         if(hasPermissions(this)) {
             mGnssContainer.unregisterAll();
             GNSSRegister = false;
-        }
-        if(SettingsFragment.useDeviceSensor){
-            mSensorContainer.unregisterSensor();
+            if(SettingsFragment.useDeviceSensor){
+                mSensorContainer.unregisterSensor();
+            }
         }
     }
 
