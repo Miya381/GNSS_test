@@ -2,6 +2,8 @@ package com.kubolab.gnss.gnssloggerR;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -360,10 +362,11 @@ private TextView mAccSpecView;
         }
     }
 
+
     public class UIFragmentSettingComponent {
 
-        private static final int MAX_LENGTH = 12000;
-        private static final int LOWER_THRESHOLD = (int) (MAX_LENGTH * 0.5);
+        //private static final int MAX_LENGTH = 12000;
+        //private static final int LOWER_THRESHOLD = (int) (MAX_LENGTH * 0.5);
         public synchronized void SettingFTPDirectory(final String DirectoryName){
             Activity activity = getActivity();
             if (activity == null) {
@@ -394,7 +397,7 @@ private TextView mAccSpecView;
                     });
         }
 
-        public synchronized void Lockout(final boolean status) {
+        /*public synchronized void Lockout(final boolean status) {
             Activity activity = getActivity();
             if (activity == null) {
                 return;
@@ -407,7 +410,7 @@ private TextView mAccSpecView;
 
                         }
                     });
-        }
+        }*/
 
         public synchronized void SettingFragmentSensorSpec(final String SensorSpec[]) {
             Activity activity = getActivity();
@@ -443,8 +446,8 @@ private TextView mAccSpecView;
                     });
         }
 
-        public void startActivity(Intent intent) {
+        /*public void startActivity(Intent intent) {
             getActivity().startActivity(intent);
-        }
+        }*/
     }
 }

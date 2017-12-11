@@ -967,7 +967,7 @@ public class FileLogger implements GnssListener {
                         tRxSeconds = tRxSeconds - rd2.doubleValue();
                         Double td = new Double(tTxSeconds);
                         Integer ti = new Integer(td.intValue());
-                        Double td2 = new Double(ti.doubleValue());
+                        Double td2 = new Double(ti.doubleValue()); 
                         tTxSeconds = tTxSeconds - td2.doubleValue();
                         if((tRxSeconds - tTxSeconds) < 0 ){
                             tRxSeconds = tRxSeconds + 1;
