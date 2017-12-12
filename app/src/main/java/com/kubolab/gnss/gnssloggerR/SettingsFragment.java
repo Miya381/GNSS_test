@@ -302,7 +302,7 @@ private TextView mAccSpecView;
                 if (isChecked) {
                     ResearchMode = true;
                     //rbrinex303.setEnabled(true);
-                    useGAL.setEnabled(true);
+                    //useGAL.setEnabled(true);
                     outPutSensor.setEnabled(true);
                     RINEXNAVCheck.setEnabled(true);
 
@@ -311,7 +311,7 @@ private TextView mAccSpecView;
                     //rbrinex303.setEnabled(false);
                     //rbrinex303.setChecked(false);
                     //rbrinex211.setChecked(true);
-                    useGAL.setEnabled(false);
+                    //useGAL.setEnabled(false);
                     outPutSensor.setEnabled(false);
                     RINEXNAVCheck.setEnabled(false);
                     //RINEX303 = false;
