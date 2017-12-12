@@ -53,9 +53,14 @@ public class LoggerFragment extends Fragment {
             {R.id.textView23_1,R.id.textView23_2,R.id.textView23_3,R.id.textView23_4},{R.id.textView24_1,R.id.textView24_2,R.id.textView24_3,R.id.textView24_4},
             {R.id.textView25_1,R.id.textView25_2,R.id.textView25_3,R.id.textView25_4},{R.id.textView25_1,R.id.textView26_2,R.id.textView26_3,R.id.textView26_4},
             {R.id.textView27_1,R.id.textView27_2,R.id.textView27_3,R.id.textView27_4},{R.id.textView28_1,R.id.textView28_2,R.id.textView28_3,R.id.textView28_4},
-            {R.id.textView29_1,R.id.textView29_2,R.id.textView29_3,R.id.textView29_4}};
+            {R.id.textView29_1,R.id.textView29_2,R.id.textView29_3,R.id.textView29_4},{R.id.textView30_1,R.id.textView30_2,R.id.textView30_3,R.id.textView30_4},
+            {R.id.textView31_1,R.id.textView31_2,R.id.textView31_3,R.id.textView31_4},{R.id.textView32_1,R.id.textView32_2,R.id.textView32_3,R.id.textView32_4},
+            {R.id.textView33_1,R.id.textView33_2,R.id.textView33_3,R.id.textView33_4},{R.id.textView34_1,R.id.textView34_2,R.id.textView34_3,R.id.textView34_4},
+            {R.id.textView35_1,R.id.textView35_2,R.id.textView35_3,R.id.textView35_4},{R.id.textView36_1,R.id.textView36_2,R.id.textView36_3,R.id.textView36_4}};
 
-    TextView mTextView[][] = new TextView[29][4];
+    int MaxSatelliteIndex = 36;
+    TextView mTextView[][] = new TextView[MaxSatelliteIndex][4];
+
     private final UIFragmentComponent mUiComponent = new UIFragmentComponent();
 
     public void setUILogger(UiLogger value) {
@@ -81,7 +86,7 @@ public class LoggerFragment extends Fragment {
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);
         mTable = (ViewGroup) view.findViewById(R.id.TableLayout);
         //表の初期化
-        for(int i = 0;i < 29;i++){
+        for(int i = 0;i < MaxSatelliteIndex;i++){
             for(int j = 0;j < 4;j++){
                 Log.d("Array", i + "," + j);
                 mTextView[i][j]=(TextView) view.findViewById(Rid[i][j]);
@@ -188,8 +193,8 @@ public class LoggerFragment extends Fragment {
      */
     public class UIFragmentComponent {
 
-        private static final int MAX_LENGTH = 12000;
-        private static final int LOWER_THRESHOLD = (int) (MAX_LENGTH * 0.5);
+        //private static final int MAX_LENGTH = 12000;
+        //private static final int LOWER_THRESHOLD = (int) (MAX_LENGTH * 0.5);
 
         public synchronized void logTextFragment(final String tag, final String text, final String[][] array) {
             Activity activity = getActivity();
@@ -209,7 +214,7 @@ public class LoggerFragment extends Fragment {
                                     startLog.setText("ClockSync...");
                                 }
                             }
-                            for(int i = 0;i < 29;i++){
+                            for(int i = 0;i < MaxSatelliteIndex;i++){
                                 for(int j = 0;j < 4;j++){
                                     if(j == 2){
                                         if(array[i][j] == "0") {
@@ -248,11 +253,6 @@ public class LoggerFragment extends Fragment {
                                     }
                                 }
                             }
-                            /*Editable editable = mLogView.getEditableText();
-                            int length = editable.length();
-                            if (length > MAX_LENGTH) {
-                                editable.delete(0, length - LOWER_THRESHOLD);
-                            }*/
                         }
                     });
         }

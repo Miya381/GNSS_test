@@ -948,9 +948,9 @@ public class FileLogger implements GnssListener {
                     constFullBiasNanos = gnssClock.getFullBiasNanos();
                 }
             }
-            Log.d("ConstBias",String.valueOf(constFullBiasNanos%1e5));
-            Log.d("InstBias",String.valueOf((gnssClock.getFullBiasNanos()%1e5)));
-            Log.d("TimeNanosBias",String.valueOf(((gnssClock.getFullBiasNanos()%1e5) - (constFullBiasNanos%1e5))));
+            //Log.d("ConstBias",String.valueOf(constFullBiasNanos%1e5));
+            //Log.d("InstBias",String.valueOf((gnssClock.getFullBiasNanos()%1e5)));
+            //Log.d("TimeNanosBias",String.valueOf(((gnssClock.getFullBiasNanos()%1e5) - (constFullBiasNanos%1e5))));
             double tRxNanos = gnssClock.getTimeNanos() - constFullBiasNanos - weekNumberNanos;
             //GPS週・週秒から年月日時分秒に変換
             GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
@@ -960,14 +960,14 @@ public class FileLogger implements GnssListener {
                     double tRxSeconds = (tRxNanos - measurement.getTimeOffsetNanos()) * 1e-9;
                     double tTxSeconds = measurement.getReceivedSvTimeNanos() * 1e-9;
                     //GLONASSTからGPSTへ(ｶｯｺｶﾘ)
-                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
+                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
                         Double rd = new Double(tRxSeconds);
                         Integer ri = new Integer(rd.intValue());
                         Double rd2 = new Double(ri.doubleValue());
                         tRxSeconds = tRxSeconds - rd2.doubleValue();
                         Double td = new Double(tTxSeconds);
                         Integer ti = new Integer(td.intValue());
-                        Double td2 = new Double(ti.doubleValue()); 
+                        Double td2 = new Double(ti.doubleValue());
                         tTxSeconds = tTxSeconds - td2.doubleValue();
                         if((tRxSeconds - tTxSeconds) < 0 ){
                             tRxSeconds = tRxSeconds + 1;
@@ -1031,7 +1031,7 @@ public class FileLogger implements GnssListener {
                                 }
                             }
                         }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                            if(measurement.getSvid() <= 24){
+                            if(measurement.getSvid() < 24){
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
                                     L1C = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
                                 } else {
@@ -1160,7 +1160,7 @@ public class FileLogger implements GnssListener {
                                     DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
                                 }
                             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                                if(measurement.getSvid() <= 24) {
+                                if(measurement.getSvid() < 24) {
                                     if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
                                         DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
                                     } else {

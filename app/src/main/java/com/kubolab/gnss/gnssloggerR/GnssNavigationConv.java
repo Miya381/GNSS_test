@@ -129,7 +129,7 @@ public class GnssNavigationConv {
 
 
     public StringBuilder onNavMessageReported(int prn, int type, int id, byte[] rawData) {
-        if(rawData != null && rawData.length == L1_CA_MESSAGE_LENGTH_BYTES){
+        if(rawData != null && rawData.length == L1_CA_MESSAGE_LENGTH_BYTES && type != GnssNavigationMessage.TYPE_GPS_L1CA){
             return null;
         }
         Log.d("Navigation",String.valueOf(id));
@@ -298,12 +298,12 @@ public class GnssNavigationConv {
     }*/
 
     private StringBuilder handleFourthSubframe(byte[] rawData) {
-        /*byte pageId = (byte) extractBits(62, 6, rawData);
+        byte pageId = (byte) extractBits(62, 6, rawData);
         if (pageId != IONOSPHERIC_PARAMETERS_PAGE_18_SV_ID) {
             // We only care to decode ionospheric parameters for now
             Log.d("Navigation","Not found IONOSPHERIC DATA");
             return null;
-        }*/
+        }
 
         StringBuilder FourthSubframe = new StringBuilder();
 

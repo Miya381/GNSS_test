@@ -45,8 +45,8 @@ public class UiLogger implements GnssListener {
     private boolean gnssStatusReady = false;
     private boolean initialize = false;
 
-
-    String array[][] = new String[19][4];
+    int MaxSatelliteIndex = 36;
+    String array[][] = new String[MaxSatelliteIndex][4];
 
 
     public UiLogger() {
@@ -408,7 +408,7 @@ public class UiLogger implements GnssListener {
     }
 
     private String[][] gnssMessageToString(GnssMeasurementsEvent event, GnssClock gnssClock){
-        String[][] array = new String[29][4];
+        String[][] array = new String[MaxSatelliteIndex][4];
         //builder.append("GNSSClock = ").append(event.getClock().toString()).append("\n");
         //double GPSWeek = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
         //long GPSWeekNanos = (long) GPSWeek * (long) (604800 * 1e9);
@@ -449,7 +449,7 @@ public class UiLogger implements GnssListener {
             }
             double tRxSeconds = tRxNanos*1e-9;
             double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
-            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
+            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
                 Double rd = new Double(tRxSeconds);
                 Integer ri = new Integer(rd.intValue());
                 Double rd2 = new Double(ri.doubleValue());
@@ -541,7 +541,7 @@ public class UiLogger implements GnssListener {
                             array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH);
                         }
                     }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                        if(measurement.getSvid() <= 24) {
+                        if(measurement.getSvid() < 24) {
                             if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
                                 array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
                             } else {
