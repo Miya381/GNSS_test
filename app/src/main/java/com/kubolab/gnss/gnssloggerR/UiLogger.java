@@ -646,7 +646,7 @@ public class UiLogger implements GnssListener {
     }
 
     private double GLONASSG1WAVELENGTH(int svid){
-        return SPEED_OF_LIGHT/(((1602 * 10e6) + GLONASSFREQ[svid - 1] * 9/16) * 10e6);
+        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 9/16) * 10e6);
     }
 
     private static int calcspent(Calendar Start , Calendar End){

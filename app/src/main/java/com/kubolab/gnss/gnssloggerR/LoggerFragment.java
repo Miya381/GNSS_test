@@ -51,7 +51,7 @@ public class LoggerFragment extends Fragment {
             {R.id.textView19_1,R.id.textView19_2,R.id.textView19_3,R.id.textView19_4},{R.id.textView20_1,R.id.textView20_2,R.id.textView20_3,R.id.textView20_4},
             {R.id.textView21_1,R.id.textView21_2,R.id.textView21_3,R.id.textView21_4},{R.id.textView22_1,R.id.textView22_2,R.id.textView22_3,R.id.textView22_4},
             {R.id.textView23_1,R.id.textView23_2,R.id.textView23_3,R.id.textView23_4},{R.id.textView24_1,R.id.textView24_2,R.id.textView24_3,R.id.textView24_4},
-            {R.id.textView25_1,R.id.textView25_2,R.id.textView25_3,R.id.textView25_4},{R.id.textView25_1,R.id.textView26_2,R.id.textView26_3,R.id.textView26_4},
+            {R.id.textView25_1,R.id.textView25_2,R.id.textView25_3,R.id.textView25_4},{R.id.textView26_1,R.id.textView26_2,R.id.textView26_3,R.id.textView26_4},
             {R.id.textView27_1,R.id.textView27_2,R.id.textView27_3,R.id.textView27_4},{R.id.textView28_1,R.id.textView28_2,R.id.textView28_3,R.id.textView28_4},
             {R.id.textView29_1,R.id.textView29_2,R.id.textView29_3,R.id.textView29_4},{R.id.textView30_1,R.id.textView30_2,R.id.textView30_3,R.id.textView30_4},
             {R.id.textView31_1,R.id.textView31_2,R.id.textView31_3,R.id.textView31_4},{R.id.textView32_1,R.id.textView32_2,R.id.textView32_3,R.id.textView32_4},
