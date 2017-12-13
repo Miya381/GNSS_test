@@ -1031,7 +1031,7 @@ public class FileLogger implements GnssListener {
                                 }
                             }
                         }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                            if(measurement.getSvid() < 24){
+                            if(measurement.getSvid() <= 24){
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
                                     L1C = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
                                 } else {
@@ -1160,7 +1160,7 @@ public class FileLogger implements GnssListener {
                                     DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
                                 }
                             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                                if(measurement.getSvid() < 24) {
+                                if(measurement.getSvid() <= 24) {
                                     if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
                                         DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
                                     } else {
@@ -1229,7 +1229,7 @@ public class FileLogger implements GnssListener {
         }
     }
     private double GLONASSG1WAVELENGTH(int svid){
-        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid]*9/16) * 10e6);
+        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 9/16) * 10e6);
     }
 
     //GPS週秒からGPS時への変換

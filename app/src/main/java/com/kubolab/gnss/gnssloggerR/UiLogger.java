@@ -541,7 +541,7 @@ public class UiLogger implements GnssListener {
                             array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH);
                         }
                     }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                        if(measurement.getSvid() < 24) {
+                        if(measurement.getSvid() <= 24) {
                             if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
                                 array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
                             } else {
@@ -646,7 +646,7 @@ public class UiLogger implements GnssListener {
     }
 
     private double GLONASSG1WAVELENGTH(int svid){
-        return SPEED_OF_LIGHT/((1602 * 10e6) + GLONASSFREQ[svid]*9/16);
+        return SPEED_OF_LIGHT/(((1602 * 10e6) + GLONASSFREQ[svid - 1] * 9/16) * 10e6);
     }
 
     private static int calcspent(Calendar Start , Calendar End){
