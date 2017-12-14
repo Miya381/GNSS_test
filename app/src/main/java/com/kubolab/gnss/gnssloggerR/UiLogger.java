@@ -464,8 +464,8 @@ public class UiLogger implements GnssListener {
                 //double GLONASSTINT = tTxSeconds.
                 //tTxSeconds = tTxSeconds + 16;
             }
-            /*Log.d("PRN",String.format("%s%2d",getConstellationName(measurement.getConstellationType()),measurement.getSvid()));
-            Log.d("ADRUnc",String.valueOf(measurement.getAccumulatedDeltaRangeUncertaintyMeters()));
+            Log.i("PRN",String.format("%s%2d",getConstellationName(measurement.getConstellationType()),measurement.getSvid()));
+            /*Log.d("ADRUnc",String.valueOf(measurement.getAccumulatedDeltaRangeUncertaintyMeters()));
             Log.d("DoppUnc",String.valueOf(measurement.getPseudorangeRateUncertaintyMetersPerSecond()));
             Log.d("SvTimeUnc",String.valueOf(measurement.getReceivedSvTimeUncertaintyNanos()));*/
             /*急場の変更！！*/
@@ -496,13 +496,13 @@ public class UiLogger implements GnssListener {
             double prm = prSeconds * 2.99792458e8;
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
                 //Log.d("QZSS","QZSS Detected");
-                array[arrayRow][0] = "J" + String.format("%02d",measurement.getSvid() - 192);
+                array[arrayRow][0] = "J" + String.format("%02d  ",measurement.getSvid() - 192);
             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                array[arrayRow][0] = "R" + String.format("%02d",measurement.getSvid());
+                array[arrayRow][0] = "R" + String.format("%02d  ",measurement.getSvid());
             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS){
-                array[arrayRow][0] = "G" + String.format("%02d",measurement.getSvid());
+                array[arrayRow][0] = "G" + String.format("%02d  ",measurement.getSvid());
             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
-                array[arrayRow][0] = "E" + String.format("%02d",measurement.getSvid());
+                array[arrayRow][0] = "E" + String.format("%02d  ",measurement.getSvid());
             }
             //Log.d("STATE",String.valueOf(measurement.getState());
             if(iRollover){
@@ -526,13 +526,13 @@ public class UiLogger implements GnssListener {
             builder.append("tTxSeconds = ").append(tTxSeconds).append("\n");*/
             //builder.append("FullCarrierCycles = ").append(measurement.getCarrierCycles() + measurement.getCarrierPhase()).append("\n");
             if(SettingsFragment.CarrierPhase == true) {
-                //Log.d("Carrier Phase",String.valueOf(measurement.getCarrierFrequencyHz()));
+                Log.i("Carrier Freq",String.valueOf(measurement.getCarrierFrequencyHz()));
                 if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
-                    array[arrayRow][2] = "ADR_STATE_CYCLE_SLIP";
+                    array[arrayRow][2] = "CYCLE_SLIP";
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_RESET) {
-                    array[arrayRow][2] = "ADR_STATE_RESET";
+                    array[arrayRow][2] = "RESET";
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_UNKNOWN) {
-                    array[arrayRow][2] = "ADR_STATE_UNKNOWN";
+                    array[arrayRow][2] = "UNKNOWN";
                 }else{
                     if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                         if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
@@ -592,35 +592,35 @@ public class UiLogger implements GnssListener {
     private String getStateName(int id){
         switch (id){
             case GnssMeasurement.STATE_BIT_SYNC:
-                return "STATE_BIT_SYNC";
+                return "BIT_SYNC";
             case GnssMeasurement.STATE_SUBFRAME_SYNC:
-                return "STATE_SUBFRAME_SYNC";
+                return "SUBFRAME_SYNC";
             case GnssMeasurement.STATE_SYMBOL_SYNC:
-                return "STATE_SYMBOL_SYNC";
+                return "SYMBOL_SYNC";
             case GnssMeasurement.STATE_MSEC_AMBIGUOUS:
-                return "STATE_MSEC_AMBIGUOUS";
+                return "MSEC_AMBIGUOUS";
             case GnssMeasurement.STATE_CODE_LOCK:
-                return "STATE_CODE_LOCK";
+                return "CODE_LOCK";
             case GnssMeasurement.STATE_UNKNOWN:
-                return "STATE_UNKNOWN";
+                return "UNKNOWN";
             case GnssMeasurement.STATE_TOW_DECODED:
-                return "STATE_TOW_DECODED";
+                return "TOW_DECODED";
             case GnssMeasurement.STATE_BDS_D2_BIT_SYNC:
-                return "STATE_BDS_D2_BIT_SYNC";
+                return "BDS_D2_BIT_SYNC";
             case GnssMeasurement.STATE_GAL_E1B_PAGE_SYNC:
-                return "STATE_GAL_E1B_PAGE_SYNC";
+                return "GAL_E1B_PAGE_SYNC";
             case GnssMeasurement.STATE_BDS_D2_SUBFRAME_SYNC:
-                return "STATE_BDS_D2_SUBFRAME_SYNC";
+                return "BDS_D2_SUBFRAME_SYNC";
             case GnssMeasurement.STATE_GAL_E1BC_CODE_LOCK:
-                return "STATE_GAL_E1BC_CODE_LOCK";
+                return "GAL_E1BC_CODE_LOCK";
             case GnssMeasurement.STATE_GAL_E1C_2ND_CODE_LOCK:
-                return "STATE_GAL_E1C_2ND_CODE_LOCK";
+                return "GAL_E1C_2ND_CODE_LOCK";
             case GnssMeasurement.STATE_GLO_STRING_SYNC:
-                return "STATE_GLO_STRING_SYNC";
+                return "GLO_STRING_SYNC";
             case GnssMeasurement.STATE_GLO_TOD_DECODED:
-                return "STATE_GLO_TOD_DECODED";
+                return "GLO_TOD_DECODED";
             case GnssMeasurement.STATE_SBAS_SYNC:
-                return "STATE_SBAS_SYNC";
+                return "SBAS_SYNC";
             default:
                 return "1";
         }

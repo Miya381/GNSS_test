@@ -78,6 +78,9 @@ public class SensorContainer {
     private double x,y,z = 0;
     private double mx,my,mz = 0;
 
+    //相補フィルタゲイン
+    private double alpha = 0.9;
+
     // 歩数カウンタ関連
     private boolean passcounter = true;
     private int counter = 0;
@@ -273,18 +276,18 @@ public class SensorContainer {
                 SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_Y, remapedMatrix);
                 SensorManager.getOrientation(remapedMatrix, orientationValues);
                 //ローパsフィルタ
-                /*x = (x * 0.9 + RawX * 0.1);
+                x = (x * 0.9 + RawX * 0.1);
                 y = (y * 0.9 + RawY * 0.1);
                 z = (z * 0.9 + RawZ * 0.1);
                 mx = (mx * 0.9 + MagX * 0.1);
                 my = (my * 0.9 + MagY * 0.1);
-                mz = (mz * 0.9 + MagZ * 0.1);*/
-                x = RawX;
+                mz = (mz * 0.9 + MagZ * 0.1);
+                /*x = RawX;
                 y = RawY;
                 z = RawZ;
                 mx = MagX;
                 my = MagY;
-                mz = MagZ;
+                mz = MagZ;*/
                 // ラジアン値を変換し、それぞれの回転角度を取得する
                 if(!SettingsFragment.ResearchMode) {
                     //Androidオリジナルシステム
@@ -298,19 +301,19 @@ public class SensorContainer {
                     double Gy = x;
                     double Gz = z;
                     mRollAY = Math.atan2(Gy, Gz);
-                    if (mRollAY > 2 * Math.PI) {
+                    /*if (mRollAY > 2 * Math.PI) {
                         mRollAY = mRollAY - 2 * Math.PI;
                     }
                     if (mRollAY < 0.0) {
                         mRollAY = mRollAY + 2 * Math.PI;
-                    }
+                    }*/
                     mPitchAX = Math.atan((-Gx) / (Gy * Math.sin(mRollY) + Gz * Math.cos(mRollY)));
-                    if (mPitchAX > 2 * Math.PI) {
+                    /*if (mPitchAX > 2 * Math.PI) {
                         mPitchAX = mPitchAX - 2 * Math.PI;
                     }
                     if (mPitchAX < 0.0) {
                         mPitchAX = mPitchAX + 2 * Math.PI;
-                    }
+                    }*/
 
                     if(mRollGY == 0){
                         mRollGY = mRollAY;
@@ -322,23 +325,40 @@ public class SensorContainer {
                     }
                     mRollGY = mRollGY + ((GyroY * (timeEspNanos * 1e-9)) / 2);
                     //Log.d("Gyro", GyroX + "," + GyroY);
-                    if (mRollGY > 2 * Math.PI) {
+                    /*if (mRollGY > 2 * Math.PI) {
                         mRollGY = mRollGY - 2 * Math.PI;
                     }
                     if (mRollGY < 0.0) {
                         mRollGY = mRollGY + 2 * Math.PI;
-                    }
-                    mPitchGX = mPitchGX + ((GyroX * (timeEspNanos * 1e-9)) / 2);
-                    if (mPitchGX > 2 * Math.PI) {
+                    }*/
+                    mPitchGX = mPitchGX - ((GyroX * (timeEspNanos * 1e-9)) / 2);
+                    /*if (mPitchGX > 2 * Math.PI) {
                         mPitchGX = mPitchGX - 2 * Math.PI;
                     }
                     if (mPitchGX < 0.0) {
                         mPitchGX = mPitchGX + 2 * Math.PI;
-                    }
+                    }*/
                     //Log.d("Sensor Mag",String.valueOf(Math.toDegrees(mPitchGX)) + "," + String.valueOf(Math.toDegrees(mRollGY)));
                     //Log.d("Sensor Acc",String.valueOf(Math.toDegrees(mPitchAX)) + "," + String.valueOf(Math.toDegrees(mRollAY)));
-                    mRollY = (0.95)*mRollGY + (0.05) * mRollAY ;
-                    mPitchX = (0.95)*mPitchGX + (0.05) * mPitchAX;
+                    mRollY = (alpha)*mRollGY + (1 - alpha) * mRollAY ;
+                    mPitchX = (alpha)*mPitchGX + (1 - alpha) * mPitchAX;
+
+                    //mRollY = mRollY + Math.PI;
+                    //mPitchX = mPitchX + Math.PI;
+
+                    //オーバーシュート防止
+                    if (mRollY > 2 * Math.PI) {
+                        mRollY = mRollY - 2 * Math.PI;
+                    }
+                    if (mPitchX < 0.0) {
+                        mRollY = mRollY + 2 * Math.PI;
+                    }
+                    if (mPitchX > 2 * Math.PI) {
+                        mPitchX = mPitchX - 2 * Math.PI;
+                    }
+                    if (mPitchX < 0.0) {
+                        mPitchX = mPitchX + 2 * Math.PI;
+                    }
                     /*double tmp = mRollY;
                     mRollY = mPitchX;
                     mPitchX = tmp;*/
