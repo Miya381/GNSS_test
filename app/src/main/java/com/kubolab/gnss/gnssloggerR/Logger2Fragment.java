@@ -105,6 +105,8 @@ public class Logger2Fragment extends Fragment {
                         mLooper.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    } catch (IllegalStateException e){
+                        e.printStackTrace();
                     }
                 } else {
                     activity.runOnUiThread(
@@ -119,6 +121,8 @@ public class Logger2Fragment extends Fragment {
                         mLooper.sleep(1000);
                     } catch (InterruptedException e) {
                          e.printStackTrace();
+                    } catch (IllegalStateException e){
+                        e.printStackTrace();
                     }
                 }
             }
