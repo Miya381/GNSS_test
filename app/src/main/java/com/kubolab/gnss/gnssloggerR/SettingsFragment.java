@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Build;
@@ -59,6 +60,7 @@ private TextView mAccSpecView;
     public static boolean useGL = false;
     public static boolean useGA = false;
     public static boolean usePseudorangeSmoother = false;
+    public static boolean usePseudorangeRate = false;
     public static boolean GNSSClockSync = false;
     public static boolean useDeviceSensor = false;
     public static boolean ResearchMode = false;
@@ -182,17 +184,31 @@ private TextView mAccSpecView;
             }
 
         });
+        final TextView Smootherdescription = (TextView) view.findViewById(R.id.SmootherDescription);
 
         PseudorangeSmoother.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 usePseudorangeSmoother = PseudorangeSmoother.isChecked();
                 if(PseudorangeSmoother.isChecked()){
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("WARINING")
-                            .setMessage("Pseudorange Smoother is Beta function.\nIf cannot get accumulated delta range, it not works.")
-                            .setPositiveButton("OK", null)
-                            .show();
+                    AlertDialog.Builder alertDialogBuilder =new AlertDialog.Builder(getContext());
+                    alertDialogBuilder.setTitle("WARINING");
+                    alertDialogBuilder.setMessage("Pseudorange Smoother is Beta function.\nWhich observation amount should be used for correction?");
+                    alertDialogBuilder.setPositiveButton("Carrier Phase", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            usePseudorangeRate = false;
+                            Smootherdescription.setText("Smoothed pseudorange with carrier phase measurements");
+                        }
+                    });
+                    alertDialogBuilder.setNegativeButton("Pseudorange Rate", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            usePseudorangeRate = true;
+                            Smootherdescription.setText("Smoothed pseudorange with pseudorange rate measurements");
+                        }
+                    });
+                    alertDialogBuilder.show();
                 }
             }
         });
