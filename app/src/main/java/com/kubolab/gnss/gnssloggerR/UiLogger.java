@@ -556,18 +556,25 @@ public class UiLogger implements GnssListener {
                 if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                     index = index + 64;
                 }
-                if(measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
+                if(!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
                     CURRENT_SMOOTHER_RATE[index] = 1.0;
                 }
-                if(SettingsFragment.usePseudorangeSmoother && getStateName(measurement.getState()) == "1" && prm != 0.0 && measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
+                if(SettingsFragment.usePseudorangeSmoother &&  prm != 0.0){
                     if(index < 200) {
-                        LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
-                        LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
-                        CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
-                        if (CURRENT_SMOOTHER_RATE[index] <= 0) {
-                            CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
+                        if(SettingsFragment.usePseudorangeRate){
+                            LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
+                            array[arrayRow][1] = String.format("%14.3f[FIX_PR]", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                        }else {
+                            if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
+                                LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
+                                LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
+                                CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
+                                if (CURRENT_SMOOTHER_RATE[index] <= 0) {
+                                    CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
+                                }
+                                array[arrayRow][1] = String.format("%14.3f[FIX_CF]", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                            }
                         }
-                        array[arrayRow][1] = String.format("%14.3f (FIX)", LAST_SMOOTHED_PSEUDORANGE[index]);
                     }
                 }
             }else{

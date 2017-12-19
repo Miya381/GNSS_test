@@ -1043,19 +1043,26 @@ public class FileLogger implements GnssListener {
                         if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                             index = index + 64;
                         }
-                        if(measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
+                        if(!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
                             CURRENT_SMOOTHER_RATE[index] = 1.0;
                         }
                         //Pseudorange Smoother
-                        if(SettingsFragment.usePseudorangeSmoother &&  prm != 0.0 && measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
+                        if(SettingsFragment.usePseudorangeSmoother &&  prm != 0.0){
                             if(index < 200) {
-                                LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
-                                LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
-                                CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
-                                if (CURRENT_SMOOTHER_RATE[index] <= 0) {
-                                    CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
+                                if(SettingsFragment.usePseudorangeRate){
+                                    LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
+                                    C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                }else {
+                                    if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
+                                        LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
+                                        LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
+                                        CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
+                                        if (CURRENT_SMOOTHER_RATE[index] <= 0) {
+                                            CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
+                                        }
+                                        C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                    }
                                 }
-                                C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
                             }
                         }
                         String D1C = String.format("%14.3f%s%s", -measurement.getPseudorangeRateMetersPerSecond() / GPS_L1_WAVELENGTH, " ", " ");
@@ -1168,6 +1175,32 @@ public class FileLogger implements GnssListener {
                                     }
                                 }else {
                                     DeltaRangeStrings = String.format("%14.3f%s%s",0.0, " ", " ");
+                                }
+                            }
+                        }
+                        int index = measurement.getSvid();
+                        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
+                            index = index + 64;
+                        }
+                        if(!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
+                            CURRENT_SMOOTHER_RATE[index] = 1.0;
+                        }
+                        //Pseudorange Smoother
+                        if(SettingsFragment.usePseudorangeSmoother &&  prm != 0.0){
+                            if(index < 200) {
+                                if(SettingsFragment.usePseudorangeRate){
+                                    LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
+                                    PrmStrings = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                }else {
+                                    if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
+                                        LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
+                                        LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
+                                        CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
+                                        if (CURRENT_SMOOTHER_RATE[index] <= 0) {
+                                            CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
+                                        }
+                                        PrmStrings = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                    }
                                 }
                             }
                         }
