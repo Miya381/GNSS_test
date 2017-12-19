@@ -194,18 +194,18 @@ private TextView mAccSpecView;
                     AlertDialog.Builder alertDialogBuilder =new AlertDialog.Builder(getContext());
                     alertDialogBuilder.setTitle("WARINING");
                     alertDialogBuilder.setMessage("Pseudorange Smoother is Beta function.\nWhich observation amount should be used for correction?");
-                    alertDialogBuilder.setPositiveButton("Carrier Phase", new DialogInterface.OnClickListener() {
+                    alertDialogBuilder.setPositiveButton("Carrier Phase (for Static)", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             usePseudorangeRate = false;
-                            Smootherdescription.setText("Smoothed pseudorange with carrier phase measurements");
+                            Smootherdescription.setText("Smoothed pseudorange with carrier phase");
                         }
                     });
-                    alertDialogBuilder.setNegativeButton("Pseudorange Rate", new DialogInterface.OnClickListener() {
+                    alertDialogBuilder.setNegativeButton("Pseudorange Rate (for Kinematic)", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             usePseudorangeRate = true;
-                            Smootherdescription.setText("Smoothed pseudorange with pseudorange rate measurements");
+                            Smootherdescription.setText("Smoothed pseudorange with pseudorangerate");
                         }
                     });
                     alertDialogBuilder.show();

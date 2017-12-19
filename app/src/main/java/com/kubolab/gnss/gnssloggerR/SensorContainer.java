@@ -363,9 +363,9 @@ public class SensorContainer {
                     mRollY = mPitchX;
                     mPitchX = tmp;*/
                     //地磁気センサーオフセット
-                    double Bx = mx * 10e6;
-                    double By = -my * 10e6;
-                    double Bz = -mz * 10e6;
+                    double Bx = -my;
+                    double By = mx;
+                    double Bz = -mz;
                     double GxOff = 0;
                     double GyOff = 0;
                     double GzOff = 0;
