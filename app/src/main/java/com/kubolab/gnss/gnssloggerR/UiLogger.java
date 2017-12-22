@@ -33,6 +33,7 @@ public class UiLogger implements GnssListener {
     private double trueAzimuth;
     private double Declination;
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
+    private int leapseconds = 18;
     //private double LAST_CARRIER_PHASE = 0;
     //private double DIFF_CARRIER_PHASE = 0;
     //private double SMOOTHED_PSEUDORANGE = 0.0;
@@ -143,6 +144,12 @@ public class UiLogger implements GnssListener {
     @Override
     public void onGnssMeasurementsReceived(GnssMeasurementsEvent event) {
         LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
+        if(SettingsFragment.SMOOTHER_RATE_RESET_FLAG_UI){
+            Arrays.fill(LAST_DELTARANGE,0.0);
+            Arrays.fill(CURRENT_SMOOTHER_RATE,1.0);
+            Arrays.fill(LAST_SMOOTHED_PSEUDORANGE,0.0);
+            SettingsFragment.SMOOTHER_RATE_RESET_FLAG_UI = false;
+        }
         array = gnssMessageToString(event,event.getClock());
         component.logTextFragment("", "", array);
         String GNSSStr = gnssClockToString(event.getClock());
@@ -449,25 +456,26 @@ public class UiLogger implements GnssListener {
             }
             double tRxSeconds = tRxNanos*1e-9;
             double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
-            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
-                Double rd = new Double(tRxSeconds);
-                Integer ri = new Integer(rd.intValue());
-                Double rd2 = new Double(ri.doubleValue());
-                tRxSeconds = tRxSeconds - rd2.doubleValue();
-                Double td = new Double(tTxSeconds);
-                Integer ti = new Integer(td.intValue());
-                Double td2 = new Double(ti.doubleValue());
-                tTxSeconds = tTxSeconds - td2.doubleValue();
-                if((tRxSeconds - tTxSeconds) < 0 ){
-                    tRxSeconds = tRxSeconds + 1;
+            if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS)) {
+                double tRxSeconds_GLO = tRxSeconds % 86400;
+                double tTxSeconds_GLO = tTxSeconds - 10800 + leapseconds;
+                if(tTxSeconds_GLO < 0){
+                    tTxSeconds_GLO = tTxSeconds_GLO + 86400;
                 }
-                //double GLONASSTINT = tTxSeconds.
-                //tTxSeconds = tTxSeconds + 16;
+                tRxSeconds = tRxSeconds_GLO;
+                tTxSeconds = tTxSeconds_GLO;
             }
-            Log.i("PRN",String.format("%s%2d",getConstellationName(measurement.getConstellationType()),measurement.getSvid()));
-            /*Log.d("ADRUnc",String.valueOf(measurement.getAccumulatedDeltaRangeUncertaintyMeters()));
-            Log.d("DoppUnc",String.valueOf(measurement.getPseudorangeRateUncertaintyMetersPerSecond()));
-            Log.d("SvTimeUnc",String.valueOf(measurement.getReceivedSvTimeUncertaintyNanos()));*/
+            /*if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
+                double tRxSeconds_GAL = tRxSeconds;
+                double tTxSeconds_GAL = tTxSeconds + leapseconds;
+                if(tTxSeconds_GAL > 604800){
+                    tTxSeconds_GAL = tTxSeconds_GAL - 604800;
+                }
+                Log.i("PRN", String.format("%s%2d", getConstellationName(measurement.getConstellationType()), measurement.getSvid()));
+                Log.i("tRxSeconds", String.valueOf(tRxSeconds_GAL));
+                Log.i("tTxSeconds", String.valueOf(tTxSeconds_GAL));//53333
+            }*/
+
             /*急場の変更！！*/
             String DeviceName = Build.DEVICE;
             //Log.d("DEVICE",DeviceName);
@@ -488,11 +496,11 @@ public class UiLogger implements GnssListener {
                     iRollover = false;
                 }
             }
+            Log.i("PRN", String.format("%s%2d", getConstellationName(measurement.getConstellationType()), measurement.getSvid()));
+            Log.i("tRxSeconds", String.valueOf(tRxSeconds));
+            Log.i("tTxSeconds", String.valueOf(tTxSeconds));
             //Log.d("tRxSeconds",tRxStr);
             //Log.d("tTxSeconds",tTxStr);
-            //Log.d("Prm",String.valueOf(-gnssClock.getFullBiasNanos() - measurement.getReceivedSvTimeNanos()));
-            //Log.d("tRxSeconds",String.valueOf(tRxSeconds));
-            //Log.d("tTxSeconds",String.valueOf(tTxSeconds));
             double prm = prSeconds * 2.99792458e8;
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
                 //Log.d("QZSS","QZSS Detected");
@@ -526,7 +534,7 @@ public class UiLogger implements GnssListener {
             builder.append("tTxSeconds = ").append(tTxSeconds).append("\n");*/
             //builder.append("FullCarrierCycles = ").append(measurement.getCarrierCycles() + measurement.getCarrierPhase()).append("\n");
             if(SettingsFragment.CarrierPhase == true) {
-                Log.i("Carrier Freq",String.valueOf(measurement.getCarrierFrequencyHz()));
+                //Log.i("Carrier Freq",String.valueOf(measurement.getCarrierFrequencyHz()));
                 if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
                     array[arrayRow][2] = "CYCLE_SLIP";
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_RESET) {
@@ -548,7 +556,7 @@ public class UiLogger implements GnssListener {
                                 array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()));
                             }
                         }else {
-                            array[arrayRow][2] = String.format("%14.3f", 0.0);
+                            array[arrayRow][2] = "NOT_SUPPORTED";
                         }
                     }
                 }

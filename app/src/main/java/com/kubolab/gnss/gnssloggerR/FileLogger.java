@@ -66,7 +66,9 @@ public class FileLogger implements GnssListener {
     private ArrayList<Integer> UsedInFixList = new ArrayList<Integer>() ;
     private boolean RINEX_NAV_ION_OK = false;
 
+    //GLONASS系の補正情報
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
+    private int leapseconds = 18;
 
     private double[] CURRENT_SMOOTHER_RATE = new double[200];
     private double[] LAST_DELTARANGE = new double[200];
@@ -740,6 +742,13 @@ public class FileLogger implements GnssListener {
                 return;
             }
             GnssClock gnssClock = event.getClock();
+            //平滑化方式が変更になれば係数を初期化
+            if(SettingsFragment.SMOOTHER_RATE_RESET_FLAG_FILE){
+                Arrays.fill(LAST_DELTARANGE,0.0);
+                Arrays.fill(CURRENT_SMOOTHER_RATE,1.0);
+                Arrays.fill(LAST_SMOOTHED_PSEUDORANGE,0.0);
+                SettingsFragment.SMOOTHER_RATE_RESET_FLAG_FILE = false;
+            }
             for (GnssMeasurement measurement : event.getMeasurements()) {
                 try {
                     if(firsttime == true && measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS){
@@ -959,21 +968,15 @@ public class FileLogger implements GnssListener {
                 if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS&& SettingsFragment.useQZ) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA))) {
                     double tRxSeconds = (tRxNanos - measurement.getTimeOffsetNanos()) * 1e-9;
                     double tTxSeconds = measurement.getReceivedSvTimeNanos() * 1e-9;
-                    //GLONASSTからGPSTへ(ｶｯｺｶﾘ)
-                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
-                        Double rd = new Double(tRxSeconds);
-                        Integer ri = new Integer(rd.intValue());
-                        Double rd2 = new Double(ri.doubleValue());
-                        tRxSeconds = tRxSeconds - rd2.doubleValue();
-                        Double td = new Double(tTxSeconds);
-                        Integer ti = new Integer(td.intValue());
-                        Double td2 = new Double(ti.doubleValue());
-                        tTxSeconds = tTxSeconds - td2.doubleValue();
-                        if((tRxSeconds - tTxSeconds) < 0 ){
-                            tRxSeconds = tRxSeconds + 1;
+                    //GLONASSTへの対応
+                    if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS)) {
+                        double tRxSeconds_GLO = tRxSeconds % 86400;
+                        double tTxSeconds_GLO = tTxSeconds - 10800 + leapseconds;
+                        if(tTxSeconds_GLO < 0){
+                            tTxSeconds_GLO = tTxSeconds_GLO + 86400;
                         }
-                        //double GLONASSTINT = tTxSeconds.
-                        //tTxSeconds = tTxSeconds + 16;
+                        tRxSeconds = tRxSeconds_GLO;
+                        tTxSeconds = tTxSeconds_GLO;
                     }
                     //GPS週のロールオーバーチェック
                     double prSeconds = tRxSeconds - tTxSeconds;

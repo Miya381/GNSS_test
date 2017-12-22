@@ -64,6 +64,8 @@ private TextView mAccSpecView;
     public static boolean GNSSClockSync = false;
     public static boolean useDeviceSensor = false;
     public static boolean ResearchMode = false;
+    public static boolean SMOOTHER_RATE_RESET_FLAG_FILE = false;
+    public static boolean SMOOTHER_RATE_RESET_FLAG_UI = false;
     public static boolean SendMode = false;
     public static int GNSSMeasurementReadyMode = 10;
     private GnssContainer mGpsContainer;
@@ -198,14 +200,18 @@ private TextView mAccSpecView;
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             usePseudorangeRate = false;
+                            SMOOTHER_RATE_RESET_FLAG_FILE = true;
+                            SMOOTHER_RATE_RESET_FLAG_UI = true;
                             Smootherdescription.setText("Smoothed pseudorange with carrier phase");
                         }
                     });
-                    alertDialogBuilder.setNegativeButton("Pseudorange Rate (for Kinematic)", new DialogInterface.OnClickListener() {
+                    alertDialogBuilder.setNegativeButton("Doppler Shift (for Kinematic)", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             usePseudorangeRate = true;
-                            Smootherdescription.setText("Smoothed pseudorange with pseudorangerate");
+                            SMOOTHER_RATE_RESET_FLAG_FILE = true;
+                            SMOOTHER_RATE_RESET_FLAG_UI = true;
+                            Smootherdescription.setText("Smoothed pseudorange with doppler shift");
                         }
                     });
                     alertDialogBuilder.show();
