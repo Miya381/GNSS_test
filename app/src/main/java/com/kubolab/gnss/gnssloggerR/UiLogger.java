@@ -216,6 +216,10 @@ public class UiLogger implements GnssListener {
                 SVID[i] ="S" + String.format("%02d",gnssStatus.getSvid(i));
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i);
                 pos[i][1] = gnssStatus.getElevationDegrees(i);
+            }else if(gnssStatus.getConstellationType(i) == GnssStatus.CONSTELLATION_UNKNOWN && SettingsFragment.ResearchMode){
+                SVID[i] ="U" + String.format("%02d",gnssStatus.getSvid(i));
+                pos[i][0] = gnssStatus.getAzimuthDegrees(i);
+                pos[i][1] = gnssStatus.getElevationDegrees(i);
             }
         }
         component2.log2TextFragment(SVID,pos,maxSat);
