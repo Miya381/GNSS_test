@@ -200,6 +200,26 @@ public class Logger2Fragment extends Fragment {
                         paint.setTextSize(50);
                         paint.setColor(Color.parseColor("#0101DF"));
                         canvas.drawText(SkyPlotSvid[i], MaxCanvusWidth / 2 + SkyPlotPos[i][0] - 100.0f, MaxCanvusHeight / 2 + SkyPlotPos[i][1] + 50.0f, paint);
+                    }else if(SkyPlotSvid[i].indexOf("C") != -1){
+                        paint.setColor(Color.parseColor("#FF8000"));
+                        paint.setStyle(Paint.Style.FILL) ;
+                        paint.setAntiAlias(true);
+                        canvas.drawRect(MaxCanvusWidth/2 + SkyPlotPos[i][0] - 10,MaxCanvusHeight/2 + SkyPlotPos[i][1] - 10 , MaxCanvusWidth/2 + SkyPlotPos[i][0] + 10 ,MaxCanvusHeight/2 + SkyPlotPos[i][1] + 10, paint);
+                        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+                        paint.setStrokeWidth(5);
+                        paint.setTextSize(50);
+                        paint.setColor(Color.parseColor("#FF8000"));
+                        canvas.drawText(SkyPlotSvid[i], MaxCanvusWidth / 2 + SkyPlotPos[i][0] - 100.0f, MaxCanvusHeight / 2 + SkyPlotPos[i][1] + 50.0f, paint);
+                    }else if(SkyPlotSvid[i].indexOf("S") != -1){
+                        paint.setColor(Color.parseColor("#FFFF00"));
+                        paint.setStyle(Paint.Style.FILL) ;
+                        paint.setAntiAlias(true);
+                        canvas.drawRect(MaxCanvusWidth/2 + SkyPlotPos[i][0] - 10,MaxCanvusHeight/2 + SkyPlotPos[i][1] - 10 , MaxCanvusWidth/2 + SkyPlotPos[i][0] + 10 ,MaxCanvusHeight/2 + SkyPlotPos[i][1] + 10, paint);
+                        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+                        paint.setStrokeWidth(5);
+                        paint.setTextSize(50);
+                        paint.setColor(Color.parseColor("#FFFF00"));
+                        canvas.drawText(SkyPlotSvid[i], MaxCanvusWidth / 2 + SkyPlotPos[i][0] - 100.0f, MaxCanvusHeight / 2 + SkyPlotPos[i][1] + 50.0f, paint);
                     }
                 }
             }

@@ -208,6 +208,14 @@ public class UiLogger implements GnssListener {
                 SVID[i] ="E" + String.format("%02d",gnssStatus.getSvid(i));
                 pos[i][0] = gnssStatus.getAzimuthDegrees(i);
                 pos[i][1] = gnssStatus.getElevationDegrees(i);
+            }else if(gnssStatus.getConstellationType(i) == GnssStatus.CONSTELLATION_BEIDOU && SettingsFragment.useBD){
+                SVID[i] ="C" + String.format("%02d",gnssStatus.getSvid(i));
+                pos[i][0] = gnssStatus.getAzimuthDegrees(i);
+                pos[i][1] = gnssStatus.getElevationDegrees(i);
+            }else if(gnssStatus.getConstellationType(i) == GnssStatus.CONSTELLATION_SBAS && SettingsFragment.useSB){
+                SVID[i] ="S" + String.format("%02d",gnssStatus.getSvid(i));
+                pos[i][0] = gnssStatus.getAzimuthDegrees(i);
+                pos[i][1] = gnssStatus.getElevationDegrees(i);
             }
         }
         component2.log2TextFragment(SVID,pos,maxSat);
@@ -441,7 +449,7 @@ public class UiLogger implements GnssListener {
         int arrayRow = 0;
         boolean CheckClockSync = false;
         for (GnssMeasurement measurement : event.getMeasurements()) {
-        if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true)) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA))) {
+        if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true)) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA)) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU && SettingsFragment.useBD)) {
             double weekNumber = Math.floor(- (gnssClock.getFullBiasNanos() * 1e-9 / 604800));
             //Log.d("WeekNumber",String.valueOf(weekNumber));
             double weekNumberNanos = weekNumber * 604800 * 1e9;
@@ -511,6 +519,8 @@ public class UiLogger implements GnssListener {
                 array[arrayRow][0] = "G" + String.format("%02d  ",measurement.getSvid());
             }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
                 array[arrayRow][0] = "E" + String.format("%02d  ",measurement.getSvid());
+            }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                array[arrayRow][0] = "C" + String.format("%02d  ",measurement.getSvid());
             }
             //Log.d("STATE",String.valueOf(measurement.getState());
             if(iRollover){
@@ -554,6 +564,16 @@ public class UiLogger implements GnssListener {
                                 array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
                             } else {
                                 array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()));
+                            }
+                        }else {
+                            array[arrayRow][2] = "NOT_SUPPORTED";
+                        }
+                    }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                        if(measurement.getSvid() < 4) {
+                            if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
+                                array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
+                            } else {
+                                array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / BDSWAVELENGTH(measurement.getSvid()));
                             }
                         }else {
                             array[arrayRow][2] = "NOT_SUPPORTED";
@@ -662,6 +682,18 @@ public class UiLogger implements GnssListener {
 
     private double GLONASSG1WAVELENGTH(int svid){
         return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 9/16) * 10e6);
+    }
+
+    private double BDSWAVELENGTH(int svid){
+        double freq = 1575.42;
+        if(svid == 1){
+            freq = 1561.098;
+        }else if(svid == 2){
+            freq = 1207.14;
+        }else if(svid == 3){
+            freq = 1268.52;
+        }
+        return SPEED_OF_LIGHT/(freq * 10e6);
     }
 
     private static int calcspent(Calendar Start , Calendar End){

@@ -59,6 +59,8 @@ private TextView mAccSpecView;
     public static boolean useQZ = false;
     public static boolean useGL = false;
     public static boolean useGA = false;
+    public static boolean useBD = false;
+    public static boolean useSB = false;
     public static boolean usePseudorangeSmoother = false;
     public static boolean usePseudorangeRate = false;
     public static boolean GNSSClockSync = false;
@@ -170,7 +172,8 @@ private TextView mAccSpecView;
         final CheckBox useGLO = (CheckBox) view.findViewById(R.id.useGLO);
         final CheckBox useGAL = (CheckBox) view.findViewById(R.id.useGAL);
         final CheckBox useBDS = (CheckBox) view.findViewById(R.id.useBDS);
-        //useGAL.setEnabled(false);
+        final CheckBox useSBS = (CheckBox) view.findViewById(R.id.useSBS);
+        useSBS.setEnabled(false);
         useBDS.setEnabled(false);
         CarrierPhaseChkBox.setChecked(false);
         CarrierPhaseChkBox.setOnClickListener(new View.OnClickListener(){
@@ -243,6 +246,20 @@ private TextView mAccSpecView;
                 useGA = useGAL.isChecked();
             }
 
+        });
+
+        useBDS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                useBD = useBDS.isChecked();
+            }
+        });
+
+        useSBS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                useSB = useSBS.isChecked();
+            }
         });
 
         final Switch registerSensor = (Switch) view.findViewById(R.id.register_sensor);
@@ -327,6 +344,8 @@ private TextView mAccSpecView;
                     //useGAL.setEnabled(true);
                     outPutSensor.setEnabled(true);
                     RINEXNAVCheck.setEnabled(true);
+                    useBDS.setEnabled(true);
+                    useSBS.setEnabled(true);
 
                 } else {
                     ResearchMode = false;
@@ -336,6 +355,8 @@ private TextView mAccSpecView;
                     //useGAL.setEnabled(false);
                     outPutSensor.setEnabled(false);
                     RINEXNAVCheck.setEnabled(false);
+                    useBDS.setEnabled(false);
+                    useSBS.setEnabled(false);
                     //RINEX303 = false;
                 }
             }
