@@ -477,16 +477,16 @@ public class UiLogger implements GnssListener {
                 tRxSeconds = tRxSeconds_GLO;
                 tTxSeconds = tTxSeconds_GLO;
             }
-            /*if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
-                double tRxSeconds_GAL = tRxSeconds;
-                double tTxSeconds_GAL = tTxSeconds + leapseconds;
-                if(tTxSeconds_GAL > 604800){
-                    tTxSeconds_GAL = tTxSeconds_GAL - 604800;
+            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                double tRxSeconds_BDS = tRxSeconds;
+                double tTxSeconds_BDS = tTxSeconds + leapseconds;
+                if(tTxSeconds_BDS > 604800){
+                    tTxSeconds_BDS = tTxSeconds_BDS - 604800;
                 }
                 Log.i("PRN", String.format("%s%2d", getConstellationName(measurement.getConstellationType()), measurement.getSvid()));
-                Log.i("tRxSeconds", String.valueOf(tRxSeconds_GAL));
-                Log.i("tTxSeconds", String.valueOf(tTxSeconds_GAL));//53333
-            }*/
+                Log.i("tRxSeconds", String.valueOf(tRxSeconds_BDS));
+                Log.i("tTxSeconds", String.valueOf(tRxSeconds_BDS));//53333
+            }
 
             /*急場の変更！！*/
             String DeviceName = Build.DEVICE;
