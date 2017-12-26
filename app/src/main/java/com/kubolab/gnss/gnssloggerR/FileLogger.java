@@ -355,6 +355,15 @@ public class FileLogger implements GnssListener {
                             currentFileWriter.newLine();
                         }
                     }
+                    if(SettingsFragment.useBD){
+                        if(SettingsFragment.CarrierPhase){
+                            currentFileWriter.write("C    4 L7I C7I D7I S7I                                      SYS / # / OBS TYPES ");
+                            currentFileWriter.newLine();
+                        }else {
+                            currentFileWriter.write("C    3 C7I D7I S7I                                          SYS / # / OBS TYPES ");
+                            currentFileWriter.newLine();
+                        }
+                    }
                 }//RINEX ver2.11
                 else {
                     //RINEX Version Type
@@ -965,10 +974,10 @@ public class FileLogger implements GnssListener {
             GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
             ReturnValue value = gpswStoGPST.method(weekNumber, tRxNanos * 1e-9);
             for (GnssMeasurement measurement : event.getMeasurements()) {
-                if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS&& SettingsFragment.useQZ) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA))) {
+                if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS && SettingsFragment.useGL) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS&& SettingsFragment.useQZ) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA))  || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU && SettingsFragment.useBD)) {
                     double tRxSeconds = (tRxNanos - measurement.getTimeOffsetNanos()) * 1e-9;
                     double tTxSeconds = measurement.getReceivedSvTimeNanos() * 1e-9;
-                    //GLONASSTへの対応
+                    //GLONASS時刻への変換
                     if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS)) {
                         double tRxSeconds_GLO = tRxSeconds % 86400;
                         double tTxSeconds_GLO = tTxSeconds - 10800 + leapseconds;
@@ -977,6 +986,19 @@ public class FileLogger implements GnssListener {
                         }
                         tRxSeconds = tRxSeconds_GLO;
                         tTxSeconds = tTxSeconds_GLO;
+                    }
+                    //Beidou時刻への変換
+                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                        double tRxSeconds_BDS = tRxSeconds;
+                        double tTxSeconds_BDS = tTxSeconds + leapseconds - 4;
+                        if(tTxSeconds_BDS > 604800){
+                            tTxSeconds_BDS = tTxSeconds_BDS - 604800;
+                        }
+                    /*Log.i("PRN", String.format("%s%2d", getConstellationName(measurement.getConstellationType()), measurement.getSvid()));
+                    Log.i("tRxSeconds", String.valueOf(tRxSeconds_BDS));
+                    Log.i("tTxSeconds", String.valueOf(tTxSeconds_BDS));//53333*/
+                        tRxSeconds = tRxSeconds_BDS;
+                        tTxSeconds = tTxSeconds_BDS;
                     }
                     //GPS週のロールオーバーチェック
                     double prSeconds = tRxSeconds - tTxSeconds;
@@ -1018,6 +1040,8 @@ public class FileLogger implements GnssListener {
                             prn = String.format("J%02d", measurement.getSvid() - 192);
                         }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
                             prn = String.format("E%02d", measurement.getSvid());
+                        }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                            prn = String.format("C%02d", measurement.getSvid());
                         }
                         satnumber = satnumber + 1;
                         //Measurements.append(prn);
@@ -1040,6 +1064,12 @@ public class FileLogger implements GnssListener {
                                 } else {
                                     L1C = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
                                 }
+                            }
+                        }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                            if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
+                                L1C = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), "1", " ");
+                            } else {
+                                L1C = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), " ", " ");
                             }
                         }
                         int index = measurement.getSvid();
@@ -1266,6 +1296,10 @@ public class FileLogger implements GnssListener {
     }
     private double GLONASSG1WAVELENGTH(int svid){
         return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 9/16) * 10e6);
+    }
+
+    private double BEIDOUWAVELENGTH(int svid){
+        return SPEED_OF_LIGHT/(1207.14 * 10e6);
     }
 
     //GPS週秒からGPS時への変換

@@ -63,6 +63,7 @@ private TextView mAccSpecView;
     public static boolean useSB = false;
     public static boolean usePseudorangeSmoother = false;
     public static boolean usePseudorangeRate = false;
+    public static boolean useKalmanFilter = false;
     public static boolean GNSSClockSync = false;
     public static boolean useDeviceSensor = false;
     public static boolean ResearchMode = false;

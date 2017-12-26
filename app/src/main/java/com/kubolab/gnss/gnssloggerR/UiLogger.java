@@ -479,13 +479,15 @@ public class UiLogger implements GnssListener {
             }
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
                 double tRxSeconds_BDS = tRxSeconds;
-                double tTxSeconds_BDS = tTxSeconds + leapseconds;
+                double tTxSeconds_BDS = tTxSeconds + leapseconds - 4;
                 if(tTxSeconds_BDS > 604800){
                     tTxSeconds_BDS = tTxSeconds_BDS - 604800;
                 }
-                Log.i("PRN", String.format("%s%2d", getConstellationName(measurement.getConstellationType()), measurement.getSvid()));
+                /*Log.i("PRN", String.format("%s%2d", getConstellationName(measurement.getConstellationType()), measurement.getSvid()));
                 Log.i("tRxSeconds", String.valueOf(tRxSeconds_BDS));
-                Log.i("tTxSeconds", String.valueOf(tRxSeconds_BDS));//53333
+                Log.i("tTxSeconds", String.valueOf(tTxSeconds_BDS));//53333*/
+                tRxSeconds = tRxSeconds_BDS;
+                tTxSeconds = tTxSeconds_BDS;
             }
 
             /*急場の変更！！*/
@@ -573,7 +575,7 @@ public class UiLogger implements GnssListener {
                             array[arrayRow][2] = "NOT_SUPPORTED";
                         }
                     }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
-                        if(measurement.getSvid() < 4) {
+                        if(measurement.getSvid() < 30) {
                             if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
                                 array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
                             } else {
@@ -689,12 +691,13 @@ public class UiLogger implements GnssListener {
     }
 
     private double BDSWAVELENGTH(int svid){
+        int BDSID = 2;
         double freq = 1575.42;
-        if(svid == 1){
+        if(BDSID == 1){
             freq = 1561.098;
-        }else if(svid == 2){
+        }else if(BDSID == 2){
             freq = 1207.14;
-        }else if(svid == 3){
+        }else if(BDSID == 3){
             freq = 1268.52;
         }
         return SPEED_OF_LIGHT/(freq * 10e6);
