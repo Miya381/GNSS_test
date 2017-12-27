@@ -1295,11 +1295,11 @@ public class FileLogger implements GnssListener {
         }
     }
     private double GLONASSG1WAVELENGTH(int svid){
-        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 9/16) * 10e6);
+        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 0.5625) * 10e6);
     }
 
     private double BEIDOUWAVELENGTH(int svid){
-        return SPEED_OF_LIGHT/(1207.14 * 10e6);
+        return SPEED_OF_LIGHT/(1561.098 * 10e6);
     }
 
     //GPS週秒からGPS時への変換

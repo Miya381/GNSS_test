@@ -687,11 +687,11 @@ public class UiLogger implements GnssListener {
     }
 
     private double GLONASSG1WAVELENGTH(int svid){
-        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 9/16) * 10e6);
+        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 0.5625) * 10e6);
     }
 
     private double BDSWAVELENGTH(int svid){
-        int BDSID = 2;
+        int BDSID = 1;
         double freq = 1575.42;
         if(BDSID == 1){
             freq = 1561.098;
