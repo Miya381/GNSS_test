@@ -357,10 +357,10 @@ public class FileLogger implements GnssListener {
                     }
                     if(SettingsFragment.useBD){
                         if(SettingsFragment.CarrierPhase){
-                            currentFileWriter.write("C    4 L7I C7I D7I S7I                                      SYS / # / OBS TYPES ");
+                            currentFileWriter.write("C    4 L2I C2I D2I S2I                                      SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }else {
-                            currentFileWriter.write("C    3 C7I D7I S7I                                          SYS / # / OBS TYPES ");
+                            currentFileWriter.write("C    3 C2I D2I S2I                                          SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }
                     }

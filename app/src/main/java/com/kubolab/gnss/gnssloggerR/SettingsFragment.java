@@ -175,7 +175,7 @@ private TextView mAccSpecView;
         final CheckBox useBDS = (CheckBox) view.findViewById(R.id.useBDS);
         final CheckBox useSBS = (CheckBox) view.findViewById(R.id.useSBS);
         useSBS.setEnabled(false);
-        useBDS.setEnabled(false);
+        //useBDS.setEnabled(false);
         CarrierPhaseChkBox.setChecked(false);
         CarrierPhaseChkBox.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -345,7 +345,7 @@ private TextView mAccSpecView;
                     //useGAL.setEnabled(true);
                     outPutSensor.setEnabled(true);
                     RINEXNAVCheck.setEnabled(true);
-                    useBDS.setEnabled(true);
+                    //useBDS.setEnabled(true);
                     useSBS.setEnabled(true);
 
                 } else {
@@ -356,7 +356,7 @@ private TextView mAccSpecView;
                     //useGAL.setEnabled(false);
                     outPutSensor.setEnabled(false);
                     RINEXNAVCheck.setEnabled(false);
-                    useBDS.setEnabled(false);
+                    //useBDS.setEnabled(false);
                     useSBS.setEnabled(false);
                     //RINEX303 = false;
                 }
