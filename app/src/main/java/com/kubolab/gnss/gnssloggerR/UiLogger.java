@@ -38,9 +38,9 @@ public class UiLogger implements GnssListener {
     //private double DIFF_CARRIER_PHASE = 0;
     //private double SMOOTHED_PSEUDORANGE = 0.0;
     private double SMOOTHER_RATE = 0.01;
-    private double[] CURRENT_SMOOTHER_RATE = new double[200];
-    private double[] LAST_DELTARANGE = new double[200];
-    private double[] LAST_SMOOTHED_PSEUDORANGE = new double[200];
+    private double[] CURRENT_SMOOTHER_RATE = new double[300];
+    private double[] LAST_DELTARANGE = new double[300];
+    private double[] LAST_SMOOTHED_PSEUDORANGE = new double[300];
     //private int SMOOTHER_RATE_MAX = 10;
 
     private boolean gnssStatusReady = false;
@@ -590,11 +590,17 @@ public class UiLogger implements GnssListener {
                 if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                     index = index + 64;
                 }
+                if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                    index = index + 200;
+                }
+                if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
+                    index = index + 235;
+                }
                 if(!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
                     CURRENT_SMOOTHER_RATE[index] = 1.0;
                 }
                 if(SettingsFragment.usePseudorangeSmoother &&  prm != 0.0){
-                    if(index < 200) {
+                    if(index < 300) {
                         if(SettingsFragment.usePseudorangeRate){
                             LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
                             array[arrayRow][1] = String.format("%14.3f[FIX_PR]", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");

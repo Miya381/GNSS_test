@@ -70,9 +70,9 @@ public class FileLogger implements GnssListener {
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
     private int leapseconds = 18;
 
-    private double[] CURRENT_SMOOTHER_RATE = new double[200];
-    private double[] LAST_DELTARANGE = new double[200];
-    private double[] LAST_SMOOTHED_PSEUDORANGE = new double[200];
+    private double[] CURRENT_SMOOTHER_RATE = new double[300];
+    private double[] LAST_DELTARANGE = new double[300];
+    private double[] LAST_SMOOTHED_PSEUDORANGE = new double[300];
     private double SMOOTHER_RATE = 0.01;
     private boolean initialize = false;
 
@@ -1076,12 +1076,18 @@ public class FileLogger implements GnssListener {
                         if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                             index = index + 64;
                         }
+                        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                            index = index + 200;
+                        }
+                        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
+                            index = index + 235;
+                        }
                         if(!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
                             CURRENT_SMOOTHER_RATE[index] = 1.0;
                         }
                         //Pseudorange Smoother
                         if(SettingsFragment.usePseudorangeSmoother &&  prm != 0.0){
-                            if(index < 200) {
+                            if(index < 300) {
                                 if(SettingsFragment.usePseudorangeRate){
                                     LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
                                     C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
@@ -1215,12 +1221,18 @@ public class FileLogger implements GnssListener {
                         if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                             index = index + 64;
                         }
+                        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                            index = index + 200;
+                        }
+                        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
+                            index = index + 235;
+                        }
                         if(!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
                             CURRENT_SMOOTHER_RATE[index] = 1.0;
                         }
                         //Pseudorange Smoother
                         if(SettingsFragment.usePseudorangeSmoother &&  prm != 0.0){
-                            if(index < 200) {
+                            if(index < 300) {
                                 if(SettingsFragment.usePseudorangeRate){
                                     LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
                                     PrmStrings = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
