@@ -297,23 +297,12 @@ public class SensorContainer {
                     mRollY = radianToDegrees(orientationValues[2]);
                 }else {
                     //研究用システム
-                    double Gx = -y;
+                    double Gx = y;
                     double Gy = x;
                     double Gz = z;
+
                     mRollAY = Math.atan2(Gy, Gz);
-                    /*if (mRollAY > 2 * Math.PI) {
-                        mRollAY = mRollAY - 2 * Math.PI;
-                    }
-                    if (mRollAY < 0.0) {
-                        mRollAY = mRollAY + 2 * Math.PI;
-                    }*/
                     mPitchAX = Math.atan((-Gx) / (Gy * Math.sin(mRollY) + Gz * Math.cos(mRollY)));
-                    /*if (mPitchAX > 2 * Math.PI) {
-                        mPitchAX = mPitchAX - 2 * Math.PI;
-                    }
-                    if (mPitchAX < 0.0) {
-                        mPitchAX = mPitchAX + 2 * Math.PI;
-                    }*/
 
                     if(mRollGY == 0){
                         mRollGY = mRollAY;
@@ -324,33 +313,16 @@ public class SensorContainer {
                         Log.d("Sensor","initialize");
                     }
                     mRollGY = mRollGY + ((GyroY * (timeEspNanos * 1e-9)) / 2);
-                    //Log.d("Gyro", GyroX + "," + GyroY);
-                    /*if (mRollGY > 2 * Math.PI) {
-                        mRollGY = mRollGY - 2 * Math.PI;
-                    }
-                    if (mRollGY < 0.0) {
-                        mRollGY = mRollGY + 2 * Math.PI;
-                    }*/
                     mPitchGX = mPitchGX - ((GyroX * (timeEspNanos * 1e-9)) / 2);
-                    /*if (mPitchGX > 2 * Math.PI) {
-                        mPitchGX = mPitchGX - 2 * Math.PI;
-                    }
-                    if (mPitchGX < 0.0) {
-                        mPitchGX = mPitchGX + 2 * Math.PI;
-                    }*/
-                    //Log.d("Sensor Mag",String.valueOf(Math.toDegrees(mPitchGX)) + "," + String.valueOf(Math.toDegrees(mRollGY)));
-                    //Log.d("Sensor Acc",String.valueOf(Math.toDegrees(mPitchAX)) + "," + String.valueOf(Math.toDegrees(mRollAY)));
+
                     mRollY = (alpha)*mRollGY + (1 - alpha) * mRollAY ;
                     mPitchX = (alpha)*mPitchGX + (1 - alpha) * mPitchAX;
-
-                    //mRollY = mRollY + Math.PI;
-                    //mPitchX = mPitchX + Math.PI;
 
                     //オーバーシュート防止
                     if (mRollY > 2 * Math.PI) {
                         mRollY = mRollY - 2 * Math.PI;
                     }
-                    if (mPitchX < 0.0) {
+                    if (mRollY < 0.0) {
                         mRollY = mRollY + 2 * Math.PI;
                     }
                     if (mPitchX > 2 * Math.PI) {
@@ -363,9 +335,9 @@ public class SensorContainer {
                     mRollY = mPitchX;
                     mPitchX = tmp;*/
                     //地磁気センサーオフセット
-                    double Bx = -my;
+                    double Bx = my;
                     double By = mx;
-                    double Bz = -mz;
+                    double Bz = mz;
                     double GxOff = 0;
                     double GyOff = 0;
                     double GzOff = 0;
@@ -427,7 +399,7 @@ public class SensorContainer {
 
 
                 if(SettingsFragment.ResearchMode) {
-                    mLogger.onSensorListener(String.format("Pitch = %f , Roll = %f , Azimuth = %f \n Altitude = %f \n WalkCounter = %d \n AccAzi = %d", Math.toDegrees(mPitchX), Math.toDegrees(mRollY), Math.toDegrees(mAzimuthZ) - 90, LastAltitude - Altitude, counter, AccAzi), Math.toDegrees(mAzimuthZ) - 90, currentAccelerationZValues, LastAltitude - Altitude);
+                    mLogger.onSensorListener(String.format("Pitch = %f , Roll = %f , Azimuth = %f \n Altitude = %f \n WalkCounter = %d \n AccAzi = %d", Math.toDegrees(mPitchX), Math.toDegrees(mRollY), Math.toDegrees(mAzimuthZ), LastAltitude - Altitude, counter, AccAzi), Math.toDegrees(mAzimuthZ), currentAccelerationZValues, LastAltitude - Altitude);
                 }else{
                     mLogger.onSensorListener(String.format("Pitch = %5.1f, Roll = %5.1f, Azimuth = %5.1f\nAltitude = %6.1f", mPitchX, mRollY, mAzimuthZ, Altitude), mAzimuthZ, currentAccelerationZValues, LastAltitude - Altitude);
                     //mLogger.onSensorListener(String.format("MagX = %f \n MagY = %f \n MagZ = %f",mMagneticValues[0],mMagneticValues[1],mMagneticValues[2]),mAzimuthZ,currentAccelerationZValues,LastAltitude - Altitude);
