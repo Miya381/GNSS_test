@@ -93,7 +93,9 @@ public class Logger2Fragment extends Fragment {
         public void surfaceChanged(SurfaceHolder surfaceholder, int i, int j, int k) {
             if(mLooper != null) {
                 //mTime = System.currentTimeMillis();
-                mLooper.start();
+                if(!mLooper.isAlive()) {
+                    mLooper.start();
+                }
                 //doDraw(surfaceholder);
             }
         }
@@ -102,7 +104,7 @@ public class Logger2Fragment extends Fragment {
                 Activity activity = getActivity();
                 if (activity == null) {
                     try {
-                        mLooper.sleep(1000);
+                        mLooper.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (IllegalStateException e){
@@ -118,7 +120,7 @@ public class Logger2Fragment extends Fragment {
                                 }
                             });
                     try {
-                        mLooper.sleep(1000);
+                        mLooper.sleep(500);
                     } catch (InterruptedException e) {
                          e.printStackTrace();
                     } catch (IllegalStateException e){
