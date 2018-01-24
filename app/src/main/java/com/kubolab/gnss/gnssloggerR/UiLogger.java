@@ -579,7 +579,7 @@ public class UiLogger implements GnssListener {
                             if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
                                 array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
                             } else {
-                                array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / BDSWAVELENGTH(measurement.getSvid()));
+                                array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / BEIDOUWAVELENGTH(measurement.getSvid()));
                             }
                         }else {
                             array[arrayRow][2] = "NOT_SUPPORTED";
@@ -693,20 +693,11 @@ public class UiLogger implements GnssListener {
     }
 
     private double GLONASSG1WAVELENGTH(int svid){
-        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 0.5625) * 10e6);
+        return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 0.5625) * 10e5);
     }
 
-    private double BDSWAVELENGTH(int svid){
-        int BDSID = 1;
-        double freq = 1575.42;
-        if(BDSID == 1){
-            freq = 1561.098;
-        }else if(BDSID == 2){
-            freq = 1207.14;
-        }else if(BDSID == 3){
-            freq = 1268.52;
-        }
-        return SPEED_OF_LIGHT/(freq * 10e6);
+    private double BEIDOUWAVELENGTH(int svid){
+        return SPEED_OF_LIGHT/(1561.098 * 10e5);
     }
 
     private static int calcspent(Calendar Start , Calendar End){
