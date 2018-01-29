@@ -20,7 +20,7 @@ public class CoodinateConv {
 
         // [Description]
         // orgxyzを原点とするENU座標系の座標enuを，ECEF座標系（WGS-84）の座標posxyzに変換します．
-        double[] orgllh = xyz2llh(orgxyz,1);
+        double[] orgllh = xyz2llh(orgxyz,0);
         double phi = orgllh[0];
         double lam = orgllh[1];
 
