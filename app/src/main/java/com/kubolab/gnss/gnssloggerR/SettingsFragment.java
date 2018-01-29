@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -331,23 +333,43 @@ private TextView mAccSpecView;
 
         final Switch ResearchModeSwitch = (Switch) view.findViewById(R.id.ResearchMode);
         //リリース時
-        if(BuildConfig.DEBUG == false) {
-            ResearchModeSwitch.setEnabled(false);
-        }
+        //if(BuildConfig.DEBUG == false) {
+            //ResearchModeSwitch.setEnabled(false);
+        //}
         ResearchModeSwitch.setChecked(false);
         ResearchModeSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 if (isChecked) {
-                    ResearchMode = true;
-                    //rbrinex303.setEnabled(true);
-                    //useGAL.setEnabled(true);
-                    outPutSensor.setEnabled(true);
-                    RINEXNAVCheck.setEnabled(true);
-                    //useBDS.setEnabled(true);
-                    useSBS.setEnabled(true);
-
+                    final EditText editView = new EditText(getContext());
+                    editView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Please Enter a Password")
+                            //setViewにてビューを設定します。
+                            .setView(editView)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    //入力した文字をトースト出力する
+                                    if(editView.getText().toString().indexOf("aiueo1") != -1){
+                                        Toast.makeText(getContext(),
+                                                "Research mode turned ON",
+                                                Toast.LENGTH_LONG).show();
+                                        ResearchMode = true;
+                                        //rbrinex303.setEnabled(true);
+                                        //useGAL.setEnabled(true);
+                                        outPutSensor.setEnabled(true);
+                                        RINEXNAVCheck.setEnabled(true);
+                                        //useBDS.setEnabled(true);
+                                        useSBS.setEnabled(true);
+                                    }else {
+                                        Toast.makeText(getContext(),
+                                                "Password is incorrect",
+                                                Toast.LENGTH_LONG).show();
+                                        ResearchModeSwitch.setChecked(false);
+                                    }
+                                }
+                            })
+                            .show();
                 } else {
                     ResearchMode = false;
                     //rbrinex303.setEnabled(false);
@@ -359,6 +381,7 @@ private TextView mAccSpecView;
                     //useBDS.setEnabled(false);
                     useSBS.setEnabled(false);
                     //RINEX303 = false;
+                    ResearchMode = true;
                 }
             }
 
