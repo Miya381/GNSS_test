@@ -197,41 +197,51 @@ public class Logger2Fragment extends Fragment {
                 double coefficient;
                 double offsetX;
                 double offsetY;
+                double offsetXT;
+                double offsetYT;
                 if(LineDegree >= 90 && LineDegree < 180){
                     //第三象限
-                    coefficient = 1.12;
-                    offsetX = 15;
-                    offsetY = 0;
+                    coefficient = 1.0;
+                    offsetX = 50;
+                    offsetY = 15;
+                    offsetXT = 15;
+                    offsetYT = 50;
                 }else if(LineDegree >= 180 && LineDegree < 270){
                     //第二象限
-                    coefficient = 1.1;
-                    offsetX = 0;
-                    offsetY = 15;
+                    coefficient = 1.0;
+                    offsetX = 50;
+                    offsetY = 0;
+                    offsetXT = 50;
+                    offsetYT = 15;
                 }else if(LineDegree >= 270 && LineDegree < 360){
                     //第一象限
-                    coefficient = 1.05;
-                    offsetX = 15;
-                    offsetY = 10;
+                    coefficient = 1.0;
+                    offsetX = -15;
+                    offsetY = 0;
+                    offsetXT = 15;
+                    offsetYT = -15;
                 }else {
                     //第四象限
-                    coefficient = 1.05;
-                    offsetX = 15;
-                    offsetY = 0;
+                    coefficient = 1.0;
+                    offsetX = 0;
+                    offsetY = 15;
+                    offsetXT = -15;
+                    offsetYT = 15;
                 }
                 if(i == 0 || i == 90 || i == 180 || i == 270){
                     mPaint.setTextSize(50);
                     switch (i){
                         case 0:
-                            canvas.drawText("N",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetX),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetY),mPaint);
+                            canvas.drawText("N",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetXT),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetYT),mPaint);
                             break;
                         case 90:
-                            canvas.drawText("E",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetX),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetY),mPaint);
+                            canvas.drawText("E",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetXT),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetYT),mPaint);
                             break;
                         case 180:
-                            canvas.drawText("S",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetX),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetY),mPaint);
+                            canvas.drawText("S",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetXT),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetYT),mPaint);
                             break;
                         case 270:
-                            canvas.drawText("W",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetX),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetY),mPaint);
+                            canvas.drawText("W",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetXT),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetYT),mPaint);
                             break;
                     }
                 }else if(i != 360){
