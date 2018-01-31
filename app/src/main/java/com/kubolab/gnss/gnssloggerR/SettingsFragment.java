@@ -279,6 +279,7 @@ private TextView mAccSpecView;
                         } else {
                             mSensorContainer.unregisterSensor();
                             useDeviceSensor = false;
+                            Logger2Fragment.deviceAzimuth = 0;
                         }
                     }
                 });
@@ -367,6 +368,12 @@ private TextView mAccSpecView;
                                                 Toast.LENGTH_LONG).show();
                                         ResearchModeSwitch.setChecked(false);
                                     }
+                                }
+                            })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    ResearchModeSwitch.setChecked(false);
                                 }
                             })
                             .show();

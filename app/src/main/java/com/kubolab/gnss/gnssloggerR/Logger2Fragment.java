@@ -41,7 +41,7 @@ public class Logger2Fragment extends Fragment {
     private float[] NorthPos = new float[2];
     private String[] SkyPlotSvid = new String[50];
     private int msatNumber = 0;
-    private float deviceAzimuth;
+    public static float deviceAzimuth;
     private Bitmap skyplotbg = null;
 
     private final Logger2Fragment.UIFragment2Component mUiComponent = new Logger2Fragment.UIFragment2Component();
@@ -194,7 +194,7 @@ public class Logger2Fragment extends Fragment {
                 }
                 canvas.drawLine(MaxCanvusWidth/2,MaxCanvusHeight/2 ,(float) (MaxCanvusWidth/2 + maxCircleRadius*Math.cos(Math.toRadians(LineDegree))), (float) (MaxCanvusHeight/2 + maxCircleRadius*Math.sin(Math.toRadians(LineDegree))), mDotPaint);
                 mPaint.setStyle(Paint.Style.FILL);
-                double coefficient;
+                double coefficient = 1.0;
                 double offsetX;
                 double offsetY;
                 double offsetXT;
@@ -249,6 +249,41 @@ public class Logger2Fragment extends Fragment {
                     canvas.drawText(String.valueOf(i),(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetX),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetY),mPaint);
                 }
             }
+                /*double offsetDegreeX = LineDegree;
+                if(offsetDegreeX > 180){
+                    offsetDegreeX = offsetDegreeX - 180;
+                }
+                double offsetDegreeY = -LineDegree + 270;
+                if(offsetDegreeX > 90) {
+                    offsetX = -50 * (offsetDegreeX / 180);
+                    offsetXT = -30 * (offsetDegreeX / 180);
+                }else {
+                    offsetX = 50 * (offsetDegreeX / 180);
+                    offsetXT = 30 * (offsetDegreeX / 180);
+                }
+                offsetY = 10*Math.sin(Math.toRadians(offsetDegreeY));
+                offsetYT = -15*Math.sin(Math.toRadians(offsetDegreeY));*/
+                /*if(i == 0 || i == 90 || i == 180 || i == 270){
+                    mPaint.setTextSize(50);
+                    switch (i){
+                        case 0:
+                            canvas.drawText("N",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetXT),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetYT),mPaint);
+                            break;
+                        case 90:
+                            canvas.drawText("E",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetXT),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetYT),mPaint);
+                            break;
+                        case 180:
+                            canvas.drawText("S",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetXT),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetYT),mPaint);
+                            break;
+                        case 270:
+                            canvas.drawText("W",(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetXT),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetYT),mPaint);
+                            break;
+                    }
+                }else if(i != 360){
+                    mPaint.setTextSize(30);
+                    canvas.drawText(String.valueOf(i),(float) (MaxCanvusWidth/2 + coefficient*maxCircleRadius*Math.cos(Math.toRadians(LineDegree)) - offsetX),(float) (MaxCanvusHeight/2 + coefficient*maxCircleRadius*Math.sin(Math.toRadians(LineDegree)) + offsetY),mPaint);
+                }
+            }*/
 
             //衛星配置のプロット
             paint.setColor(Color.BLACK);
