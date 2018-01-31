@@ -7,9 +7,9 @@ android {
         applicationId 'com.kubolab.gnss.gnssloggerR'
         minSdkVersion 24
         targetSdkVersion 24
-        versionName '1.4.4'
+        versionName '1.4.5'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode 13
+        versionCode 14
     }
     buildTypes {
         release {
