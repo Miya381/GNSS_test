@@ -141,7 +141,7 @@ public class GnssNavigationConv {
                     Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "First SubFrame");
                     break;
                 case 2:
-                    //handleSecondSubframe(prn, rawData);
+                    handleSecondSubframe(rawData);
                     Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "Second SubFrame");
                     break;
                 case 3:
@@ -207,52 +207,36 @@ public class GnssNavigationConv {
         gpsEphemerisProto.af0 = af0 * POW_2_NEG_31;
 
         updateDecodedState(prn, SUBFRAME_1, intermediateEphemeris);
-    }
+    }*/
 
-    private void handleSecondSubframe(byte prn, byte[] rawData) {
-        int iode = extractBits(IODE1_INDEX, IODE_LENGTH, rawData);
+    private void handleSecondSubframe(byte[] rawData) {
+        StringBuilder SecondSubframe = new StringBuilder();
+        double iode = extractBits(IODE1_INDEX, IODE_LENGTH, rawData);
 
-        IntermediateEphemeris intermediateEphemeris =
-                findIntermediateEphemerisToUpdate(prn, SUBFRAME_2, iode);
-        if (intermediateEphemeris == null) {
-            // nothing to update
-            return;
-        }
+        double crs = (short) extractBits(CRS_INDEX, CRS_LENGTH, rawData) * POW_2_NEG_5;
 
-        GpsEphemerisProto gpsEphemerisProto = intermediateEphemeris.getEphemerisObj();
+        double deltaN = (short) extractBits(DELTA_N_INDEX, DELTA_N_LENGTH, rawData) * POW_2_NEG_43 * Math.PI;
 
-        gpsEphemerisProto.iode = iode;
+        double m0 = (int) buildUnsigned32BitsWordFrom8And24Words(M0_INDEX8, M0_INDEX24, rawData) * POW_2_NEG_31 * Math.PI;
 
-        short crs = (short) extractBits(CRS_INDEX, CRS_LENGTH, rawData);
-        gpsEphemerisProto.crc = crs * POW_2_NEG_5;
+        String broadcastorbit_1 = String.format("    %1.12E,%1.12E,%1.12E,%1.12E",iode,crs,deltaN,m0);
+        Log.i("Navigation",broadcastorbit_1);
 
-        short deltaN = (short) extractBits(DELTA_N_INDEX, DELTA_N_LENGTH, rawData);
-        gpsEphemerisProto.deltaN = deltaN * POW_2_NEG_43 * Math.PI;
-
-        int m0 = (int) buildUnsigned32BitsWordFrom8And24Words(M0_INDEX8, M0_INDEX24, rawData);
-        gpsEphemerisProto.m0 = m0 * POW_2_NEG_31 * Math.PI;
-
-        short cuc = (short) extractBits(CUC_INDEX, CUC_LENGTH, rawData);
-        gpsEphemerisProto.cuc = cuc * POW_2_NEG_29;
+        double cuc = (short) extractBits(CUC_INDEX, CUC_LENGTH, rawData) * POW_2_NEG_29;
 
         // an unsigned 32 bit value
-        long e = buildUnsigned32BitsWordFrom8And24Words(E_INDEX8, E_INDEX24, rawData);
-        gpsEphemerisProto.e = e * POW_2_NEG_33;
+        double e = buildUnsigned32BitsWordFrom8And24Words(E_INDEX8, E_INDEX24, rawData) * POW_2_NEG_33;
 
-        short cus = (short) extractBits(CUS_INDEX, CUS_LENGTH, rawData);
-        gpsEphemerisProto.cus = cus * POW_2_NEG_29;
+        double cus = (short) extractBits(CUS_INDEX, CUS_LENGTH, rawData) * POW_2_NEG_29;
 
         // an unsigned 32 bit value
-        long a = buildUnsigned32BitsWordFrom8And24Words(A_INDEX8, A_INDEX24, rawData);
-        gpsEphemerisProto.rootOfA = a * POW_2_NEG_19;
+        double a = buildUnsigned32BitsWordFrom8And24Words(A_INDEX8, A_INDEX24, rawData) * POW_2_NEG_19;
 
-        int toe = extractBits(TOE_INDEX, TOE_LENGTH, rawData);
+        double toe = extractBits(TOE_INDEX, TOE_LENGTH, rawData) * POW_2_4;
         double toeScaled = toe * POW_2_4;
-        gpsEphemerisProto.toe = toe * POW_2_4;
 
-        updateDecodedState(prn, SUBFRAME_2, intermediateEphemeris);
     }
-
+/*
     private void handleThirdSubframe(byte prn, byte[] rawData) {
 
         int iode = extractBits(IODE2_INDEX, IODE_LENGTH, rawData);
