@@ -857,7 +857,7 @@ public class FileLogger implements GnssListener {
                     if(RINEX_NAV_ION_OK == false) {
                         StringBuilder NAV_ION = new StringBuilder();
                         GnssNavigationConv mGnssNavigationConv = new GnssNavigationConv();
-                        StringBuilder ION = mGnssNavigationConv.onNavMessageReported((byte) navigationMessage.getSvid(),(byte)navigationMessage.getType(),(short) navigationMessage.getMessageId(),navigationMessage.getData());
+                        StringBuilder ION = mGnssNavigationConv.onNavMessageReported((byte) navigationMessage.getSvid(),(byte)navigationMessage.getType(),navigationMessage.getMessageId(),navigationMessage.getSubmessageId(),navigationMessage.getData());
                         if(ION != null && ION.toString().indexOf("null") == -1) {
                             NAV_ION.append(ION);
                             Log.d("NAV",ION.toString());

@@ -15,10 +15,13 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Arrays;
+import java.util.List;
+
 /**
  * A class representing a UI logger for the application. Its responsibility is show information in
  * the UI.
@@ -48,6 +51,10 @@ public class UiLogger implements GnssListener {
 
     int MaxSatelliteIndex = 36;
     String array[][] = new String[MaxSatelliteIndex][4];
+
+    //Navigation Message用
+    //private int[][] NavSatelliteSvid = new int[5][300];
+    List<String> NavSatelliteSvid = new ArrayList<>();
 
 
     public UiLogger() {
@@ -125,9 +132,9 @@ public class UiLogger implements GnssListener {
         x = x.setScale(1,BigDecimal.ROUND_HALF_UP);
         Declination = x.doubleValue();
 
-        location.getTime();
-        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
-        component.LocationTextFragment("Google(" + location.getProvider() + ")",String.format("%f",location.getLatitude()),String.format("%f",location.getLongitude()),String.format("%f",location.getAltitude()),0);
+        //location.getTime();
+        //LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
+        //component.LocationTextFragment("Google(" + location.getProvider() + ")",String.format("%f",location.getLatitude()),String.format("%f",location.getLongitude()),String.format("%f",location.getAltitude()),0);
 
         //logLocationEvent("onLocationChanged: " + location);
     }
@@ -174,7 +181,28 @@ public class UiLogger implements GnssListener {
     public void onGnssNavigationMessageReceived(GnssNavigationMessage event) {
         //logNavigationMessageEvent("onGnssNavigationMessageReceived: " + event);
         GnssNavigationConv mGnssNavigationConv = new GnssNavigationConv();
-        StringBuilder ION = mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getData());
+        StringBuilder ION = mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getSubmessageId(),event.getData());
+        boolean svid_detected = false;
+        for(int i = 0;i < NavSatelliteSvid.size(); i++){
+            String tmp = NavSatelliteSvid.get(i);
+            int index = tmp.indexOf("SVID:" + String.valueOf(event.getSvid()));
+            if(index != -1){
+                if(tmp.indexOf(event.getSubmessageId() + ",") == -1){
+                    tmp = tmp + event.getSubmessageId() + ",";
+                    NavSatelliteSvid.set(i,tmp);
+                }
+                svid_detected = true;
+            }
+        }
+        if(svid_detected == false){
+            NavSatelliteSvid.add("TYPE:" + getNAVType(event.getType()) + " SVID:" + String.valueOf(event.getSvid()) + " FrameNumber:" + event.getSubmessageId() + ",");
+        }
+        StringBuilder NavigationMessage = new StringBuilder();
+        for(int i = 0;i < NavSatelliteSvid.size(); i++){
+            NavigationMessage.append(NavSatelliteSvid.get(i) + "\n");
+        }
+        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
+        component.NavigationTextFragment(NavigationMessage.toString());
     }
 
     @Override
@@ -704,5 +732,18 @@ public class UiLogger implements GnssListener {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Log.d("DATE",String.valueOf(Start) + String.valueOf(End));
         return  (int)((End.getTimeInMillis() - Start.getTimeInMillis() + (1000 * 60 * 60 * 24)) / (1000 * 60 * 60 * 24));
+    }
+
+    private static String getNAVType(int type){
+        switch (type){
+            case GnssNavigationMessage.TYPE_GPS_L1CA:
+                return "GPS_L1CA";
+            case GnssNavigationMessage.TYPE_GLO_L1CA:
+                return "GLO_L1CA";
+            case GnssNavigationMessage.TYPE_GPS_L5CNAV:
+                return "GPS_L5CNAV";
+            default:
+                return "UNKNOWN";
+        }
     }
 }

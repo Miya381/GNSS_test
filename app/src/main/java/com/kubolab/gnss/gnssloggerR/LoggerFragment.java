@@ -27,6 +27,7 @@ public class LoggerFragment extends Fragment {
     private TextView mLocationLatitude;
     private TextView mLocationLongitude;
     private TextView mLocationAltitude;
+    private TextView gnssNavigationDebugView;
 
     private ScrollView mScrollView;
     private FileLogger mFileLogger;
@@ -79,10 +80,11 @@ public class LoggerFragment extends Fragment {
 
     public void onViewCreated(View view, Bundle savedInstanceState){
         //mLogView = (TextView) newView.findViewById(R.id.lo);
-        mLocationProvider = (TextView) view.findViewById(R.id.location_prov);
+        /*mLocationProvider = (TextView) view.findViewById(R.id.location_prov);
         mLocationLatitude = (TextView) view.findViewById(R.id.location_lat);
         mLocationLongitude = (TextView) view.findViewById(R.id.location_lon);
-        mLocationAltitude = (TextView) view.findViewById(R.id.location_alt);
+        mLocationAltitude = (TextView) view.findViewById(R.id.location_alt);*/
+        gnssNavigationDebugView = (TextView) view.findViewById(R.id.gnssNavigationDebugView);
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);
         mTable = (ViewGroup) view.findViewById(R.id.TableLayout);
         //表の初期化
@@ -277,7 +279,22 @@ public class LoggerFragment extends Fragment {
                     });
         }
 
-        public synchronized void LocationTextFragment(final String provider, final String latitude, final String longitude,final String altitude,int color) {
+        public synchronized void NavigationTextFragment(final String NavMessage) {
+            Activity activity = getActivity();
+            if (activity == null) {
+                return;
+            }
+            activity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            //CharSequence tempText = gnssNavigationDebugView.getText();
+                            gnssNavigationDebugView.setText(NavMessage);
+                        }
+                    });
+        }
+
+        /*public synchronized void LocationTextFragment(final String provider, final String latitude, final String longitude,final String altitude,int color) {
             Activity activity = getActivity();
             if (activity == null) {
                 return;
@@ -292,7 +309,7 @@ public class LoggerFragment extends Fragment {
                             mLocationAltitude.setText(altitude);
                         }
                     });
-        }
+        }*/
 
         public synchronized void RefreshTimer(){
             Activity activity = getActivity();

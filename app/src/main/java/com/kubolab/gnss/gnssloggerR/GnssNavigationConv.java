@@ -1,5 +1,6 @@
 package com.kubolab.gnss.gnssloggerR;
 
+import android.os.Debug;
 import android.util.Log;
 import android.location.GnssNavigationMessage;
 
@@ -128,34 +129,34 @@ public class GnssNavigationConv {
     private static final int I1UTC_INDEX = 150;
 
 
-    public StringBuilder onNavMessageReported(int prn, int type, int id, byte[] rawData) {
-        if(rawData != null && rawData.length == L1_CA_MESSAGE_LENGTH_BYTES && type != GnssNavigationMessage.TYPE_GPS_L1CA){
+    public StringBuilder onNavMessageReported(int prn, int type, int page, int subframe, byte[] rawData) {
+        if(rawData == null || type != GnssNavigationMessage.TYPE_GPS_L1CA){
             return null;
         }
-        Log.d("Navigation",String.valueOf(id));
+        //Log.i("Navigation",String.valueOf(subframe));
         StringBuilder NavMessage = new StringBuilder();
-            switch (id) {
+            switch (subframe) {
                 case 1:
                     //handleFirstSubframe(prn, rawData);
-                    Log.d("Navigation",getNAVType(type) + String.valueOf(prn) + "First SubFrame Detected");
+                    Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "First SubFrame");
                     break;
                 case 2:
                     //handleSecondSubframe(prn, rawData);
-                    Log.d("Navigation",getNAVType(type) + String.valueOf(prn) + "Second SubFrame Detected");
+                    Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "Second SubFrame");
                     break;
                 case 3:
                     //handleThirdSubframe(prn, rawData);
-                    Log.d("Navigation",getNAVType(type) + String.valueOf(prn) + "Third SubFrame Detected");
+                    Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "Third SubFrame");
                     break;
                 case 4:
-                    NavMessage.append(handleFourthSubframe(rawData));
-                    Log.d("Navigation",getNAVType(type) + String.valueOf(prn) + "Forth SubFrame Detected\n" + NavMessage.toString());
+                    NavMessage.append(handleFourthSubframe(page,rawData));
+                    Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "Forth SubFrame");
                     break;
                 case 5:
                     break;
                 default:
                     // invalid message id
-                    throw new IllegalArgumentException("Invalid Subframe ID: " + id);
+                    throw new IllegalArgumentException("Invalid Subframe ID: " + subframe);
             }
             return NavMessage;
     }
@@ -297,11 +298,11 @@ public class GnssNavigationConv {
         updateDecodedState(prn, SUBFRAME_3, intermediateEphemeris);
     }*/
 
-    private StringBuilder handleFourthSubframe(byte[] rawData) {
-        byte pageId = (byte) extractBits(62, 6, rawData);
-        if (pageId != IONOSPHERIC_PARAMETERS_PAGE_18_SV_ID) {
+    private StringBuilder handleFourthSubframe(int page, byte[] rawData) {
+        /*byte pageId = (byte) extractBits(62, 6, rawData);*/
+        if (page != 18) {
             // We only care to decode ionospheric parameters for now
-            Log.d("Navigation","Not found IONOSPHERIC DATA");
+            Log.i("Navigation","PAGE No." + page + " Not found IONOSPHERIC DATA");
             return null;
         }
 
@@ -309,6 +310,7 @@ public class GnssNavigationConv {
 
         double[] alpha = new double[4];
         byte a0 = (byte) extractBits(A0_INDEX, A_B_LENGTH, rawData);
+
         alpha[0] = a0 * POW_2_NEG_30;
         byte a1 = (byte) extractBits(A1_INDEX, A_B_LENGTH, rawData);
         alpha[1] = a1 * POW_2_NEG_27;
@@ -316,7 +318,7 @@ public class GnssNavigationConv {
         alpha[2] = a2 * POW_2_NEG_24;
         byte a3 = (byte) extractBits(A3_INDEX, A_B_LENGTH, rawData);
         alpha[3] = a3 * POW_2_NEG_24;
-        FourthSubframe.append(String.format("GPSA%12.4f%12.4f%12.4f%12.4f IONOSPHERIC CORR\n",alpha[0],alpha[1],alpha[2],alpha[3]));
+        FourthSubframe.append(String.format("GPSA   %1.4E %1.4E %1.4E %1.4E       IONOSPHERIC CORR\n",alpha[0],alpha[1],alpha[2],alpha[3]));
 
         double[] beta = new double[4];
         byte b0 = (byte) extractBits(B0_INDEX, A_B_LENGTH, rawData);
@@ -327,27 +329,40 @@ public class GnssNavigationConv {
         beta[2] = b2 * POW_2_16;
         byte b3 = (byte) extractBits(B3_INDEX, A_B_LENGTH, rawData);
         beta[3] = b3 * POW_2_16;
-        FourthSubframe.append(String.format("GPSB%12.4f%12.4f%12.4f%12.4f IONOSPHERIC CORR\n",beta[0],beta[1],beta[2],beta[3]));
+        FourthSubframe.append(String.format("GPSB   %1.4E %1.4E %1.4E %1.4E       IONOSPHERIC CORR\n",beta[0],beta[1],beta[2],beta[3]));
 
 
         double a0UTC =
                 buildSigned32BitsWordFrom8And24WordsWith8bitslsb(I0UTC_INDEX8, I0UTC_INDEX24, rawData)
                         * Math.pow(2, -30);
 
-        //double a1UTC = getTwoComplement(extractBits(I1UTC_INDEX, 24, rawData), 24) * Math.pow(2, -50);
+        double a1UTC = getTwoComplement(extractBits(I1UTC_INDEX, 24, rawData), 24) * Math.pow(2, -50);
 
         short tot = (short) (extractBits(TOT_LS_INDEX, A_B_LENGTH, rawData) * POW_2_12);
-
         short wnt = (short) extractBits(WN_LS_INDEX, A_B_LENGTH, rawData);
+        FourthSubframe.append(String.format("GPUT %1.10E%1.10E %6d %6d         TIME SYSTEM CORR\n",a0UTC,a1UTC,tot,wnt));
 
         short tls = (short) extractBits(DELTA_T_LS_INDEX, A_B_LENGTH, rawData);
-
         short wnlsf = (short) extractBits(WNF_LS_INDEX, A_B_LENGTH, rawData);
-
         short dn = (short) extractBits(DN_LS_INDEX, A_B_LENGTH, rawData);
 
         short tlsf = (short) extractBits(DELTA_TF_LS_INDEX, A_B_LENGTH, rawData);
+        FourthSubframe.append(String.format("%6d%6d%6d%6d                                   LEAP SECONDS\n",tls,tlsf,wnlsf,dn));
+        Log.i("Navigation",FourthSubframe.toString());
         return FourthSubframe;
+    }
+
+    private static int getTwoComplement(int value, int bits) {
+        int msbMask = 1 << bits - 1;
+        int msb = value & msbMask;
+        if (msb == 0) {
+            // the value is positive
+            return value;
+        }
+
+        int valueBitMask = (1 << bits) - 1;
+        int extendedSignMask = (int) INTEGER_RANGE - valueBitMask;
+        return value | extendedSignMask;
     }
 
     private static int extractBits(int index, int length, byte[] rawData) {
