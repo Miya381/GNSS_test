@@ -1131,6 +1131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:clickable="true"
                 android:text="SYNCRONIZING..."
                 android:textColor="#FF8000"
                 app:layout_constraintBottom_toBottomOf="@+id/IONTitle"

@@ -37,21 +37,27 @@ public class SQLiteManager extends SQLiteOpenHelper {
         db.execSQL(DROP_TABLE);
     }
 
-    public double searchIndex(final SQLiteDatabase db, final String column){
+    public double searchIndex(final SQLiteDatabase db, final String Table,final String column){
         double tmp = 0;
         // テーブルからデータを検索
-        Cursor cursor = db.query(
-                "sample_table", new String[] {"_id", column},
-                null, null, null, null, "_id DESC");
-        // 参照先を一番始めに
-        boolean isEof = cursor.moveToFirst();
-        // データを取得していく
-        while(isEof) {
-            tmp = cursor.getDouble(cursor.getColumnIndex("data"));
-            isEof = cursor.moveToNext();
+        String query = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='" + Table + "';";
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        String result = c.getString(0);
+        if(result.indexOf("1") != -1) {
+            Cursor cursor = db.query(
+                    Table, new String[]{"_id", column},
+                    null, null, null, null, "_id DESC");
+            // 参照先を一番始めに
+            boolean isEof = cursor.moveToFirst();
+            // データを取得していく
+            while (isEof) {
+                tmp = cursor.getDouble(cursor.getColumnIndex("data"));
+                isEof = cursor.moveToNext();
+            }
+            // 忘れずに閉じる
+            cursor.close();
         }
-        // 忘れずに閉じる
-        cursor.close();
         return tmp;
     }
 }

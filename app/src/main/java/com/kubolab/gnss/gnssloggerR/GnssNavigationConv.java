@@ -325,7 +325,19 @@ public class GnssNavigationConv {
         beta[3] = b3 * POW_2_16;
         FourthSubframe.append(String.format("GPSB   %1.4E %1.4E %1.4E %1.4E       IONOSPHERIC CORR\n",beta[0],beta[1],beta[2],beta[3]));
 
-        if(hlpr.searchIndex(NavDB,"GPSA0") == 0) {
+        /*GnssNavigationDataBase gnssNavigationDataBase = new GnssNavigationDataBase();
+        gnssNavigationDataBase.GPSA[0] = alpha[0];
+        gnssNavigationDataBase.GPSA[1] = alpha[1];
+        gnssNavigationDataBase.GPSA[2] = alpha[2];
+        gnssNavigationDataBase.GPSA[3] = alpha[3];
+
+        gnssNavigationDataBase.GPSB[0] = beta[0];
+        gnssNavigationDataBase.GPSB[1] = beta[1];
+        gnssNavigationDataBase.GPSB[2] = beta[2];
+        gnssNavigationDataBase.GPSB[3] = beta[3];*/
+
+
+        if(hlpr.searchIndex(NavDB,"IONOSPHERIC","GPSA0") == 0) {
             values.put("GPSA0", alpha[0]);
             NavDB.insert("IONOSPHERIC", null, values);
             values.put("GPSA1", alpha[1]);

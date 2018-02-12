@@ -14,7 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,18 +90,45 @@ public class LoggerFragment extends Fragment {
        return inflater.inflate(R.layout.fragment_log, container, false /* attachToRoot */);
     }
 
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(final View view, Bundle savedInstanceState){
         //mLogView = (TextView) newView.findViewById(R.id.lo);
         /*mLocationProvider = (TextView) view.findViewById(R.id.location_prov);
         mLocationLatitude = (TextView) view.findViewById(R.id.location_lat);
         mLocationLongitude = (TextView) view.findViewById(R.id.location_lon);
         mLocationAltitude = (TextView) view.findViewById(R.id.location_alt);*/
-        gnssNavigationDebugView = (TextView) view.findViewById(R.id.gnssNavigationDebugView);
+        //gnssNavigationDebugView = (TextView) view.findViewById(R.id.gnssNavigationDebugView);
         gnssNavigationDebugTitle = (TextView) view.findViewById(R.id.gnssNavigationDebugTitle);
         expandableLayoutNav = (ExpandableRelativeLayout) view.findViewById(R.id.expandableLayoutNav);
 
         IONCORR = (TextView) view.findViewById(R.id.IONCORR);
         IONTitle = (TextView) view.findViewById(R.id.IONTitle);
+        PopupWindow mPopupWindow = new PopupWindow(getActivity());
+        //mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.));
+        //View popupView = getLayoutInflater().inflate(R.layout.popup_layout, null);
+        final PopupWindow ION_popupWindow;
+        ION_popupWindow = new PopupWindow(getActivity());
+        View layout = (View)getActivity().getLayoutInflater().inflate(R.layout.popup_background, null);
+        layout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+        final TextView text = (TextView)layout.findViewById(R.id.pouuptext);
+
+        ION_popupWindow.setContentView(layout);
+        ION_popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        ION_popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        Button btn = (Button)layout.findViewById(R.id.ionpop_close);
+        btn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ION_popupWindow.dismiss();
+            }
+        });
+        IONCORR.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GnssNavigationDataBase gnd = new GnssNavigationDataBase();
+                text.setText(String.format("GPSA   %1.4E %1.4E %1.4E %1.4E\nGPSB   %1.4E %1.4E %1.4E %1.4E",gnd.GPSA[0],gnd.GPSA[1],gnd.GPSA[2],gnd.GPSA[3],gnd.GPSB[0],gnd.GPSB[1],gnd.GPSB[2],gnd.GPSB[3]));
+                ION_popupWindow.showAsDropDown(view,0,0);
+            }
+        });
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);
         mTable = (ViewGroup) view.findViewById(R.id.TableLayout);
         //表の初期化
