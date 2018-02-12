@@ -853,7 +853,7 @@ public class FileLogger implements GnssListener {
                 if(mFileNavWriter == null){
                     return;
                 }
-                try {
+                /*try {
                     if(RINEX_NAV_ION_OK == false) {
                         StringBuilder NAV_ION = new StringBuilder();
                         GnssNavigationConv mGnssNavigationConv = new GnssNavigationConv();
@@ -868,7 +868,7 @@ public class FileLogger implements GnssListener {
                 }catch (IOException e){
                     Toast.makeText(mContext, "ERROR_WRITING_FILE", Toast.LENGTH_SHORT).show();
                     logException(ERROR_WRITING_FILE, e);
-                }
+                }*/
             }
         }
     }

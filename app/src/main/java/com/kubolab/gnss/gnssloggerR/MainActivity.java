@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -76,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
                 mSensorContainer.unregisterSensor();
             }
         }
+        SQLiteDatabase NavDB;
+        SQLiteManager hlpr = new SQLiteManager(getApplicationContext());
+        NavDB = hlpr.getWritableDatabase();
+        deleteDatabase("GNSSNavigation.db");
     }
 
     /**
@@ -158,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupFragments() {
-        mUiLogger = new UiLogger();
+        mUiLogger = new UiLogger(getApplicationContext());
         mFileLogger = new FileLogger(getApplicationContext());
         mSensorContainer = new SensorContainer(getApplicationContext() ,mUiLogger, mFileLogger);
         mGnssContainer = new GnssContainer(getApplicationContext(), mUiLogger, mFileLogger);

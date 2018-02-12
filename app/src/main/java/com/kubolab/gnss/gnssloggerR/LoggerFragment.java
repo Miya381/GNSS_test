@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
@@ -18,6 +19,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.aakira.expandablelayout.ExpandableLinearLayout;
+import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
+
 /**  The UI fragment that hosts a logging view. */
 public class LoggerFragment extends Fragment {
 
@@ -28,6 +32,11 @@ public class LoggerFragment extends Fragment {
     private TextView mLocationLongitude;
     private TextView mLocationAltitude;
     private TextView gnssNavigationDebugView;
+    private TextView gnssNavigationDebugTitle;
+    ExpandableRelativeLayout expandableLayoutNav;
+    //航法メッセージ用ビュー定義
+    private TextView IONTitle;
+    private TextView IONCORR;
 
     private ScrollView mScrollView;
     private FileLogger mFileLogger;
@@ -85,6 +94,11 @@ public class LoggerFragment extends Fragment {
         mLocationLongitude = (TextView) view.findViewById(R.id.location_lon);
         mLocationAltitude = (TextView) view.findViewById(R.id.location_alt);*/
         gnssNavigationDebugView = (TextView) view.findViewById(R.id.gnssNavigationDebugView);
+        gnssNavigationDebugTitle = (TextView) view.findViewById(R.id.gnssNavigationDebugTitle);
+        expandableLayoutNav = (ExpandableRelativeLayout) view.findViewById(R.id.expandableLayoutNav);
+
+        IONCORR = (TextView) view.findViewById(R.id.IONCORR);
+        IONTitle = (TextView) view.findViewById(R.id.IONTitle);
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);
         mTable = (ViewGroup) view.findViewById(R.id.TableLayout);
         //表の初期化
@@ -153,6 +167,23 @@ public class LoggerFragment extends Fragment {
         mGNSSClockView = (TextView) view.findViewById(R.id.GNSSClockView);
 
         FileLogging = false;
+
+        gnssNavigationDebugTitle.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(expandableLayoutNav.isExpanded()){
+                    expandableLayoutNav.collapse();
+                    IONCORR.setVisibility(View.GONE);
+                    IONTitle.setVisibility(View.GONE);
+                    //expandableLayoutNav.initLayout();
+                }else {
+                    expandableLayoutNav.expand();
+                    //expandableLayoutNav.initLayout();
+                    IONCORR.setVisibility(View.VISIBLE);
+                    IONTitle.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         startLog.setOnClickListener(
                 new OnClickListener() {
@@ -279,7 +310,7 @@ public class LoggerFragment extends Fragment {
                     });
         }
 
-        public synchronized void NavigationTextFragment(final String NavMessage) {
+        public synchronized void NavigationIONText(final String NavMessage,final String ColorCode) {
             Activity activity = getActivity();
             if (activity == null) {
                 return;
@@ -288,8 +319,8 @@ public class LoggerFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            //CharSequence tempText = gnssNavigationDebugView.getText();
-                            gnssNavigationDebugView.setText(NavMessage);
+                            IONCORR.setTextColor(Color.parseColor(ColorCode));
+                            IONCORR.setText(NavMessage);
                         }
                     });
         }

@@ -1,5 +1,10 @@
 package com.kubolab.gnss.gnssloggerR;
 
+import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Debug;
 import android.util.Log;
 import android.location.GnssNavigationMessage;
@@ -129,7 +134,7 @@ public class GnssNavigationConv {
     private static final int I1UTC_INDEX = 150;
 
 
-    public StringBuilder onNavMessageReported(int prn, int type, int page, int subframe, byte[] rawData) {
+    public StringBuilder onNavMessageReported(int prn, int type, int page, int subframe, byte[] rawData, Context mContext) {
         if(rawData == null || type != GnssNavigationMessage.TYPE_GPS_L1CA){
             return null;
         }
@@ -149,7 +154,7 @@ public class GnssNavigationConv {
                     Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "Third SubFrame");
                     break;
                 case 4:
-                    NavMessage.append(handleFourthSubframe(page,rawData));
+                    handleFourthSubframe(page,rawData,mContext);
                     Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "Forth SubFrame");
                     break;
                 case 5:
@@ -282,7 +287,7 @@ public class GnssNavigationConv {
         updateDecodedState(prn, SUBFRAME_3, intermediateEphemeris);
     }*/
 
-    private StringBuilder handleFourthSubframe(int page, byte[] rawData) {
+    private StringBuilder handleFourthSubframe(int page, byte[] rawData, Context mContext) {
         /*byte pageId = (byte) extractBits(62, 6, rawData);*/
         if (page != 18) {
             // We only care to decode ionospheric parameters for now
@@ -291,6 +296,10 @@ public class GnssNavigationConv {
         }
 
         StringBuilder FourthSubframe = new StringBuilder();
+        SQLiteDatabase NavDB;
+        SQLiteManager hlpr = new SQLiteManager(mContext);
+        NavDB = hlpr.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
         double[] alpha = new double[4];
         byte a0 = (byte) extractBits(A0_INDEX, A_B_LENGTH, rawData);
@@ -304,6 +313,7 @@ public class GnssNavigationConv {
         alpha[3] = a3 * POW_2_NEG_24;
         FourthSubframe.append(String.format("GPSA   %1.4E %1.4E %1.4E %1.4E       IONOSPHERIC CORR\n",alpha[0],alpha[1],alpha[2],alpha[3]));
 
+
         double[] beta = new double[4];
         byte b0 = (byte) extractBits(B0_INDEX, A_B_LENGTH, rawData);
         beta[0] = b0 * POW_2_11;
@@ -315,7 +325,24 @@ public class GnssNavigationConv {
         beta[3] = b3 * POW_2_16;
         FourthSubframe.append(String.format("GPSB   %1.4E %1.4E %1.4E %1.4E       IONOSPHERIC CORR\n",beta[0],beta[1],beta[2],beta[3]));
 
-
+        if(hlpr.searchIndex(NavDB,"GPSA0") == 0) {
+            values.put("GPSA0", alpha[0]);
+            NavDB.insert("IONOSPHERIC", null, values);
+            values.put("GPSA1", alpha[1]);
+            NavDB.insert("IONOSPHERIC", null, values);
+            values.put("GPSA2", alpha[2]);
+            NavDB.insert("IONOSPHERIC", null, values);
+            values.put("GPSA3", alpha[3]);
+            NavDB.insert("IONOSPHERIC", null, values);
+            values.put("GPSB0", beta[0]);
+            NavDB.insert("IONOSPHERIC", null, values);
+            values.put("GPSB1", beta[1]);
+            NavDB.insert("IONOSPHERIC", null, values);
+            values.put("GPSB2", beta[2]);
+            NavDB.insert("IONOSPHERIC", null, values);
+            values.put("GPSB3", beta[3]);
+            NavDB.insert("IONOSPHERIC", null, values);
+        }
         double a0UTC =
                 buildSigned32BitsWordFrom8And24WordsWith8bitslsb(I0UTC_INDEX8, I0UTC_INDEX24, rawData)
                         * Math.pow(2, -30);

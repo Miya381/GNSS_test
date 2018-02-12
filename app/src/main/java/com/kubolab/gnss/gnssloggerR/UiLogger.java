@@ -1,5 +1,8 @@
 package com.kubolab.gnss.gnssloggerR;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.location.GnssClock;
 import android.location.GnssMeasurement;
@@ -37,6 +40,7 @@ public class UiLogger implements GnssListener {
     private double Declination;
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
     private int leapseconds = 18;
+    private final Context mContext;
     //private double LAST_CARRIER_PHASE = 0;
     //private double DIFF_CARRIER_PHASE = 0;
     //private double SMOOTHED_PSEUDORANGE = 0.0;
@@ -57,7 +61,8 @@ public class UiLogger implements GnssListener {
     List<String> NavSatelliteSvid = new ArrayList<>();
 
 
-    public UiLogger() {
+    public UiLogger(Context context) {
+        this.mContext = context;
         if(initialize == false){
             Arrays.fill(LAST_DELTARANGE,0.0);
             Arrays.fill(CURRENT_SMOOTHER_RATE,1.0);
@@ -181,28 +186,14 @@ public class UiLogger implements GnssListener {
     public void onGnssNavigationMessageReceived(GnssNavigationMessage event) {
         //logNavigationMessageEvent("onGnssNavigationMessageReceived: " + event);
         GnssNavigationConv mGnssNavigationConv = new GnssNavigationConv();
-        StringBuilder ION = mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getSubmessageId(),event.getData());
-        boolean svid_detected = false;
-        for(int i = 0;i < NavSatelliteSvid.size(); i++){
-            String tmp = NavSatelliteSvid.get(i);
-            int index = tmp.indexOf("SVID:" + String.valueOf(event.getSvid()));
-            if(index != -1){
-                if(tmp.indexOf(event.getSubmessageId() + ",") == -1){
-                    tmp = tmp + event.getSubmessageId() + ",";
-                    NavSatelliteSvid.set(i,tmp);
-                }
-                svid_detected = true;
-            }
+        SQLiteDatabase NavDB;
+        SQLiteManager hlpr = new SQLiteManager(mContext);
+        NavDB = hlpr.getWritableDatabase();
+        mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getSubmessageId(),event.getData(),mContext);
+        if(hlpr.searchIndex(NavDB,"GPSA0") == 0) {
+            LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
+            component.NavigationIONText("VALID","#40FF00");
         }
-        if(svid_detected == false){
-            NavSatelliteSvid.add("TYPE:" + getNAVType(event.getType()) + " SVID:" + String.valueOf(event.getSvid()) + " FrameNumber:" + event.getSubmessageId() + ",");
-        }
-        StringBuilder NavigationMessage = new StringBuilder();
-        for(int i = 0;i < NavSatelliteSvid.size(); i++){
-            NavigationMessage.append(NavSatelliteSvid.get(i) + "\n");
-        }
-        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
-        component.NavigationTextFragment(NavigationMessage.toString());
     }
 
     @Override
