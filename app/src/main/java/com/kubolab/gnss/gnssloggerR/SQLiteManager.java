@@ -44,6 +44,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
         String result = c.getString(0);
+        c.close();
         if(result.indexOf("1") != -1) {
             Cursor cursor = db.query(
                     Table, new String[]{"_id", column},
@@ -59,5 +60,23 @@ public class SQLiteManager extends SQLiteOpenHelper {
             cursor.close();
         }
         return tmp;
+    }
+
+    public boolean existTable(final SQLiteDatabase db, final String name){
+        String query = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='" + name + "';";
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        String result = c.getString(0);
+        c.close();
+        if(result.indexOf("1") != -1) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public void createTable(final SQLiteDatabase db, final String name){
+        String query_table1 = "CREATE TABLE " + name + " ( id INTEGER PRIMARY KEY , name  STRING ) ";
+        db.execSQL(query_table1);
     }
 }

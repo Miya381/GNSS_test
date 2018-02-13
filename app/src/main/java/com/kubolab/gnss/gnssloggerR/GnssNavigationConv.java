@@ -335,6 +335,9 @@ public class GnssNavigationConv {
         gnssNavigationDataBase.GPSB[1] = beta[1];
         gnssNavigationDataBase.GPSB[2] = beta[2];
         gnssNavigationDataBase.GPSB[3] = beta[3];*/
+        if(!hlpr.existTable(NavDB,"IONOSPHERIC")){
+            hlpr.createTable(NavDB,"IONOSPHERIC");
+        }
 
 
         if(hlpr.searchIndex(NavDB,"IONOSPHERIC","GPSA0") == 0) {

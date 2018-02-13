@@ -33,6 +33,7 @@ public class GnssNavigationDataBase {
         }else {
             FourthSubframe.append("NOTFOUND DATA");
         }
+        NavDB.close();
         return FourthSubframe.toString();
     }
 }
