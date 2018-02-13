@@ -124,8 +124,8 @@ public class LoggerFragment extends Fragment {
         IONCORR.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                GnssNavigationDataBase gnd = new GnssNavigationDataBase();
-                text.setText(String.format("GPSA   %1.4E %1.4E %1.4E %1.4E\nGPSB   %1.4E %1.4E %1.4E %1.4E",gnd.GPSA[0],gnd.GPSA[1],gnd.GPSA[2],gnd.GPSA[3],gnd.GPSB[0],gnd.GPSB[1],gnd.GPSB[2],gnd.GPSB[3]));
+                GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
+                text.setText(gnd.getIonosphericDataStr());
                 ION_popupWindow.showAsDropDown(view,0,0);
             }
         });

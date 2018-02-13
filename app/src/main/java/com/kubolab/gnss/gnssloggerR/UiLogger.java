@@ -194,6 +194,7 @@ public class UiLogger implements GnssListener {
             LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
             component.NavigationIONText("VALID","#40FF00");
         }
+        NavDB.close();
     }
 
     @Override

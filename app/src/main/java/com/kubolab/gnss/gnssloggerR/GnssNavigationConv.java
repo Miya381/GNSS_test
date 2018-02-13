@@ -355,6 +355,7 @@ public class GnssNavigationConv {
             values.put("GPSB3", beta[3]);
             NavDB.insert("IONOSPHERIC", null, values);
         }
+        NavDB.close();
         double a0UTC =
                 buildSigned32BitsWordFrom8And24WordsWith8bitslsb(I0UTC_INDEX8, I0UTC_INDEX24, rawData)
                         * Math.pow(2, -30);

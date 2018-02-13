@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private UiLogger mUiLogger;
     private FileLogger mFileLogger;
     private Fragment[] mFragments;
+    private GnssNavigationDataBase mGnssNavigationDataBase;
     private  SensorContainer mSensorContainer;
     private static MainActivity instance = null;
 
@@ -167,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         mFileLogger = new FileLogger(getApplicationContext());
         mSensorContainer = new SensorContainer(getApplicationContext() ,mUiLogger, mFileLogger);
         mGnssContainer = new GnssContainer(getApplicationContext(), mUiLogger, mFileLogger);
+        mGnssNavigationDataBase = new GnssNavigationDataBase(getApplicationContext());
         mFragments = new Fragment[NUMBER_OF_FRAGMENTS];
         SettingsFragment settingsFragment = new SettingsFragment();
         settingsFragment.setSensorContainer(mSensorContainer);
