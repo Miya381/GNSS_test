@@ -40,20 +40,13 @@ public class SQLiteManager extends SQLiteOpenHelper {
     public double searchIndex(final SQLiteDatabase db, final String Table,final String column){
         double tmp = 0;
         // テーブルからデータを検索
-        String query = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='" + Table + "';";
-        Cursor c = db.rawQuery(query, null);
-        c.moveToFirst();
-        String result = c.getString(0);
-        c.close();
-        if(result.indexOf("1") != -1) {
-            Cursor cursor = db.query(
-                    Table, new String[]{"_id", column},
-                    null, null, null, null, "_id DESC");
+        if(existTable(db,Table) && existColumn(db,Table,column)) {
+            Cursor cursor = db.query(Table, new String[]{column}, null, null, null, null, null);
             // 参照先を一番始めに
             boolean isEof = cursor.moveToFirst();
             // データを取得していく
             while (isEof) {
-                tmp = cursor.getDouble(cursor.getColumnIndex("data"));
+                tmp = cursor.getDouble(cursor.getColumnIndex(column));
                 isEof = cursor.moveToNext();
             }
             // 忘れずに閉じる
@@ -64,6 +57,19 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
     public boolean existTable(final SQLiteDatabase db, final String name){
         String query = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='" + name + "';";
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        String result = c.getString(0);
+        c.close();
+        if(result.indexOf("1") != -1) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean existColumn(final SQLiteDatabase db, final String table, final String column){
+        String query = "SELECT count(*) from sqlite_master  where name = '" + table + "' and sql like '%"+ column + "%'";
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
         String result = c.getString(0);

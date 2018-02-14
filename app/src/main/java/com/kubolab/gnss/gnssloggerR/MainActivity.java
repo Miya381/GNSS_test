@@ -78,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
                 mSensorContainer.unregisterSensor();
             }
         }
-        SQLiteDatabase NavDB;
+        /*SQLiteDatabase NavDB;
         SQLiteManager hlpr = new SQLiteManager(getApplicationContext());
         NavDB = hlpr.getWritableDatabase();
-        deleteDatabase("GNSSNavigation.db");
+        deleteDatabase(NavDB.getPath());*/
     }
 
     /**

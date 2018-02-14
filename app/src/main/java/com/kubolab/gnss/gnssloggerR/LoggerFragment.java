@@ -126,7 +126,7 @@ public class LoggerFragment extends Fragment {
             public void onClick(View v) {
                 GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
                 text.setText(gnd.getIonosphericDataStr());
-                ION_popupWindow.showAsDropDown(view,0,0);
+                ION_popupWindow.showAsDropDown(v,0,0);
             }
         });
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);

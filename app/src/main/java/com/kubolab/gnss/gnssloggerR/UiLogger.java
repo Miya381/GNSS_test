@@ -190,7 +190,7 @@ public class UiLogger implements GnssListener {
         SQLiteManager hlpr = new SQLiteManager(mContext);
         NavDB = hlpr.getWritableDatabase();
         mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getSubmessageId(),event.getData(),mContext);
-        if(hlpr.searchIndex(NavDB,"IONOSPHERIC","GPSA0") != 0) {
+        if(hlpr.existColumn(NavDB,"IONOSPHERIC","GPSA0")) {
             LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
             component.NavigationIONText("VALID","#40FF00");
         }

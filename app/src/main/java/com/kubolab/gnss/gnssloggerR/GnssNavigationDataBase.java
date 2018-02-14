@@ -18,7 +18,7 @@ public class GnssNavigationDataBase {
         SQLiteManager hlpr = new SQLiteManager(mContext);
         NavDB = hlpr.getWritableDatabase();
         StringBuilder FourthSubframe = new StringBuilder();
-        if(hlpr.searchIndex(NavDB,"IONOSPHERIC","GPSA0") != 0) {
+        if(hlpr.existColumn(NavDB,"IONOSPHERIC", "GPSA0")) {
             double a0 = hlpr.searchIndex(NavDB, "IONOSPHERIC", "GPSA0");
             double a1 = hlpr.searchIndex(NavDB, "IONOSPHERIC", "GPSA1");
             double a2 = hlpr.searchIndex(NavDB, "IONOSPHERIC", "GPSA2");
@@ -28,8 +28,8 @@ public class GnssNavigationDataBase {
             double b1 = hlpr.searchIndex(NavDB, "IONOSPHERIC", "GPSB1");
             double b2 = hlpr.searchIndex(NavDB, "IONOSPHERIC", "GPSB2");
             double b3 = hlpr.searchIndex(NavDB, "IONOSPHERIC", "GPSB3");
-            FourthSubframe.append(String.format("GPSA   %1.4E,%1.4E,%1.4E,%1.4E\n",a0,a1,a2,a3));
-            FourthSubframe.append(String.format("GPSB   %1.4E,%1.4E,%1.4E,%1.4E\n",b0,b1,b2,b3));
+            FourthSubframe.append(String.format("GPS_a0 %1.4E\nGPS_a1 %1.4E\nGPS_a2 %1.4E\nGPS_a3 %1.4E\n",a0,a1,a2,a3));
+            FourthSubframe.append(String.format("GPS_b0 %1.4E\nGPS_b1 %1.4E\nGPS_b2 %1.4E\nGPS_b3 %1.4E\n",b0,b1,b2,b3));
         }else {
             FourthSubframe.append("NOTFOUND DATA");
         }
