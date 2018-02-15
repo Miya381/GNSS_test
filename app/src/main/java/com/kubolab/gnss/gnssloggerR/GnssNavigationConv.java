@@ -422,18 +422,18 @@ public class GnssNavigationConv {
             NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'wnlsf'");
             NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'dn'");
             NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'tlsf'");
-            values.put("tls", a0UTC);
-            values.put("wnlsf", a1UTC);
-            values.put("dn", tot);
-            values.put("tlsf", wnt);
+            values.put("tls", tls);
+            values.put("wnlsf", wnlsf);
+            values.put("dn", dn);
+            values.put("tlsf", tlsf);
             NavDB.insert("LEAPSECOND", null, values);
             values.clear();
         }else {
             ContentValues values = new ContentValues();
-            values.put("tls", a0UTC);
-            values.put("wnlsf", a1UTC);
-            values.put("dn", tot);
-            values.put("tlsf", wnt);
+            values.put("tls", tls);
+            values.put("wnlsf", wnlsf);
+            values.put("dn", dn);
+            values.put("tlsf", tlsf);
             NavDB.update("LEAPSECOND", values, null,null);
             values.clear();
         }

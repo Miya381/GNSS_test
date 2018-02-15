@@ -192,7 +192,15 @@ public class UiLogger implements GnssListener {
         mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getSubmessageId(),event.getData(),mContext);
         if(hlpr.existColumn(NavDB,"IONOSPHERIC","GPSA0")) {
             LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
-            component.NavigationIONText("VALID","#40FF00");
+            component.NavigationIONText("VALID","#40FF00",0);
+        }
+        if(hlpr.existColumn(NavDB,"UTC","a0UTC")){
+            LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
+            component.NavigationIONText("VALID","#40FF00",1);
+        }
+        if(hlpr.existColumn(NavDB,"LEAPSECOND","tls")){
+            LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
+            component.NavigationIONText("VALID","#40FF00",2);
         }
         NavDB.close();
     }

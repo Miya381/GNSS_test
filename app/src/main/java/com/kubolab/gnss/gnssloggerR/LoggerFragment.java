@@ -38,8 +38,7 @@ public class LoggerFragment extends Fragment {
     private TextView gnssNavigationDebugTitle;
     ExpandableRelativeLayout expandableLayoutNav;
     //航法メッセージ用ビュー定義
-    private TextView IONTitle;
-    private TextView IONCORR;
+    private TextView IONTitle,IONCORR,TimeCorr,TimeTitle,leapseconds,leapsecondstitle;
 
     private ScrollView mScrollView;
     private FileLogger mFileLogger;
@@ -102,6 +101,10 @@ public class LoggerFragment extends Fragment {
 
         IONCORR = (TextView) view.findViewById(R.id.IONCORR);
         IONTitle = (TextView) view.findViewById(R.id.IONTitle);
+        TimeCorr = (TextView) view.findViewById(R.id.TimeCorr);
+        TimeTitle = (TextView) view.findViewById(R.id.TimeTitle);
+        leapseconds = (TextView) view.findViewById(R.id.leapseconds);
+        leapsecondstitle = (TextView) view.findViewById(R.id.leapsecondstitle);
         PopupWindow mPopupWindow = new PopupWindow(getActivity());
         //mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.));
         //View popupView = getLayoutInflater().inflate(R.layout.popup_layout, null);
@@ -126,6 +129,22 @@ public class LoggerFragment extends Fragment {
             public void onClick(View v) {
                 GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
                 text.setText(gnd.getIonosphericDataStr());
+                ION_popupWindow.showAsDropDown(v,0,0);
+            }
+        });
+        TimeCorr.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
+                text.setText(gnd.getTimeSystemDataStr());
+                ION_popupWindow.showAsDropDown(v,0,0);
+            }
+        });
+        leapseconds.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
+                text.setText(gnd.getLeapSecondsDataStr());
                 ION_popupWindow.showAsDropDown(v,0,0);
             }
         });
@@ -205,12 +224,20 @@ public class LoggerFragment extends Fragment {
                     expandableLayoutNav.collapse();
                     IONCORR.setVisibility(View.GONE);
                     IONTitle.setVisibility(View.GONE);
+                    TimeCorr.setVisibility(View.GONE);
+                    TimeTitle.setVisibility(View.GONE);
+                    leapseconds.setVisibility(View.GONE);
+                    leapsecondstitle.setVisibility(View.GONE);
                     //expandableLayoutNav.initLayout();
                 }else {
                     expandableLayoutNav.expand();
                     //expandableLayoutNav.initLayout();
                     IONCORR.setVisibility(View.VISIBLE);
                     IONTitle.setVisibility(View.VISIBLE);
+                    TimeCorr.setVisibility(View.VISIBLE);
+                    TimeTitle.setVisibility(View.VISIBLE);
+                    leapseconds.setVisibility(View.VISIBLE);
+                    leapsecondstitle.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -340,7 +367,7 @@ public class LoggerFragment extends Fragment {
                     });
         }
 
-        public synchronized void NavigationIONText(final String NavMessage,final String ColorCode) {
+        public synchronized void NavigationIONText(final String NavMessage,final String ColorCode, final int tag) {
             Activity activity = getActivity();
             if (activity == null) {
                 return;
@@ -349,8 +376,16 @@ public class LoggerFragment extends Fragment {
                     new Runnable() {
                         @Override
                         public void run() {
-                            IONCORR.setTextColor(Color.parseColor(ColorCode));
-                            IONCORR.setText(NavMessage);
+                            if(tag == 0) {
+                                IONCORR.setTextColor(Color.parseColor(ColorCode));
+                                IONCORR.setText(NavMessage);
+                            }else if(tag == 1){
+                                TimeCorr.setTextColor(Color.parseColor(ColorCode));
+                                TimeCorr.setText(NavMessage);
+                            }else if(tag == 2){
+                                leapseconds.setTextColor(Color.parseColor(ColorCode));
+                                leapseconds.setText(NavMessage);
+                            }
                         }
                     });
         }

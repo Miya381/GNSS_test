@@ -1114,7 +1114,7 @@
     <com.github.aakira.expandablelayout.ExpandableRelativeLayout
         android:id="@+id/expandableLayoutNav"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="128dp"
         app:ael_defaultChildIndex="@+id/gnssNavigationDebugTitle"
         app:layout_constraintBottom_toTopOf="@+id/view23"
         app:layout_constraintEnd_toEndOf="parent"
@@ -1123,7 +1123,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/constraintLayout">
 
             <TextView
                 android:id="@+id/IONCORR"
@@ -1143,14 +1144,71 @@
                 android:id="@+id/IONTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="IONOSPHERIC CORR"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gnssNavigationDebugTitle" />
+
+            <TextView
+                android:id="@+id/TimeCorr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/constraintLayout"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:text="SYNCRONIZING..."
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/TimeTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/TimeTitle" />
+
+            <TextView
+                android:id="@+id/TimeTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="TIME SYSTEM CORR"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/IONTitle" />
+
+            <TextView
+                android:id="@+id/leapseconds"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/constraintLayout"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:text="SYNCRONIZING..."
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/leapsecondstitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/leapsecondstitle" />
+
+            <TextView
+                android:id="@+id/leapsecondstitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="16dp"
-                android:text="IONOSPHERIC CORR"
+                android:layout_marginTop="8dp"
+                android:text="LEAP SECONDS"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gnssNavigationDebugTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/TimeTitle" />
 
             <TextView
                 android:id="@+id/gnssNavigationDebugTitle"
