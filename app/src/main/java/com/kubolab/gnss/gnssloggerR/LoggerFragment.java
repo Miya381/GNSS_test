@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class LoggerFragment extends Fragment {
     private Button startLog;
     private Button sendFile;
     private boolean FileLogging;
+    private Spinner interval_spinner;
 
     private TextView EditTimer;
 
@@ -105,6 +107,7 @@ public class LoggerFragment extends Fragment {
         TimeTitle = (TextView) view.findViewById(R.id.TimeTitle);
         leapseconds = (TextView) view.findViewById(R.id.leapseconds);
         leapsecondstitle = (TextView) view.findViewById(R.id.leapsecondstitle);
+        interval_spinner = (Spinner) view.findViewById(R.id.interval_spinner);
         PopupWindow mPopupWindow = new PopupWindow(getActivity());
         //mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.));
         //View popupView = getLayoutInflater().inflate(R.layout.popup_layout, null);
@@ -254,6 +257,7 @@ public class LoggerFragment extends Fragment {
                             FileLogging = true;
                             SettingsFragment.EnableLogging = true;
                             EditTimer.setEnabled(false);
+                            interval_spinner.setEnabled(false);
                             startLog.setText("End Log");
                             if(SettingsFragment.timer > 0){
                                 SettingsFragment.enableTimer = true;
@@ -272,6 +276,7 @@ public class LoggerFragment extends Fragment {
                             FileLogging = false;
                             SettingsFragment.EnableLogging = false;
                             EditTimer.setEnabled(true);
+                            interval_spinner.setEnabled(true);
                             startLog.setText("Start Log");
                         }
                     }

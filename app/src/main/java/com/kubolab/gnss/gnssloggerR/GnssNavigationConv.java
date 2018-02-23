@@ -385,26 +385,28 @@ public class GnssNavigationConv {
         short tot = (short) (extractBits(TOT_LS_INDEX, A_B_LENGTH, rawData) * POW_2_12);
         short wnt = (short) extractBits(WN_LS_INDEX, A_B_LENGTH, rawData);
         FourthSubframe.append(String.format("GPUT %1.10E%1.10E %6d %6d         TIME SYSTEM CORR\n",a0UTC,a1UTC,tot,wnt));
-        if(!hlpr.existColumn(NavDB,"UTC","a0UTC")) {
-            ContentValues values = new ContentValues();
-            NavDB.execSQL("ALTER TABLE 'UTC' ADD COLUMN 'a0UTC'");
-            NavDB.execSQL("ALTER TABLE 'UTC' ADD COLUMN 'a1UTC'");
-            NavDB.execSQL("ALTER TABLE 'UTC' ADD COLUMN 'tot'");
-            NavDB.execSQL("ALTER TABLE 'UTC' ADD COLUMN 'wnt'");
-            values.put("a0UTC", a0UTC);
-            values.put("a1UTC", a1UTC);
-            values.put("tot", tot);
-            values.put("wnt", wnt);
-            NavDB.insert("UTC", null, values);
-            values.clear();
-        }else {
-            ContentValues values = new ContentValues();
-            values.put("a0UTC", a0UTC);
-            values.put("a1UTC", a1UTC);
-            values.put("tot", tot);
-            values.put("wnt", wnt);
-            NavDB.update("UTC", values, null,null);
-            values.clear();
+        if(tot < 0) {
+            if (!hlpr.existColumn(NavDB, "UTC", "a0UTC")) {
+                ContentValues values = new ContentValues();
+                NavDB.execSQL("ALTER TABLE 'UTC' ADD COLUMN 'a0UTC'");
+                NavDB.execSQL("ALTER TABLE 'UTC' ADD COLUMN 'a1UTC'");
+                NavDB.execSQL("ALTER TABLE 'UTC' ADD COLUMN 'tot'");
+                NavDB.execSQL("ALTER TABLE 'UTC' ADD COLUMN 'wnt'");
+                values.put("a0UTC", a0UTC);
+                values.put("a1UTC", a1UTC);
+                values.put("tot", tot);
+                values.put("wnt", wnt);
+                NavDB.insert("UTC", null, values);
+                values.clear();
+            } else {
+                ContentValues values = new ContentValues();
+                values.put("a0UTC", a0UTC);
+                values.put("a1UTC", a1UTC);
+                values.put("tot", tot);
+                values.put("wnt", wnt);
+                NavDB.update("UTC", values, null, null);
+                values.clear();
+            }
         }
 
         if(!hlpr.existTable(NavDB,"LEAPSECOND")){
