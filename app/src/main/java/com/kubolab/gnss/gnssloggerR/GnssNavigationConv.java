@@ -134,11 +134,12 @@ public class GnssNavigationConv {
     private static final int I1UTC_INDEX = 150;
 
 
-    public StringBuilder onNavMessageReported(int prn, int type, int page, int subframe, byte[] rawData, Context mContext) {
+    public int onNavMessageReported(int prn, int type, int page, int subframe, byte[] rawData, Context mContext) {
         if(rawData == null || type != GnssNavigationMessage.TYPE_GPS_L1CA){
-            return null;
+            return -2;
         }
         //Log.i("Navigation",String.valueOf(subframe));
+        int state = 0;
         StringBuilder NavMessage = new StringBuilder();
             switch (subframe) {
                 case 1:
@@ -154,7 +155,7 @@ public class GnssNavigationConv {
                     Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "Third SubFrame");
                     break;
                 case 4:
-                    handleFourthSubframe(page,rawData,mContext);
+                    state = handleFourthSubframe(page,rawData,mContext);
                     Log.i("Navigation",getNAVType(type) + String.valueOf(prn) + "Forth SubFrame");
                     break;
                 case 5:
@@ -163,56 +164,26 @@ public class GnssNavigationConv {
                     // invalid message id
                     throw new IllegalArgumentException("Invalid Subframe ID: " + subframe);
             }
-            return NavMessage;
+            return state;
     }
-    /*
+
     private void handleFirstSubframe(byte prn, byte[] rawData) {
         int iodc = extractBits(IODC1_INDEX, IODC1_LENGTH, rawData) << 8;
         iodc |= extractBits(IODC2_INDEX, IODC2_LENGTH, rawData);
 
-        IntermediateEphemeris intermediateEphemeris =
-                findIntermediateEphemerisToUpdate(prn, SUBFRAME_1, iodc);
-        if (intermediateEphemeris == null) {
-            // we are up-to-date
-            return;
-        }
-
-        GpsEphemerisProto gpsEphemerisProto = intermediateEphemeris.getEphemerisObj();
-        gpsEphemerisProto.iodc = iodc;
-
 
         // the navigation message contains a modulo-1023 week number
         int week = extractBits(WEEK_INDEX, WEEK_LENGTH, rawData);
-        week = getGpsWeekWithRollover(week);
-        gpsEphemerisProto.week = week;
-
         int uraIndex = extractBits(URA_INDEX, URA_LENGTH, rawData);
-        double svAccuracy = computeNominalSvAccuracy(uraIndex);
-        gpsEphemerisProto.svAccuracyM = svAccuracy;
-
         int svHealth = extractBits(SV_HEALTH_INDEX, SV_HEALTH_LENGTH, rawData);
-        gpsEphemerisProto.svHealth = svHealth;
-
         byte tgd = (byte) extractBits(TGD_INDEX, TGD_LENGTH, rawData);
-        gpsEphemerisProto.tgd = tgd * POW_2_NEG_31;
-
         int toc = extractBits(TOC_INDEX, TOC_LENGTH, rawData);
         double tocScaled = toc * POW_2_4;
-        gpsEphemerisProto.toc = tocScaled;
-
         byte af2 = (byte) extractBits(AF2_INDEX, AF2_LENGTH, rawData);
-        gpsEphemerisProto.af2 = af2 * POW_2_NEG_55;
-
         short af1 = (short) extractBits(AF1_INDEX, AF1_LENGTH, rawData);
-        gpsEphemerisProto.af1 = af1 * POW_2_NEG_43;
-
-        // a 22-bit two's complement number
         int af0 = extractBits(AF0_INDEX, AF0_LENGTH, rawData);
         af0 = getTwoComplement(af0, AF0_LENGTH);
-        gpsEphemerisProto.af0 = af0 * POW_2_NEG_31;
-
-        updateDecodedState(prn, SUBFRAME_1, intermediateEphemeris);
-    }*/
+    }
 
     private void handleSecondSubframe(byte[] rawData) {
         StringBuilder SecondSubframe = new StringBuilder();
@@ -287,12 +258,12 @@ public class GnssNavigationConv {
         updateDecodedState(prn, SUBFRAME_3, intermediateEphemeris);
     }*/
 
-    private StringBuilder handleFourthSubframe(int page, byte[] rawData, Context mContext) {
+    int handleFourthSubframe(int page, byte[] rawData, Context mContext) {
         /*byte pageId = (byte) extractBits(62, 6, rawData);*/
         if (page != 18) {
             // We only care to decode ionospheric parameters for now
             Log.i("Navigation","PAGE No." + page + " Not found IONOSPHERIC DATA");
-            return null;
+            return -2;
         }
 
         StringBuilder FourthSubframe = new StringBuilder();
@@ -324,68 +295,63 @@ public class GnssNavigationConv {
         beta[3] = b3 * POW_2_16;
         FourthSubframe.append(String.format("GPSB   %1.4E %1.4E %1.4E %1.4E       IONOSPHERIC CORR\n",beta[0],beta[1],beta[2],beta[3]));
 
-        /*GnssNavigationDataBase gnssNavigationDataBase = new GnssNavigationDataBase();
-        gnssNavigationDataBase.GPSA[0] = alpha[0];
-        gnssNavigationDataBase.GPSA[1] = alpha[1];
-        gnssNavigationDataBase.GPSA[2] = alpha[2];
-        gnssNavigationDataBase.GPSA[3] = alpha[3];
-
-        gnssNavigationDataBase.GPSB[0] = beta[0];
-        gnssNavigationDataBase.GPSB[1] = beta[1];
-        gnssNavigationDataBase.GPSB[2] = beta[2];
-        gnssNavigationDataBase.GPSB[3] = beta[3];*/
-        if(!hlpr.existTable(NavDB,"IONOSPHERIC")){
-            hlpr.createTable(NavDB,"IONOSPHERIC");
-        }
-
-
-        if(!hlpr.existColumn(NavDB,"IONOSPHERIC","GPSA0")) {
-            ContentValues values = new ContentValues();
-            NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSA0'");
-            NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSA1'");
-            NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSA2'");
-            NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSA3'");
-            NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSB0'");
-            NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSB1'");
-            NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSB2'");
-            NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSB3'");
-            values.put("GPSA0", alpha[0]);
-            values.put("GPSA1", alpha[1]);
-            values.put("GPSA2", alpha[2]);
-            values.put("GPSA3", alpha[3]);
-            values.put("GPSB0", beta[0]);
-            values.put("GPSB1", beta[1]);
-            values.put("GPSB2", beta[2]);
-            values.put("GPSB3", beta[3]);
-            NavDB.insert("IONOSPHERIC", null, values);
-            values.clear();
-        }else {
-            ContentValues values = new ContentValues();
-            values.put("GPSA0", alpha[0]);
-            values.put("GPSA1", alpha[1]);
-            values.put("GPSA2", alpha[2]);
-            values.put("GPSA3", alpha[3]);
-            values.put("GPSB0", beta[0]);
-            values.put("GPSB1", beta[1]);
-            values.put("GPSB2", beta[2]);
-            values.put("GPSB3", beta[3]);
-            NavDB.update("IONOSPHERIC",values,null,null);
-            values.clear();
-        }
-        //NavDB.close();
-        if(!hlpr.existTable(NavDB,"UTC")){
-            hlpr.createTable(NavDB,"UTC");
-        }
         double a0UTC =
                 buildSigned32BitsWordFrom8And24WordsWith8bitslsb(I0UTC_INDEX8, I0UTC_INDEX24, rawData)
                         * Math.pow(2, -30);
-
         double a1UTC = getTwoComplement(extractBits(I1UTC_INDEX, 24, rawData), 24) * Math.pow(2, -50);
-
         short tot = (short) (extractBits(TOT_LS_INDEX, A_B_LENGTH, rawData) * POW_2_12);
         short wnt = (short) extractBits(WN_LS_INDEX, A_B_LENGTH, rawData);
-        FourthSubframe.append(String.format("GPUT %1.10E%1.10E %6d %6d         TIME SYSTEM CORR\n",a0UTC,a1UTC,tot,wnt));
-        if(tot < 0) {
+
+        short tls = (short) extractBits(DELTA_T_LS_INDEX, A_B_LENGTH, rawData);
+        short wnlsf = (short) extractBits(WNF_LS_INDEX, A_B_LENGTH, rawData);
+        short dn = (short) extractBits(DN_LS_INDEX, A_B_LENGTH, rawData);
+        short tlsf = (short) extractBits(DELTA_TF_LS_INDEX, A_B_LENGTH, rawData);
+
+        if(tot > 0 && a1 > 0 && tls > 0) {
+            if (!hlpr.existTable(NavDB, "IONOSPHERIC")) {
+                hlpr.createTable(NavDB, "IONOSPHERIC");
+            }
+
+
+            if (!hlpr.existColumn(NavDB, "IONOSPHERIC", "GPSA0")) {
+                ContentValues values = new ContentValues();
+                NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSA0'");
+                NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSA1'");
+                NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSA2'");
+                NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSA3'");
+                NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSB0'");
+                NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSB1'");
+                NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSB2'");
+                NavDB.execSQL("ALTER TABLE 'IONOSPHERIC' ADD COLUMN 'GPSB3'");
+                values.put("GPSA0", alpha[0]);
+                values.put("GPSA1", alpha[1]);
+                values.put("GPSA2", alpha[2]);
+                values.put("GPSA3", alpha[3]);
+                values.put("GPSB0", beta[0]);
+                values.put("GPSB1", beta[1]);
+                values.put("GPSB2", beta[2]);
+                values.put("GPSB3", beta[3]);
+                NavDB.insert("IONOSPHERIC", null, values);
+                values.clear();
+            } else {
+                ContentValues values = new ContentValues();
+                values.put("GPSA0", alpha[0]);
+                values.put("GPSA1", alpha[1]);
+                values.put("GPSA2", alpha[2]);
+                values.put("GPSA3", alpha[3]);
+                values.put("GPSB0", beta[0]);
+                values.put("GPSB1", beta[1]);
+                values.put("GPSB2", beta[2]);
+                values.put("GPSB3", beta[3]);
+                NavDB.update("IONOSPHERIC", values, null, null);
+                values.clear();
+            }
+            //NavDB.close();
+            if (!hlpr.existTable(NavDB, "UTC")) {
+                hlpr.createTable(NavDB, "UTC");
+            }
+
+            FourthSubframe.append(String.format("GPUT %1.10E%1.10E %6d %6d         TIME SYSTEM CORR\n", a0UTC, a1UTC, tot, wnt));
             if (!hlpr.existColumn(NavDB, "UTC", "a0UTC")) {
                 ContentValues values = new ContentValues();
                 NavDB.execSQL("ALTER TABLE 'UTC' ADD COLUMN 'a0UTC'");
@@ -407,40 +373,40 @@ public class GnssNavigationConv {
                 NavDB.update("UTC", values, null, null);
                 values.clear();
             }
-        }
 
-        if(!hlpr.existTable(NavDB,"LEAPSECOND")){
-            hlpr.createTable(NavDB,"LEAPSECOND");
-        }
-        short tls = (short) extractBits(DELTA_T_LS_INDEX, A_B_LENGTH, rawData);
-        short wnlsf = (short) extractBits(WNF_LS_INDEX, A_B_LENGTH, rawData);
-        short dn = (short) extractBits(DN_LS_INDEX, A_B_LENGTH, rawData);
+            if (!hlpr.existTable(NavDB, "LEAPSECOND")) {
+                hlpr.createTable(NavDB, "LEAPSECOND");
+            }
 
-        short tlsf = (short) extractBits(DELTA_TF_LS_INDEX, A_B_LENGTH, rawData);
-        FourthSubframe.append(String.format("%6d%6d%6d%6d                                   LEAP SECONDS\n",tls,tlsf,wnlsf,dn));
-        if(!hlpr.existColumn(NavDB,"LEAPSECOND","tls")) {
-            ContentValues values = new ContentValues();
-            NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'tls'");
-            NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'wnlsf'");
-            NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'dn'");
-            NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'tlsf'");
-            values.put("tls", tls);
-            values.put("wnlsf", wnlsf);
-            values.put("dn", dn);
-            values.put("tlsf", tlsf);
-            NavDB.insert("LEAPSECOND", null, values);
-            values.clear();
+            FourthSubframe.append(String.format("%6d%6d%6d%6d                                   LEAP SECONDS\n", tls, tlsf, wnlsf, dn));
+            if (!hlpr.existColumn(NavDB, "LEAPSECOND", "tls")) {
+                ContentValues values = new ContentValues();
+                NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'tls'");
+                NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'wnlsf'");
+                NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'dn'");
+                NavDB.execSQL("ALTER TABLE 'LEAPSECOND' ADD COLUMN 'tlsf'");
+                values.put("tls", tls);
+                values.put("wnlsf", wnlsf);
+                values.put("dn", dn);
+                values.put("tlsf", tlsf);
+                NavDB.insert("LEAPSECOND", null, values);
+                values.clear();
+            } else {
+                ContentValues values = new ContentValues();
+                values.put("tls", tls);
+                values.put("wnlsf", wnlsf);
+                values.put("dn", dn);
+                values.put("tlsf", tlsf);
+                NavDB.update("LEAPSECOND", values, null, null);
+                values.clear();
+            }
+            Log.i("Navigation",FourthSubframe.toString());
+            UiLogger.RINEXIONOK = true;
+            return 1;
         }else {
-            ContentValues values = new ContentValues();
-            values.put("tls", tls);
-            values.put("wnlsf", wnlsf);
-            values.put("dn", dn);
-            values.put("tlsf", tlsf);
-            NavDB.update("LEAPSECOND", values, null,null);
-            values.clear();
+            Log.i("Navigation",FourthSubframe.toString());
+            return 0;
         }
-        Log.i("Navigation",FourthSubframe.toString());
-        return FourthSubframe;
     }
 
     private static int getTwoComplement(int value, int bits) {

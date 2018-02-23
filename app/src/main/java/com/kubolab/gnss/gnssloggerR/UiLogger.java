@@ -56,6 +56,8 @@ public class UiLogger implements GnssListener {
     int MaxSatelliteIndex = 36;
     String array[][] = new String[MaxSatelliteIndex][4];
 
+    public static boolean RINEXIONOK = false;
+
     //Navigation Message用
     //private int[][] NavSatelliteSvid = new int[5][300];
     List<String> NavSatelliteSvid = new ArrayList<>();
@@ -189,18 +191,20 @@ public class UiLogger implements GnssListener {
         SQLiteDatabase NavDB;
         SQLiteManager hlpr = new SQLiteManager(mContext);
         NavDB = hlpr.getWritableDatabase();
-        mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getSubmessageId(),event.getData(),mContext);
-        if(hlpr.existColumn(NavDB,"IONOSPHERIC","GPSA0")) {
-            LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
+        int state = mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getSubmessageId(),event.getData(),mContext);
+        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
+        if(state == 0){
+            component.NavigationIONText("UPDATE FAILED","#FF0000",0);
+            component.NavigationIONText("UPDATE FAILED","#FF0000",1);
+            component.NavigationIONText("UPDATE FAILED","#FF0000",2);
+        }else if(state == 1 || RINEXIONOK){
             component.NavigationIONText("VALID","#40FF00",0);
-        }
-        if(hlpr.existColumn(NavDB,"UTC","a0UTC")){
-            LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
             component.NavigationIONText("VALID","#40FF00",1);
-        }
-        if(hlpr.existColumn(NavDB,"LEAPSECOND","tls")){
-            LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
             component.NavigationIONText("VALID","#40FF00",2);
+        }else {
+            component.NavigationIONText("SYNCHRONIZING","#FF8000",0);
+            component.NavigationIONText("SYNCHRONIZING","#FF8000",1);
+            component.NavigationIONText("SYNCHRONIZING","#FF8000",2);
         }
         NavDB.close();
     }
