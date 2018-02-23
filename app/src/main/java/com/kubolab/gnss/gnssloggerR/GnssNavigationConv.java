@@ -139,7 +139,7 @@ public class GnssNavigationConv {
             return -2;
         }
         //Log.i("Navigation",String.valueOf(subframe));
-        int state = 0;
+        int state = -1;
         StringBuilder NavMessage = new StringBuilder();
             switch (subframe) {
                 case 1:

@@ -17,8 +17,9 @@
     <string name="exit">Exit</string>
 
     <string-array name="list">
-    <item>10s</item>
-    <item>15s</item>
-    <item>30s</item>
+        <item>1 epochs</item>
+        <item>10 epochs</item>
+        <item>15 epochs</item>
+        <item>30 epochs</item>
     </string-array>
 </resources>
