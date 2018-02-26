@@ -71,7 +71,9 @@ public class GnssContainer {
                 public void onLocationChanged(Location location) {
                     if (mLogLocations) {
                         for (GnssListener logger : mLoggers) {
-                            logger.onLocationChanged(location);
+                            if(location != null) {
+                                logger.onLocationChanged(location);
+                            }
                         }
                     }
                 }
@@ -143,7 +145,9 @@ public class GnssContainer {
                 @Override
                 public void onSatelliteStatusChanged(GnssStatus status) {
                     for (GnssListener logger : mLoggers) {
-                        logger.onGnssStatusChanged(status);
+                        if(status != null) {
+                            logger.onGnssStatusChanged(status);
+                        }
                     }
                 }
             };

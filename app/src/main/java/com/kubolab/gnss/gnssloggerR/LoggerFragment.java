@@ -11,10 +11,12 @@ import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -127,8 +129,8 @@ public class LoggerFragment extends Fragment {
                 ION_popupWindow.dismiss();
             }
         });
+
         IONCORR.setOnClickListener(new OnClickListener() {
-            @Override
             public void onClick(View v) {
                 GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
                 text.setText(gnd.getIonosphericDataStr());
@@ -198,6 +200,30 @@ public class LoggerFragment extends Fragment {
                         }
                     }
                 }
+            }
+        });
+
+        interval_spinner.setSelection(0);
+
+        interval_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //Log.i("Spinner Pos",String.valueOf(position));
+                switch (position){
+                    case 0:
+                        SettingsFragment.interval = 1;
+                    case 1:
+                        SettingsFragment.interval = 10;
+                    case 2:
+                        SettingsFragment.interval = 15;
+                    case 3:
+                        SettingsFragment.interval = 30;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -435,6 +461,13 @@ public class LoggerFragment extends Fragment {
                             }
                         }
                     });
+        }
+
+        public synchronized void ShowProgressWindow(boolean visible){
+            final PopupWindow progress_popupWindow;
+            progress_popupWindow = new PopupWindow(getActivity());
+            View layout = (View)getActivity().getLayoutInflater().inflate(R.layout.progress_background, null);
+            layout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
         public void startActivity(Intent intent) {

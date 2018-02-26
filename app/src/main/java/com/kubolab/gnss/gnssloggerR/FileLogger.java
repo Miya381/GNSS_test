@@ -78,6 +78,9 @@ public class FileLogger implements GnssListener {
 
     private double constFullBiasNanos = 0.0;
 
+    //インターバル変数
+    private int localintervaltime = 1;
+
     public synchronized UIFragmentComponent getUiComponent() {
         return mUiComponent;
     }
@@ -434,6 +437,7 @@ public class FileLogger implements GnssListener {
                     currentFileWriter.newLine();
                 }
                 firsttime = true;
+                localintervaltime = 1;
             } catch (IOException e) {
                 Toast.makeText(mContext, "Count not initialize observation file", Toast.LENGTH_SHORT).show();
                 logException("Count not initialize file: " + currentFilePath, e);
@@ -947,6 +951,13 @@ public class FileLogger implements GnssListener {
     }
 
     private void writeGnssMeasurementToFile(GnssClock clock, GnssMeasurementsEvent event) throws IOException {
+        if(localintervaltime < SettingsFragment.interval){
+            localintervaltime++;
+            Log.i("interval",String.valueOf(localintervaltime) + "," + String.valueOf(SettingsFragment.interval));
+            return;
+        }else {
+            localintervaltime = 1;
+        }
         StringBuilder Time = new StringBuilder();
         StringBuilder Prn = new StringBuilder();
         StringBuilder Measurements = new StringBuilder();
