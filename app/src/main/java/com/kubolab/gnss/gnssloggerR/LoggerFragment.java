@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +28,9 @@ import android.widget.Toast;
 
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**  The UI fragment that hosts a logging view. */
 public class LoggerFragment extends Fragment {
@@ -51,6 +55,10 @@ public class LoggerFragment extends Fragment {
     private Button sendFile;
     private boolean FileLogging;
     private Spinner interval_spinner;
+
+    //セーブ中ダイアログの表示
+    private View MainView;
+    private PopupWindow Progress_Popup;
 
     private TextView EditTimer;
 
@@ -102,6 +110,7 @@ public class LoggerFragment extends Fragment {
         //gnssNavigationDebugView = (TextView) view.findViewById(R.id.gnssNavigationDebugView);
         gnssNavigationDebugTitle = (TextView) view.findViewById(R.id.gnssNavigationDebugTitle);
         expandableLayoutNav = (ExpandableRelativeLayout) view.findViewById(R.id.expandableLayoutNav);
+        MainView = view;
 
         IONCORR = (TextView) view.findViewById(R.id.IONCORR);
         IONTitle = (TextView) view.findViewById(R.id.IONTitle);
@@ -212,12 +221,23 @@ public class LoggerFragment extends Fragment {
                 switch (position){
                     case 0:
                         SettingsFragment.interval = 1;
+                        Log.i("interval",String.valueOf(SettingsFragment.interval));
+                        break;
                     case 1:
                         SettingsFragment.interval = 10;
+                        Log.i("interval",String.valueOf(SettingsFragment.interval));
+                        break;
                     case 2:
                         SettingsFragment.interval = 15;
+                        Log.i("interval",String.valueOf(SettingsFragment.interval));
+                        break;
                     case 3:
                         SettingsFragment.interval = 30;
+                        Log.i("interval",String.valueOf(SettingsFragment.interval));
+                        break;
+                        default:
+                            SettingsFragment.interval = 1;
+                            break;
                 }
             }
 
@@ -464,10 +484,45 @@ public class LoggerFragment extends Fragment {
         }
 
         public synchronized void ShowProgressWindow(boolean visible){
-            final PopupWindow progress_popupWindow;
-            progress_popupWindow = new PopupWindow(getActivity());
+            //final PopupWindow progress_popupWindow;
             View layout = (View)getActivity().getLayoutInflater().inflate(R.layout.progress_background, null);
             layout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+            if(visible){
+                if(Progress_Popup == null) {
+                    if(MainView != null) {
+                        Progress_Popup = new PopupWindow(getActivity());
+                        Progress_Popup.setContentView(layout);
+                        Progress_Popup.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+                        Progress_Popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+                        Progress_Popup.setOutsideTouchable(false);
+                        Progress_Popup.showAtLocation(MainView, Gravity.CENTER, 0, 0);
+                        Log.i("progress","show");
+                    }else {
+                        Log.i("MainView","null");
+                    }
+                }
+            }else {
+                //Log.i("progress","dismiss");
+                //Progress_Popup.isShowing()
+                if(false){
+                    Progress_Popup.dismiss();
+                    Log.i("progress","dismiss");
+                }else {
+                    //final PopupWindow oldWindow = progress_popupWindow;
+                    new Timer().schedule(new TimerTask(){
+                        @Override
+                        public void run() {
+                            getActivity().runOnUiThread(new Runnable(){
+                                public void run() {
+                                    Progress_Popup.dismiss();
+                                    Log.i("progress","delaydismiss");
+                                }
+                            });
+                        }
+                    }, 500);
+                }
+                Progress_Popup = null;
+            }
         }
 
         public void startActivity(Intent intent) {

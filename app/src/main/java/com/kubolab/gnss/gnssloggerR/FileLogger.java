@@ -61,6 +61,7 @@ public class FileLogger implements GnssListener {
     private File mFileNav;
     private boolean firsttime;
     private UIFragmentComponent mUiComponent;
+    //private LoggerFragment mloggerFragment;
     private boolean notenoughsat = false;
     private boolean firstOBSforAcc = true;
     private ArrayList<Integer> UsedInFixList = new ArrayList<Integer>() ;
@@ -300,8 +301,8 @@ public class FileLogger implements GnssListener {
                     currentFileWriter.newLine();
                     currentFileWriter.write("S = SBAS payload  M = Mixed                                 COMMENT             ");
                     currentFileWriter.newLine();
-                    String PGM = String.format("%-20s", "AndroidGNSSReceiver");
-                    String RUNBY = String.format("%-20s", "RITSUMEIKAN KUBOLAB");
+                    String PGM = String.format("%-20s", "GRitz Logger");
+                    String RUNBY = String.format("%-20s", Build.MODEL);
                     String DATE = String.format("%-20s", now.getTime());
                     currentFileWriter.write(PGM + RUNBY + DATE + "UTC PGM / RUN BY / DATE");
                     currentFileWriter.newLine();
@@ -627,19 +628,25 @@ public class FileLogger implements GnssListener {
      * new log is started when calling this function.
      */
     public void send() {
+        //mUiComponent.ShowProgressWindow(true);
         if (mFile == null) {
+            //mUiComponent.ShowProgressWindow(false);
             return;
         }
         if (mFileSub == null){
+            //mUiComponent.ShowProgressWindow(false);
             return;
         }
         if(mFileAccAzi == null && SettingsFragment.ResearchMode){
-                return;
+            //mUiComponent.ShowProgressWindow(false);
+            return;
         }
         if(mFileNmea == null){
+            //mUiComponent.ShowProgressWindow(false);
             return;
         }
         if(mFileNav == null && SettingsFragment.RINEXNAVLOG){
+            //mUiComponent.ShowProgressWindow(false);
             return;
         }
         try {
@@ -658,6 +665,7 @@ public class FileLogger implements GnssListener {
                 mFileWriter = null;
             } catch (IOException e) {
                 logException("Unable to close all file streams.", e);
+                //mUiComponent.ShowProgressWindow(false);
                 return;
             }
         }
@@ -670,6 +678,7 @@ public class FileLogger implements GnssListener {
                 mFileSubWriter = null;
             } catch (IOException e) {
                 logException("Unable to close subobservation file streams.", e);
+                //mUiComponent.ShowProgressWindow(false);
                 return;
             }
         }
@@ -682,6 +691,7 @@ public class FileLogger implements GnssListener {
                     mFileAccAzWriter = null;
                 } catch (IOException e) {
                     logException("Unable to close sensorlog file streams.", e);
+                    //mUiComponent.ShowProgressWindow(false);
                     return;
                 }
             }
@@ -694,6 +704,7 @@ public class FileLogger implements GnssListener {
                 mFileNmeaWriter = null;
             } catch (IOException e) {
                 logException("Unable to close NMEA file streams.", e);
+                //mUiComponent.ShowProgressWindow(false);
                 return;
             }
         }
@@ -706,10 +717,12 @@ public class FileLogger implements GnssListener {
                 RINEX_NAV_ION_OK = false;
             } catch (IOException e) {
                 logException("Unable to close NAV file streams.", e);
+                //mUiComponent.ShowProgressWindow(false);
                 return;
             }
         }
-
+        //Log.i("progress","dismiss");
+        //mUiComponent.ShowProgressWindow(false);
     }
 
     @Override

@@ -306,8 +306,8 @@ public class GnssNavigationConv {
         short wnlsf = (short) extractBits(WNF_LS_INDEX, A_B_LENGTH, rawData);
         short dn = (short) extractBits(DN_LS_INDEX, A_B_LENGTH, rawData);
         short tlsf = (short) extractBits(DELTA_TF_LS_INDEX, A_B_LENGTH, rawData);
-
-        if(tot > 0 && a1 > 0 && tls > 0) {
+//tot > 0 && a1 > 0 && tls > 0
+        if(tot > 0) {
             if (!hlpr.existTable(NavDB, "IONOSPHERIC")) {
                 hlpr.createTable(NavDB, "IONOSPHERIC");
             }
