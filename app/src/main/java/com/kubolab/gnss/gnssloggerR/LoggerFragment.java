@@ -131,6 +131,8 @@ public class LoggerFragment extends Fragment {
         ION_popupWindow.setContentView(layout);
         ION_popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
         ION_popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        ION_popupWindow.setOutsideTouchable(true);
+        ION_popupWindow.setFocusable(true);
         Button btn = (Button)layout.findViewById(R.id.ionpop_close);
         btn.setOnClickListener(new OnClickListener() {
             @Override
@@ -143,7 +145,7 @@ public class LoggerFragment extends Fragment {
             public void onClick(View v) {
                 GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
                 text.setText(gnd.getIonosphericDataStr());
-                ION_popupWindow.showAsDropDown(v,0,0);
+                ION_popupWindow.showAsDropDown(view,Gravity.CENTER,0,0);
             }
         });
         TimeCorr.setOnClickListener(new OnClickListener() {
@@ -151,7 +153,7 @@ public class LoggerFragment extends Fragment {
             public void onClick(View v) {
                 GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
                 text.setText(gnd.getTimeSystemDataStr());
-                ION_popupWindow.showAsDropDown(v,0,0);
+                ION_popupWindow.showAsDropDown(view,Gravity.CENTER,0,0);
             }
         });
         leapseconds.setOnClickListener(new OnClickListener() {
@@ -159,7 +161,7 @@ public class LoggerFragment extends Fragment {
             public void onClick(View v) {
                 GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
                 text.setText(gnd.getLeapSecondsDataStr());
-                ION_popupWindow.showAsDropDown(v,0,0);
+                ION_popupWindow.showAsDropDown(view,Gravity.CENTER,0,0);
             }
         });
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);

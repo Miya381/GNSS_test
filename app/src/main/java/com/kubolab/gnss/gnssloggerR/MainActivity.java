@@ -78,10 +78,11 @@ public class MainActivity extends AppCompatActivity {
                 mSensorContainer.unregisterSensor();
             }
         }
-        /*SQLiteDatabase NavDB;
+        //データベースは今のところクリアする.
+        SQLiteDatabase NavDB;
         SQLiteManager hlpr = new SQLiteManager(getApplicationContext());
         NavDB = hlpr.getWritableDatabase();
-        deleteDatabase(NavDB.getPath());*/
+        deleteDatabase(NavDB.getPath());
     }
 
     /**
