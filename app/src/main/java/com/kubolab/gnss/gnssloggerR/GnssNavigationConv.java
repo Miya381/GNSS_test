@@ -299,15 +299,15 @@ public class GnssNavigationConv {
                 buildSigned32BitsWordFrom8And24WordsWith8bitslsb(I0UTC_INDEX8, I0UTC_INDEX24, rawData)
                         * Math.pow(2, -30);
         double a1UTC = getTwoComplement(extractBits(I1UTC_INDEX, 24, rawData), 24) * Math.pow(2, -50);
-        short tot = (short) (extractBits(TOT_LS_INDEX, A_B_LENGTH, rawData) * POW_2_12);
-        short wnt = (short) extractBits(WN_LS_INDEX, A_B_LENGTH, rawData);
+        short tot = (short)(extractBits(TOT_LS_INDEX, A_B_LENGTH, rawData) * POW_2_12);
+        short wnt = (short)extractBits(WN_LS_INDEX, A_B_LENGTH, rawData);
 
         short tls = (short) extractBits(DELTA_T_LS_INDEX, A_B_LENGTH, rawData);
         short wnlsf = (short) extractBits(WNF_LS_INDEX, A_B_LENGTH, rawData);
         short dn = (short) extractBits(DN_LS_INDEX, A_B_LENGTH, rawData);
         short tlsf = (short) extractBits(DELTA_TF_LS_INDEX, A_B_LENGTH, rawData);
 //tot > 0 && a1 > 0 && tls > 0
-        if(tot > 0) {
+        if(true) {
             if (!hlpr.existTable(NavDB, "IONOSPHERIC")) {
                 hlpr.createTable(NavDB, "IONOSPHERIC");
             }

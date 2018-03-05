@@ -2,6 +2,7 @@ package com.kubolab.gnss.gnssloggerR;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -129,10 +131,11 @@ public class LoggerFragment extends Fragment {
         final TextView text = (TextView)layout.findViewById(R.id.pouuptext);
 
         ION_popupWindow.setContentView(layout);
-        ION_popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
-        ION_popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        ION_popupWindow.setWidth(800);
+        ION_popupWindow.setHeight(1200);
         ION_popupWindow.setOutsideTouchable(true);
         ION_popupWindow.setFocusable(true);
+        ION_popupWindow.setClippingEnabled(true);
         Button btn = (Button)layout.findViewById(R.id.ionpop_close);
         btn.setOnClickListener(new OnClickListener() {
             @Override
@@ -143,25 +146,31 @@ public class LoggerFragment extends Fragment {
 
         IONCORR.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
+                //Log.i("Touch","Touch Event Received");
                 GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
                 text.setText(gnd.getIonosphericDataStr());
-                ION_popupWindow.showAsDropDown(view,Gravity.CENTER,0,0);
+                ION_popupWindow.showAtLocation(view,Gravity.CENTER,0,0);
+                //Log.i("Touch",String.valueOf(ION_popupWindow.isShowing()));
             }
         });
         TimeCorr.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Log.i("Touch","Touch Event Received");
                 GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
                 text.setText(gnd.getTimeSystemDataStr());
-                ION_popupWindow.showAsDropDown(view,Gravity.CENTER,0,0);
+                ION_popupWindow.showAtLocation(view,Gravity.CENTER,0,0);
+                //Log.i("Touch",String.valueOf(ION_popupWindow.isShowing()));
             }
         });
         leapseconds.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Log.i("Touch","Touch Event Received");
                 GnssNavigationDataBase gnd = new GnssNavigationDataBase(getActivity());
                 text.setText(gnd.getLeapSecondsDataStr());
-                ION_popupWindow.showAsDropDown(view,Gravity.CENTER,0,0);
+                ION_popupWindow.showAtLocation(view,Gravity.CENTER,0,0);
+                //Log.i("Touch",String.valueOf(ION_popupWindow.isShowing()));
             }
         });
         //mScrollView = (ScrollView) newView.findViewById(R.id.log_scroll);

@@ -186,13 +186,20 @@ public class UiLogger implements GnssListener {
 
     @Override
     public void onGnssNavigationMessageReceived(GnssNavigationMessage event) {
+        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
         //logNavigationMessageEvent("onGnssNavigationMessageReceived: " + event);
+        if(event.getStatus() != GnssNavigationMessage.STATUS_PARITY_PASSED && event.getStatus() != GnssNavigationMessage.STATUS_PARITY_REBUILT){
+            component.NavigationIONText("PARITY CHECK FAILED","#FF0000",0);
+            component.NavigationIONText("PARITY CHECK FAILED","#FF0000",1);
+            component.NavigationIONText("PARITY CHECK FAILED","#FF0000",2);
+            Log.i("Navigation Parity",String.valueOf(event.getStatus()));
+            return;
+        }
         GnssNavigationConv mGnssNavigationConv = new GnssNavigationConv();
         SQLiteDatabase NavDB;
         SQLiteManager hlpr = new SQLiteManager(mContext);
         NavDB = hlpr.getWritableDatabase();
         int state = mGnssNavigationConv.onNavMessageReported(event.getSvid(),event.getType(),event.getMessageId(),event.getSubmessageId(),event.getData(),mContext);
-        LoggerFragment.UIFragmentComponent component = getUiFragmentComponent();
         if(state == 0){
             component.NavigationIONText("UPDATE FAILED","#FF0000",0);
             component.NavigationIONText("UPDATE FAILED","#FF0000",1);

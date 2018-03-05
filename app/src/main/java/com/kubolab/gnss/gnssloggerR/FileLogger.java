@@ -438,7 +438,7 @@ public class FileLogger implements GnssListener {
                     currentFileWriter.newLine();
                 }
                 firsttime = true;
-                localintervaltime = 1;
+                localintervaltime = SettingsFragment.interval;
             } catch (IOException e) {
                 Toast.makeText(mContext, "Count not initialize observation file", Toast.LENGTH_SHORT).show();
                 logException("Count not initialize file: " + currentFilePath, e);
@@ -850,8 +850,10 @@ public class FileLogger implements GnssListener {
             try {
                 writeGnssMeasurementToFile(gnssClock,event);
                 if(SettingsFragment.enableTimer){
-                    SettingsFragment.timer = SettingsFragment.timer - 1;
-                    getUiComponent().RefreshTimer();
+                    if(true) {
+                        SettingsFragment.timer = SettingsFragment.timer - 1;
+                        getUiComponent().RefreshTimer();
+                    }
                 }
             } catch (IOException e){
                 logException(ERROR_WRITING_FILE, e);
