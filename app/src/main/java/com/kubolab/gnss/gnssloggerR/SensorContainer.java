@@ -67,8 +67,7 @@ public class SensorContainer {
     private float NOW_STEP = (float) 0.0;
 
     private long LAST_GYRONANOS = -1;
-
-    // ローパスフィルタ用変数
+    // ローパスフィルタ用変数　手振れなどにより一瞬だけ力がかかってしまうのを除去するのがローパスフィルタ。常にかかっている重力などの影響を除去するのがハイパスフィルタ（強く振ると感知してくれる）
     private float currentOrientationZValues = 0.0f;
     private float currentAccelerationZValues = 0.0f;
     private float currentAccelerationXValues = 0.0f;
@@ -363,6 +362,7 @@ public class SensorContainer {
                 currentAccelerationXValues = (float)ax - currentOrientationXValues;
                 currentOrientationYValues = (float)ay * 0.1f + currentOrientationYValues * (1.0f - 0.1f);
                 currentAccelerationYValues = (float)ay - currentOrientationYValues;
+                //歩数カウンター z軸加速度-1.5になったとき歩数+1してる　状態falseに
                 if(passcounter == true) {
                     if (currentAccelerationZValues <= -1.5) {
                         counter++;
@@ -370,10 +370,12 @@ public class SensorContainer {
                         mFileLogger.onSensorListener("", (float) mAzimuthZ,1,LastAltitude - Altitude);
                     }
                 }else{
+                    //ｚ軸加速度1.0以上になった時状態trueに
                     if (currentAccelerationZValues >= 1.0) {
                         passcounter = true;
                     }
                 }
+                //西浦さんの修士論文式(5.13)
                 if(Math.abs(currentAccelerationYValues) >= 0.00000000001 || Math.abs(currentAccelerationXValues) >= 0.0000000000001) {
                     double AccAziRad = Math.atan(currentAccelerationYValues / currentAccelerationXValues);
                     AccAzi = radianToDegrees((float) AccAziRad);
@@ -397,7 +399,7 @@ public class SensorContainer {
 
                 mLogger.onSensorRawListener(sensorRaw);
 
-
+// sensorsの結果出力 LastAltitude - Altitude, counter, AccAzi
                 if(SettingsFragment.ResearchMode) {
                     mLogger.onSensorListener(String.format("Pitch = %f , Roll = %f , Azimuth = %f \n Altitude = %f \n WalkCounter = %d \n AccAzi = %d", Math.toDegrees(mPitchX), Math.toDegrees(mRollY), Math.toDegrees(mAzimuthZ), LastAltitude - Altitude, counter, AccAzi), Math.toDegrees(mAzimuthZ), currentAccelerationZValues, LastAltitude - Altitude);
                 }else{

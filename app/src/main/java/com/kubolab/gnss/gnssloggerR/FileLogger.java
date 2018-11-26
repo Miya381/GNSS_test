@@ -21,23 +21,29 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class FileLogger implements GnssListener {
 
+    //ホンダ
     private static final String TAG = "FileLogger";
     private static final String ERROR_WRITING_FILE = "Problem writing to file.";
     private static final String COMMENT_START = "# ";
     private static final char RECORD_DELIMITER = ',';
     private static final String VERSION_TAG = "Version: ";
     private static final String FILE_VERSION = "1.4.0.0, Platform: N";
-    private static final double GPS_L1_FREQ = 154.0 * 10.23e6;
+    private static final double GPS_L1_FREQ = 154.0 * 10.23e6;  //1575.42MHz
+    private static final double GPS_L5_FREQ=1176.45*10e6; //1176.45MHz
     private static final double SPEED_OF_LIGHT = 299792458.0; //[m/s]
     private static final double GPS_L1_WAVELENGTH = SPEED_OF_LIGHT/GPS_L1_FREQ;
+    private static final double GPS_L5_WAVELENGTH = SPEED_OF_LIGHT/GPS_L5_FREQ;
 
     private static final int MAX_FILES_STORED = 100;
     private static final int MINIMUM_USABLE_FILE_SIZE_BYTES = 1000;
@@ -65,7 +71,18 @@ public class FileLogger implements GnssListener {
     private boolean notenoughsat = false;
     private boolean firstOBSforAcc = true;
     private ArrayList<Integer> UsedInFixList = new ArrayList<Integer>() ;
+    private ArrayList<String> arrayList1= new ArrayList<>();
+    private ArrayList<Double>longitudekml=new ArrayList<>();
+    private ArrayList<Double>latitudekml=new ArrayList<>();
+    private ArrayList<Double>altitudekml=new ArrayList<>();
+    private ArrayList<String> gpstkml=new ArrayList<String>();
     private boolean RINEX_NAV_ION_OK = false;
+    private int gnsstimeclock_a;
+    private int gnsstimeclock_b;
+    private int gnsstimeclock_c;
+    private double gnsstimeclock_d;
+    private int gnsstimeclock_e;
+    private int gnsstimeclock_f;
 
     //GLONASS系の補正情報
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
@@ -117,7 +134,7 @@ public class FileLogger implements GnssListener {
                 logError("Cannot read external storage.");
                 return;
             }
-
+            Date currentTime = Calendar.getInstance().getTime();
             Date now = new Date();
             int observation = now.getYear() - 100;
             String fileNameSub = String.format(SettingsFragment.FILE_NAME + ".kml", SettingsFragment.FILE_PREFIXSUB);
@@ -205,7 +222,7 @@ public class FileLogger implements GnssListener {
                     logError("Cannot read external storage.");
                     return;
                 }
-
+// csvファイル書き出し Fileクラスで用意されているgetAbsolutePathは絶対パスによるファイルの位置と名前を取得できる
                 Date now = new Date();
                 String fileNameAccAzi = String.format(SettingsFragment.FILE_NAME + ".csv", SettingsFragment.FILE_PREFIXSUB);
                 File currentFileAccAzi = new File(baseAccAziDirectory, fileNameAccAzi);
@@ -232,7 +249,7 @@ public class FileLogger implements GnssListener {
                     logException("Count not initialize subobservation file: " + currentFileAccAziPath, e);
                     return;
                 }
-
+//csvファイル閉じる
                 if (mFileAccAzWriter != null) {
                     try {
                         mFileAccAzWriter.close();
@@ -241,6 +258,7 @@ public class FileLogger implements GnssListener {
                         return;
                     }
                 }
+
                 mFileAccAzi = currentFileAccAzi;
                 mFileAccAzWriter = currentFileAccAziWriter;
                 Toast.makeText(mContext, "File opened: " + currentFileAccAziPath, Toast.LENGTH_SHORT).show();
@@ -650,8 +668,31 @@ public class FileLogger implements GnssListener {
             return;
         }
         try {
-            mFileSubWriter.write("    </coordinates>\n  </LineString>\n</Placemark>\n</Document>\n</kml>\n");
+            mFileSubWriter.write("    </coordinates>\n  </LineString>\n</Placemark>\n<Folder>");
+            // </coordinates></LineString></Placemark><Folder></Document></kml>
             mFileSubWriter.newLine();
+            for (int i=0; i<arrayList1.size(); i++){
+                mFileSubWriter.write(" <Placemark>\n");
+                mFileSubWriter.write("<name>"+arrayList1.get(i)+"\"</name>\"");
+                mFileSubWriter.newLine();
+               // mFileSubWriter.write("<TimeStamp><when>"+arrayList1.get(i)+"</when></TimeStamp>");
+                //mFileSubWriter.newLine();
+                mFileSubWriter.write("<Style>\n<BalloonStyle><text><![CDATA[$[description]]]></text></BalloonStyle>\n" +
+                                "    <LabelStyle><scale>0</scale></LabelStyle>\n" +
+                                "    <IconStyle>\n" +
+                                "      <scale>0.3</scale>\n" +
+                                "      <color>ffFFFF00</color>\n" +
+                                "      <Icon><href>http://maps.google.com/mapfiles/kml/pal2/icon26.png</href></Icon>\n" +
+                                "    </IconStyle>\n" +
+                                "  </Style>\n" +
+                                "  <Point>" );
+                mFileSubWriter.newLine();
+                mFileSubWriter.write("<coordinates>"+longitudekml.get(i)+","+latitudekml.get(i)+","+altitudekml.get(i)+ "</coordinates>");
+                mFileSubWriter.write("</Point>");
+                mFileSubWriter.newLine();
+                mFileSubWriter.write("</Placemark>");
+            }mFileSubWriter.newLine();
+            mFileSubWriter.write("</Folder>\n  </Document>\n  </kml>");
         }catch (IOException e){
             Toast.makeText(mContext, "ERROR_WRITINGFOTTER_FILE", Toast.LENGTH_SHORT).show();
             logException(ERROR_WRITING_FILE, e);
@@ -732,8 +773,9 @@ public class FileLogger implements GnssListener {
     public void onProviderDisabled(String provider) {}
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location ) {
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+
             synchronized (mFileSubLock) {
                 if (mFileSubWriter == null) {
                     return;
@@ -742,11 +784,26 @@ public class FileLogger implements GnssListener {
                     try {
                         String locationStream =
                                 String.format(
+
                                         Locale.US,
+                                       //KMLの中身
                                         "       %15.9f,%15.9f,%15.9f",
                                         location.getLongitude(),
                                         location.getLatitude(),
-                                        location.getAltitude());
+                                        location.getAltitude()
+
+                                        );
+                        longitudekml.add(location.getLongitude());
+                        latitudekml.add(location.getLatitude());
+                        altitudekml.add(location.getAltitude());
+                        Calendar myCal= Calendar.getInstance();
+                        DateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd");
+                        String myName = myFormat.format(myCal.getTime());
+                        //mFileSubWriter.write(myName);
+                        //mFileSubWriter.newLine();
+                        String gnsstime=
+                                String.format("%d,%d,%d,%d,%d,%13.7f",gnsstimeclock_f,gnsstimeclock_e,gnsstimeclock_a,gnsstimeclock_b,gnsstimeclock_c,gnsstimeclock_d);
+                        arrayList1.add(gnsstime);
                         mFileSubWriter.write(locationStream);
                         mFileSubWriter.newLine();
                     }catch (IOException e){
@@ -768,6 +825,9 @@ public class FileLogger implements GnssListener {
                 return;
             }
             GnssClock gnssClock = event.getClock();
+
+
+
             //平滑化方式が変更になれば係数を初期化
             if(SettingsFragment.SMOOTHER_RATE_RESET_FLAG_FILE){
                 Arrays.fill(LAST_DELTARANGE,0.0);
@@ -779,6 +839,7 @@ public class FileLogger implements GnssListener {
                 try {
                     if(firsttime == true && measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS){
                         gnssClock = event.getClock();
+
                         double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
                         double weekNumberNanos = weekNumber * 604800 * 1e9;
                         double tRxNanos = gnssClock.getTimeNanos() - gnssClock.getFullBiasNanos() - weekNumberNanos;
@@ -808,7 +869,9 @@ public class FileLogger implements GnssListener {
                                 prSeconds = tRxSeconds - tTxSeconds;
                                 iRollover = false;
                             }
+
                         }
+
                         double prm = prSeconds * 2.99792458e8;
                         //コード擬似距離の計算
                         if (iRollover == false && prm > 0 && prSeconds < 0.5) {
@@ -823,6 +886,7 @@ public class FileLogger implements GnssListener {
                                 mFileWriter.newLine();
                                 mFileWriter.write("                                                            END OF HEADER       ");
                                 mFileWriter.newLine();
+
                             } else {
                                 String StartTimeOBS = String.format("%6d%6d%6d%6d%6d%13.7f     %3s         TIME OF FIRST OBS\n", value.Y, value.M, value.D, value.h, value.m, value.s, "GPS");
                                 //END OF HEADER
@@ -858,6 +922,7 @@ public class FileLogger implements GnssListener {
             } catch (IOException e){
                 logException(ERROR_WRITING_FILE, e);
             }
+
         }
         firstOBSforAcc = true;
     }
@@ -899,9 +964,20 @@ public class FileLogger implements GnssListener {
             else{
                 if(listener == "") {
                     try {
+                        Calendar myCal= Calendar.getInstance();
+                        DateFormat myFormat = new SimpleDateFormat("MM/dd/hh:mm.ss");
+                        String myName = myFormat.format(myCal.getTime());
+                        //csv ファイルの中身　歩行者の位置モデルの指揮　altitudeは気圧センサ
+
                         String SensorStream =
                                 String.format("%f,%f,%f", (float) (accZ * Math.sin(azimuth)), (float) (accZ * Math.cos(azimuth)), altitude);
                         mFileAccAzWriter.write(SensorStream);
+                        String day=
+                                String.format("%6d,%6d,%6d,%13.7f,\t",gnsstimeclock_a,gnsstimeclock_b,gnsstimeclock_c,gnsstimeclock_d,myName);
+                       mFileAccAzWriter.write(day);
+                    //    String time=
+//                               String.format("%13.7f",myName);
+                      //  mFileAccAzWriter.write(myName);
                         mFileAccAzWriter.newLine();
                     } catch (IOException e) {
                         Toast.makeText(mContext, "ERROR_WRITING_FILE", Toast.LENGTH_SHORT).show();
@@ -1151,6 +1227,7 @@ public class FileLogger implements GnssListener {
                     }
                 }
             }
+
             mFileWriter.write(OBSTime + String.format("%3d", satnumber));
             mFileWriter.newLine();
             mFileWriter.write(Measurements.toString());
@@ -1214,6 +1291,13 @@ public class FileLogger implements GnssListener {
                             String OBSTime = String.format(" %2d %2d %2d %2d %2d%11.7f  0", value.Y - 2000, value.M, value.D, value.h, value.m, value.s);
                             SensorStream =
                                     String.format("%6d,%6d,%6d,%6d,%6d,%13.7f", value.Y, value.M, value.D, value.h, value.m, value.s);
+                            //メモで
+                            gnsstimeclock_a=value.D;
+                            gnsstimeclock_b=value.h;
+                            gnsstimeclock_c=value.m;
+                            gnsstimeclock_d=value.s;
+                            gnsstimeclock_e=value.M;
+                            gnsstimeclock_f=value.Y;
                             Time.append(OBSTime);
                             firstOBS = false;
                         }
@@ -1276,16 +1360,30 @@ public class FileLogger implements GnssListener {
                             }
                         }
                         //Fix用チェック
+                        Calendar myCal= Calendar.getInstance();
+                        DateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd/hh:mm.ss");
+                        String myName = myFormat.format(myCal.getTime());
                             String DbHz = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
                             if (SettingsFragment.CarrierPhase) {
-                                Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + "\n");
+                                Measurements.append(DeltaRangeStrings + PrmStrings + DbHz +'\n');
+                                //'%'+myName
                             } else {
-                                Measurements.append(PrmStrings + DbHz + "\n");
+                                Measurements.append(PrmStrings + DbHz +'\n');
+                                //'%'+myName+
                             }
                     }
                 }
             }
             Prn.insert(0, String.format("%3d", satnumber));
+            //oファイルの中身
+            //onGnssMeasurementsReceived();
+
+            Calendar myCal= Calendar.getInstance();
+            DateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd/hh:mm.ss");
+            String myName = myFormat.format(myCal.getTime());
+            //mFileWriter.write("%"+myName);
+            //mFileWriter.newLine();
+            //"\t"+myName+
             mFileWriter.write(Time.toString() + Prn.toString() + "\n");
             mFileWriter.write(Measurements.toString());
             if (SettingsFragment.ResearchMode) {
@@ -1404,7 +1502,9 @@ public class FileLogger implements GnssListener {
             value.s = s;
 
             return value;
+
             }
+
     }
 
 }

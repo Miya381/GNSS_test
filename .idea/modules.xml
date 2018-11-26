@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\Amano\StudioProjects\GNSSLoggerR\GNSSLogger.iml" filepath="C:\Users\Amano\StudioProjects\GNSSLoggerR\GNSSLogger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/GNSSLoggerR.iml" filepath="$PROJECT_DIR$/GNSSLoggerR.iml" />
-      <module fileurl="file://C:\Users\KuboLab\Desktop\gps-measurement-tools-master\GNSSLogger\GNSSLoggerR.iml" filepath="C:\Users\KuboLab\Desktop\gps-measurement-tools-master\GNSSLogger\GNSSLoggerR.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Amano\StudioProjects\GNSSLoggerR\app\app.iml" filepath="C:\Users\Amano\StudioProjects\GNSSLoggerR\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GNSSLoggerR.iml" filepath="$PROJECT_DIR$/GNSSLoggerR.iml" />
     </modules>
   </component>
 </project>

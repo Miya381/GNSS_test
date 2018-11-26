@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //アクションバーのロゴ設定
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true); //アイコン表示
         getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
         requestPermissionAndSetupFragments(this);

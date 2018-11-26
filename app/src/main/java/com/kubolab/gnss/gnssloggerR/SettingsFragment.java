@@ -26,6 +26,9 @@ import android.widget.Toast;
 import android.widget.RadioButton;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.location.GnssMeasurementsEvent.Callback.STATUS_LOCATION_DISABLED;
@@ -57,6 +60,7 @@ private TextView mAccSpecView;
     public static String FILE_PREFIXNMEA = "/" + SAVE_LOCATION + "/NMEA";
     public static String FILE_PREFIXNAV = "/" + SAVE_LOCATION + "/RINEXNAV";
     public static String FILE_NAME = "AndroidOBS";
+
     public static boolean CarrierPhase = false;
     public static boolean useQZ = false;
     public static boolean useGL = false;
@@ -352,10 +356,10 @@ private TextView mAccSpecView;
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     //入力した文字をトースト出力する
-                                    if(editView.getText().toString().indexOf("aiueo1") != -1){
-                                        Toast.makeText(getContext(),
-                                                "Research mode turned ON",
-                                                Toast.LENGTH_LONG).show();
+                             //       if(editView.getText().toString().indexOf("aiueo1") != -1){
+                               //         Toast.makeText(getContext(),
+                                 //               "Research mode turned ON",
+                                   //             Toast.LENGTH_LONG).show();
                                         ResearchMode = true;
                                         //rbrinex303.setEnabled(true);
                                         //useGAL.setEnabled(true);
@@ -363,12 +367,12 @@ private TextView mAccSpecView;
                                         RINEXNAVCheck.setEnabled(true);
                                         //useBDS.setEnabled(true);
                                         useSBS.setEnabled(true);
-                                    }else {
-                                        Toast.makeText(getContext(),
-                                                "Password is incorrect",
-                                                Toast.LENGTH_LONG).show();
-                                        ResearchModeSwitch.setChecked(false);
-                                    }
+                              //      }else {
+                              //          Toast.makeText(getContext(),
+                               //                 "Password is incorrect",
+                                //                Toast.LENGTH_LONG).show();
+                                //        ResearchModeSwitch.setChecked(false);
+                           //         }
                                 }
                             })
                             .setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -523,8 +527,11 @@ private TextView mAccSpecView;
                     });
         }
 
+
         /*public void startActivity(Intent intent) {
             getActivity().startActivity(intent);
         }*/
+
+
     }
 }
