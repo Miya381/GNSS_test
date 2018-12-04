@@ -238,8 +238,8 @@ public class FileLogger implements GnssListener {
                 // サブ観測ファイルへのヘッダ書き出し
                 try {
                     if(SettingsFragment.EnableSensorLog) {
-                        currentFileAccAziWriter.write("Android Acc\nEast,North ");
-                        currentFileAccAziWriter.newLine();
+                       // currentFileAccAziWriter.write("Android Acc\nEast,North ");
+                       // currentFileAccAziWriter.newLine();
                     }else {
                         currentFileAccAziWriter.write("PseudorangeRate,PseudorangeRate (Carrier Phase),PseudorangeRate (Doppler) ");
                         currentFileAccAziWriter.newLine();
@@ -964,17 +964,17 @@ public class FileLogger implements GnssListener {
             else{
                 if(listener == "") {
                     try {
-                        Calendar myCal= Calendar.getInstance();
-                        DateFormat myFormat = new SimpleDateFormat("MM/dd/hh:mm.ss");
-                        String myName = myFormat.format(myCal.getTime());
+                       // Calendar myCal= Calendar.getInstance();
+                       // DateFormat myFormat = new SimpleDateFormat("MM/dd/hh:mm.ss");
+                       // String myName = myFormat.format(myCal.getTime());
                         //csv ファイルの中身　歩行者の位置モデルの指揮　altitudeは気圧センサ
 
                         String SensorStream =
                                 String.format("%f,%f,%f", (float) (accZ * Math.sin(azimuth)), (float) (accZ * Math.cos(azimuth)), altitude);
                         mFileAccAzWriter.write(SensorStream);
-                        String day=
-                                String.format("%6d,%6d,%6d,%13.7f,\t",gnsstimeclock_a,gnsstimeclock_b,gnsstimeclock_c,gnsstimeclock_d,myName);
-                       mFileAccAzWriter.write(day);
+                       // String day=
+                        //        String.format("%6d,%6d,%6d,%13.7f,\t",gnsstimeclock_a,gnsstimeclock_b,gnsstimeclock_c,gnsstimeclock_d,myName);
+                      // mFileAccAzWriter.write(day);
                     //    String time=
 //                               String.format("%13.7f",myName);
                       //  mFileAccAzWriter.write(myName);

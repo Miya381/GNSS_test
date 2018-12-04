@@ -345,7 +345,7 @@ public class SensorContainer {
                 }
                 //気圧から高度を算出
                 if(mPressureValues != null){
-                    Altitude = (float) -(((Math.pow((mPressureValues[0]/1023.0),(1/5.257)) - 1)*(6.6 + 273.15)) / 0.0065);
+                    Altitude =(float)(((Math.pow((1013.25/mPressureValues[0]),(1/5.257)) - 1)*(18.0 + 273.15)) / 0.0065);
                     sensorRaw[5] = String.format("Ambient Pressure = %7.2f", Pressure);
                 }
 
@@ -367,7 +367,7 @@ public class SensorContainer {
                     if (currentAccelerationZValues <= -1.5) {
                         counter++;
                         passcounter = false;
-                        mFileLogger.onSensorListener("", (float) mAzimuthZ,1,LastAltitude - Altitude);
+                        mFileLogger.onSensorListener("", (float) mAzimuthZ,1,Altitude);
                     }
                 }else{
                     //ｚ軸加速度1.0以上になった時状態trueに
