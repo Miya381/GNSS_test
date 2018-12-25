@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
+import android.os.SystemClock;
 import com.kubolab.gnss.gnssloggerR.LoggerFragment.UIFragmentComponent;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ArrayList;
 import java.util.Calendar;
+
 
 public class FileLogger implements GnssListener {
 
@@ -440,8 +442,8 @@ public class FileLogger implements GnssListener {
                     currentFileWriter.newLine();
                     //# / TYPES OF OBSERV
                     if (SettingsFragment.CarrierPhase) {
-                        String NUMBEROFOBS = String.format("%-6d", 3);
-                        String OBSERV = String.format("%-54s", "    L1    C1    S1");
+                        String NUMBEROFOBS = String.format("%-6d", 6);
+                        String OBSERV = String.format("%-54s", "    L1    C1    S1    L5    C5    S5");
                         currentFileWriter.write(NUMBEROFOBS + OBSERV + "# / TYPES OF OBSERV");
                         currentFileWriter.newLine();
                     } else {
@@ -1131,6 +1133,7 @@ public class FileLogger implements GnssListener {
                             SensorStream =
                                     String.format("%6d,%6d,%6d,%6d,%6d,%13.7f", value.Y, value.M, value.D, value.h, value.m, value.s);
                             //firstOBS = false;
+
                         }
                         //GPSのPRN番号と時刻用String
                         String prn = "";
@@ -1154,6 +1157,7 @@ public class FileLogger implements GnssListener {
                         if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                             if (SettingsFragment.CarrierPhase == true) {
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
+
                                     L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
                                 } else {
                                     L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
@@ -1194,20 +1198,22 @@ public class FileLogger implements GnssListener {
                                     LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
                                     C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
                                 }else {
-                                    if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
+                                    if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID) {
                                         LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
                                         LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
                                         CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
                                         if (CURRENT_SMOOTHER_RATE[index] <= 0) {
                                             CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
                                         }
-                                        C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                            C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
                                     }
                                 }
                             }
                         }
                         String D1C = String.format("%14.3f%s%s", -measurement.getPseudorangeRateMetersPerSecond() / GPS_L1_WAVELENGTH, " ", " ");
+
                         String S1C = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
+
                         //Fix用チェック
                         if (SettingsFragment.CarrierPhase) {
                             if(firstOBS) {
@@ -1350,6 +1356,7 @@ public class FileLogger implements GnssListener {
                                     if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
                                         LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
                                         LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
+                                       // A=measurement.hasCarrierFrequencyHz(),measurement.getCarrierFrequencyHz();
                                         CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
                                         if (CURRENT_SMOOTHER_RATE[index] <= 0) {
                                             CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
@@ -1360,17 +1367,24 @@ public class FileLogger implements GnssListener {
                             }
                         }
                         //Fix用チェック
-                        Calendar myCal= Calendar.getInstance();
-                        DateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd/hh:mm.ss");
-                        String myName = myFormat.format(myCal.getTime());
+                      //  Calendar myCal= Calendar.getInstance();
+                      //  DateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd/hh:mm.ss");
+                      //  String myName = myFormat.format(myCal.getTime());
                             String DbHz = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
+                        String L1code=PrmStrings;
+                        String L1carrier=DeltaRangeStrings;
+                        String S5=DbHz;
+                        final float TOLERANCE_MHZ = 100000000f;                                                 //仮　GPSの周波数指定
+                        if  (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
                             if (SettingsFragment.CarrierPhase) {
-                                Measurements.append(DeltaRangeStrings + PrmStrings + DbHz +'\n');
+
+                                Measurements.append(DeltaRangeStrings + PrmStrings + DbHz +'\n');  //oFileの書き出し　コード擬似距離など
                                 //'%'+myName
                             } else {
-                                Measurements.append(PrmStrings + DbHz +'\n');
+                                Measurements.append(PrmStrings + DbHz + '\n');   //oFileの書き出し　コード擬似距離など
                                 //'%'+myName+
                             }
+                            }else{Measurements.append(L1carrier+DeltaRangeStrings + PrmStrings +L1code+ DbHz+'\n'+S5+'\n');}
                     }
                 }
             }
@@ -1378,20 +1392,25 @@ public class FileLogger implements GnssListener {
             //oファイルの中身
             //onGnssMeasurementsReceived();
 
-            Calendar myCal= Calendar.getInstance();
-            DateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd/hh:mm.ss");
-            String myName = myFormat.format(myCal.getTime());
+            //Calendar myCal= Calendar.getInstance();
+            //DateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd/hh:mm.ss");
+            //String myName = myFormat.format(myCal.getTime());
+
             //mFileWriter.write("%"+myName);
             //mFileWriter.newLine();
             //"\t"+myName+
-            mFileWriter.write(Time.toString() + Prn.toString() + "\n");
-            mFileWriter.write(Measurements.toString());
+            mFileWriter.write(Time.toString() + Prn.toString() + "\n"); //ofileの各時刻の日付と観測できる衛星番号
+            mFileWriter.write(Measurements.toString()); //各衛星の情報
             if (SettingsFragment.ResearchMode) {
                 mFileAccAzWriter.write(SensorStream);
                 mFileAccAzWriter.newLine();
             }
         }
     }
+
+
+
+
 
     private void logException(String errorMessage, Exception e) {
         Log.e(GnssContainer.TAG + TAG, errorMessage, e);

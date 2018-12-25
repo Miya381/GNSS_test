@@ -15,7 +15,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import com.kubolab.gnss.gnssloggerR.Mathutil;
 
+import org.apache.commons.math3.util.MathUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -555,7 +557,7 @@ public class UiLogger implements GnssListener {
             Log.i("tTxSeconds", String.valueOf(tTxSeconds));
             //Log.d("tRxSeconds",tRxStr);
             //Log.d("tTxSeconds",tTxStr);
-            double prm = prSeconds * 2.99792458e8;
+            double prm = prSeconds * 2.99792458e8; //コード擬似距離
             if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
                 //Log.d("QZSS","QZSS Detected");
                 array[arrayRow][0] = "J" + String.format("%02d  ",measurement.getSvid() - 192);
@@ -590,9 +592,12 @@ public class UiLogger implements GnssListener {
             builder.append("tTxSeconds = ").append(tTxSeconds).append("\n");*/
             //builder.append("FullCarrierCycles = ").append(measurement.getCarrierCycles() + measurement.getCarrierPhase()).append("\n");
             if(SettingsFragment.CarrierPhase == true) {
-                //Log.i("Carrier Freq",String.valueOf(measurement.getCarrierFrequencyHz()));
+                Log.i("Carrier Freq",String.valueOf(measurement.getCarrierFrequencyHz()));
+                Log.i("Carrier Frequ",String.valueOf(measurement.hasCarrierFrequencyHz()));
                 if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
-                    array[arrayRow][2] = "CYCLE_SLIP";
+                  // 周波数　メモ  float abc=measurement.getCarrierFrequencyHz();
+                  //  array[arrayRow][2] = String.valueOf(abc);
+                    array[arrayRow][2]="Cycle slip";
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_RESET) {
                     array[arrayRow][2] = "RESET";
                 }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_UNKNOWN) {
@@ -660,8 +665,15 @@ public class UiLogger implements GnssListener {
             }else{
                 array[arrayRow][2] = "0";
             }
-            array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
+            //array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
+            //arrayRow++;
+            array[arrayRow][3] = getCarrierFrequencyLabel(
+                    measurement.getCarrierFrequencyHz()
+            );
+           // array[arrayRow][3] = String.format("%2.1f",measurement.getCarrierFrequencyHz()/1000000);
             arrayRow++;
+           // array[arrayRow][4]=String.format("%-8.3f",measurement.getCarrierFrequencyHz()/1000000);
+           // arrayRow++;
         }
     }
     if(CheckClockSync){
@@ -671,7 +683,19 @@ public class UiLogger implements GnssListener {
     }
         return array;
 }
+    public static String getCarrierFrequencyLabel(float carrierFrequencyhz) {
+        final float TOLERANCE_MHZ = 100000000f;
 
+        if  (Mathutil.fuzzyEquals(carrierFrequencyhz, 1575420000f, TOLERANCE_MHZ)) {
+
+            return "L1";
+        } //else if (Mathutil.fuzzyEquals(carrierFrequencyMhz, 1176.45f, TOLERANCE_MHZ)) {
+          // return "L5";
+     //  }
+      else {
+           return "L5";
+      }
+}
     private void logLocationEvent(String event) {
         logEvent("Location", event, USED_COLOR);
     }
@@ -759,3 +783,4 @@ public class UiLogger implements GnssListener {
         }
     }
 }
+
