@@ -1384,7 +1384,7 @@ public class FileLogger implements GnssListener {
                                 Measurements.append(PrmStrings + DbHz + '\n');   //oFileの書き出し　コード擬似距離など
                                 //'%'+myName+
                             }
-                            }else{Measurements.append(L1carrier+DeltaRangeStrings + PrmStrings +L1code+ DbHz+'\n'+S5+'\n');}
+                            }else{Measurements.append(L1carrier+DeltaRangeStrings + PrmStrings +L1code+ DbHz+'\n'+S5+'\n');} //L1とL5を同時に書きたい　ofileの日付の横の重複もなくす　観測できていないところは空白にする
                     }
                 }
             }
