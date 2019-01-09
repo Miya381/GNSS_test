@@ -1247,16 +1247,34 @@ public class FileLogger implements GnssListener {
                 mFileAccAzWriter.newLine();
             }
         }else {
+            String L1carrier_3="           ";
+            String L1code_3="           ";
+            String S5_3="           ";
+            String L1carrier_10="           ";
+            String L1code_10="           ";
+            String S5_10="           ";
+            String L1carrier_24="           ";
+            String L1code_24="           ";
+            String S5_24="           ";
+            String L1carrier_25="           ";
+            String L1code_25="           ";
+            String S5_25="           ";
+            String L1carrier_26="           ";
+            String L1code_26="           ";
+            String S5_26="           ";
+            String L1carrier_32="           ";
+            String L1code_32="           ";
+            String S5_32="           ";  //仮
             for (GnssMeasurement measurement : event.getMeasurements()) {
                 if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
                     GnssClock gnssClock = event.getClock();
                     double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
                     double weekNumberNanos = weekNumber * 604800 * 1e9;
                     //FullBiasNanosがリセットされたら再計算
-                    if(constFullBiasNanos == 0.0){
-                        if(gnssClock.hasBiasNanos()) {
+                    if (constFullBiasNanos == 0.0) {
+                        if (gnssClock.hasBiasNanos()) {
                             constFullBiasNanos = gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
-                        }else {
+                        } else {
                             constFullBiasNanos = gnssClock.getFullBiasNanos();
                         }
                     }
@@ -1286,10 +1304,10 @@ public class FileLogger implements GnssListener {
                     //GPS週・週秒から年月日時分秒に変換
                     GPSWStoGPST gpswStoGPST = new GPSWStoGPST();
                     ReturnValue value = gpswStoGPST.method(weekNumber, tRxSeconds);
-                /*急場の変更！！*/
+                    /*急場の変更！！*/
                     String DeviceName = Build.DEVICE;
                     //Log.d("DEVICE",DeviceName);
-                /*急場の変更！！*/
+                    /*急場の変更！！*/
                     double prm = prSeconds * 2.99792458e8;
                     //コード擬似距離の計算
                     if (iRollover == false && prm > 0 && prSeconds < 0.5) {
@@ -1298,12 +1316,12 @@ public class FileLogger implements GnssListener {
                             SensorStream =
                                     String.format("%6d,%6d,%6d,%6d,%6d,%13.7f", value.Y, value.M, value.D, value.h, value.m, value.s);
                             //メモで
-                            gnsstimeclock_a=value.D;
-                            gnsstimeclock_b=value.h;
-                            gnsstimeclock_c=value.m;
-                            gnsstimeclock_d=value.s;
-                            gnsstimeclock_e=value.M;
-                            gnsstimeclock_f=value.Y;
+                            gnsstimeclock_a = value.D;
+                            gnsstimeclock_b = value.h;
+                            gnsstimeclock_c = value.m;
+                            gnsstimeclock_d = value.s;
+                            gnsstimeclock_e = value.M;
+                            gnsstimeclock_f = value.Y;
                             Time.append(OBSTime);
                             firstOBS = false;
                         }
@@ -1315,48 +1333,48 @@ public class FileLogger implements GnssListener {
                         String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
                         if (SettingsFragment.CarrierPhase == true) {
                             double ADR = measurement.getAccumulatedDeltaRangeMeters();
-                            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
+                            if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
                                     DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
                                 } else {
                                     DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
                                 }
-                            }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                                if(measurement.getSvid() <= 24) {
+                            } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) {
+                                if (measurement.getSvid() <= 24) {
                                     if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
                                         DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
                                     } else {
                                         DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
                                     }
-                                }else {
-                                    DeltaRangeStrings = String.format("%14.3f%s%s",0.0, " ", " ");
+                                } else {
+                                    DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
                                 }
                             }
                         }
                         int index = measurement.getSvid();
-                        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
+                        if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) {
                             index = index + 64;
                         }
-                        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+                        if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU) {
                             index = index + 200;
                         }
-                        if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
+                        if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO) {
                             index = index + 235;
                         }
-                        if(!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
+                        if (!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID) {
                             CURRENT_SMOOTHER_RATE[index] = 1.0;
                         }
                         //Pseudorange Smoother
-                        if(SettingsFragment.usePseudorangeSmoother &&  prm != 0.0){
-                            if(index < 300) {
-                                if(SettingsFragment.usePseudorangeRate){
+                        if (SettingsFragment.usePseudorangeSmoother && prm != 0.0) {
+                            if (index < 300) {
+                                if (SettingsFragment.usePseudorangeRate) {
                                     LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
                                     PrmStrings = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
-                                }else {
-                                    if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
+                                } else {
+                                    if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID) {
                                         LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
                                         LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
-                                       // A=measurement.hasCarrierFrequencyHz(),measurement.getCarrierFrequencyHz();
+                                        // A=measurement.hasCarrierFrequencyHz(),measurement.getCarrierFrequencyHz();
                                         CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
                                         if (CURRENT_SMOOTHER_RATE[index] <= 0) {
                                             CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
@@ -1367,24 +1385,101 @@ public class FileLogger implements GnssListener {
                             }
                         }
                         //Fix用チェック
-                      //  Calendar myCal= Calendar.getInstance();
-                      //  DateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd/hh:mm.ss");
-                      //  String myName = myFormat.format(myCal.getTime());
-                            String DbHz = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
-                        String L1code=PrmStrings;
-                        String L1carrier=DeltaRangeStrings;
-                        String S5=DbHz;
-                        final float TOLERANCE_MHZ = 100000000f;                                                 //仮　GPSの周波数指定
-                        if  (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
-                            if (SettingsFragment.CarrierPhase) {
+                        //  Calendar myCal= Calendar.getInstance();
+                        //  DateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd/hh:mm.ss");
+                        //  String myName = myFormat.format(myCal.getTime());
+                        String DbHz = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
+                        // String L1code=PrmStrings;
+                        // String L1carrier=DeltaRangeStrings;
+                        // String S5=DbHz;
+                        ArrayList<Integer> dualcheck = new ArrayList<Integer>();
+                        dualcheck.add(measurement.getSvid()); //衛星番号でチェックしたい
+                        // int dual1;
 
-                                Measurements.append(DeltaRangeStrings + PrmStrings + DbHz +'\n');  //oFileの書き出し　コード擬似距離など
-                                //'%'+myName
-                            } else {
-                                Measurements.append(PrmStrings + DbHz + '\n');   //oFileの書き出し　コード擬似距離など
-                                //'%'+myName+
+
+                        // ArrayList<Integer> dualcheck = new ArrayList<Integer>() ;
+                        // dualcheck.add(measurement.getSvid());
+
+
+                        final float TOLERANCE_MHZ = 100000000f;                                                 //仮　GPSの周波数指定
+                        if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
+                            if (measurement.getSvid() == 3) {
+                                // ArrayList<String> L1carrier = new ArrayList<String>();
+                                // L1carrier.add(DeltaRangeStrings);
+                                L1carrier_3= DeltaRangeStrings;
+                                L1code_3 = PrmStrings;
+                                S5_3 = DbHz;
                             }
-                            }else{Measurements.append(L1carrier+DeltaRangeStrings + PrmStrings +L1code+ DbHz+'\n'+S5+'\n');} //L1とL5を同時に書きたい　ofileの日付の横の重複もなくす　観測できていないところは空白にする
+                            if (measurement.getSvid() == 10) {
+                                // ArrayList<String> L1carrier = new ArrayList<String>();
+                                // L1carrier.add(DeltaRangeStrings);
+                                L1carrier_10 = DeltaRangeStrings;
+                                L1code_10 = PrmStrings;
+                                S5_10 = DbHz;
+                            }
+                            if (measurement.getSvid() == 24) {
+                                // ArrayList<String> L1carrier = new ArrayList<String>();
+                                // L1carrier.add(DeltaRangeStrings);
+                                L1carrier_24 = DeltaRangeStrings;
+                                L1code_24 = PrmStrings;
+                                S5_24 = DbHz;
+                            }
+                            if (measurement.getSvid() == 25) {
+                                // ArrayList<String> L1carrier = new ArrayList<String>();
+                                // L1carrier.add(DeltaRangeStrings);
+                                L1carrier_25 = DeltaRangeStrings;
+                                L1code_25 = PrmStrings;
+                                S5_25 = DbHz;
+                            }
+                            if (measurement.getSvid() == 26) {
+                                // ArrayList<String> L1carrier = new ArrayList<String>();
+                                // L1carrier.add(DeltaRangeStrings);
+                                L1carrier_26 = DeltaRangeStrings;
+                                L1code_26 = PrmStrings;
+                                S5_26 = DbHz;
+                            }
+                            if (measurement.getSvid() == 32) {
+                                // ArrayList<String> L1carrier = new ArrayList<String>();
+                                // L1carrier.add(DeltaRangeStrings);
+                                L1carrier_32 = DeltaRangeStrings;
+                                L1code_32 = PrmStrings;
+                                S5_32 = DbHz;
+                            }else{}
+                            //   if(Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(),1176450000f, TOLERANCE_MHZ))
+                            if (SettingsFragment.CarrierPhase) {
+                                //Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + '\n');  //oFileの書き出し　コード擬似距離など
+
+                            } else {
+                                //Measurements.append(PrmStrings + DbHz + '\n');   //oFileの書き出し　コード擬似距離など
+                            }
+                        } if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+
+                            int checkflag=1;
+                            if (L1carrier_3 != null && measurement.getSvid() == 3&&checkflag==1) {
+                                Measurements.append(L1carrier_3 + L1code_3 + S5_3 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                checkflag=0;}
+                                if (L1carrier_10 != null && measurement.getSvid() == 10&&checkflag==1) {
+                                    Measurements.append(L1carrier_10 + L1code_10 + S5_10 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                    checkflag=0;
+                                } //L1とL5を同時に書きたい　ofileの日付の横の重複もなくす　観測できていないところは空白にする
+                                if (L1carrier_24 != null && measurement.getSvid() == 24&&checkflag==1) {
+                                    Measurements.append(L1carrier_24 + L1code_24 + S5_24 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                    checkflag=0;
+                                }
+                                if (L1carrier_25 != null && measurement.getSvid() == 25&&checkflag==1) {
+                                    Measurements.append(L1carrier_25 + L1code_25 + S5_25 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                    checkflag=0;
+                                }
+                                if (L1carrier_26 != null && measurement.getSvid() == 26&&checkflag==1) {
+                                    Measurements.append(L1carrier_26 + L1code_26 + S5_26 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                    checkflag=0;
+                                }
+                                if (L1carrier_32 != null && measurement.getSvid() == 32&&checkflag==1) {
+                                    Measurements.append(L1carrier_32 + L1code_32 + S5_32 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                    checkflag=0;
+                                }
+                            }else{}
+
                     }
                 }
             }
