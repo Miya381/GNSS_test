@@ -1247,7 +1247,7 @@ public class FileLogger implements GnssListener {
                 mFileAccAzWriter.newLine();
             }
         }else {
-            String L1carrier_3="           ";
+            String L1carrier_3="                  ";
             String L1code_3="           ";
             String S5_3="           ";
             String L1carrier_10="           ";
