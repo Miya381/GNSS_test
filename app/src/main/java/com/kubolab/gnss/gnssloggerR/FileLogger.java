@@ -1138,7 +1138,12 @@ public class FileLogger implements GnssListener {
                         //GPSのPRN番号と時刻用String
                         String prn = "";
                         if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
-                            prn = String.format("G%02d", measurement.getSvid());
+                            //ここ
+                            final float TOLERANCE_MHZ = 100000000f;
+                            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                                prn = String.format("G%02d", measurement.getSvid());
+                            }else{
+                            }
                         }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
                             prn = String.format("R%02d", measurement.getSvid());
                         }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
@@ -1247,24 +1252,24 @@ public class FileLogger implements GnssListener {
                 mFileAccAzWriter.newLine();
             }
         }else {
-            String L1carrier_3="                  ";
-            String L1code_3="           ";
-            String S5_3="           ";
-            String L1carrier_10="           ";
-            String L1code_10="           ";
-            String S5_10="           ";
-            String L1carrier_24="           ";
-            String L1code_24="           ";
-            String S5_24="           ";
-            String L1carrier_25="           ";
-            String L1code_25="           ";
-            String S5_25="           ";
-            String L1carrier_26="           ";
-            String L1code_26="           ";
-            String S5_26="           ";
-            String L1carrier_32="           ";
-            String L1code_32="           ";
-            String S5_32="           ";  //仮
+            String L1carrier_3="                 ";
+            String L1code_3="                        ";
+            String S5_3="       ";
+            String L1carrier_10="                 ";
+            String L1code_10="                        ";
+            String S5_10="       ";
+            String L1carrier_24="                 ";
+            String L1code_24="                        ";
+            String S5_24="       ";
+            String L1carrier_25="                 ";
+            String L1code_25="                        ";
+            String S5_25="       ";
+            String L1carrier_26="                 ";
+            String L1code_26="                        ";
+            String S5_26="       ";
+            String L1carrier_32="                 ";
+            String L1code_32="                        ";
+            String S5_32="       ";  //仮
             for (GnssMeasurement measurement : event.getMeasurements()) {
                 if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
                     GnssClock gnssClock = event.getClock();
@@ -1326,9 +1331,15 @@ public class FileLogger implements GnssListener {
                             firstOBS = false;
                         }
                         //GPSのPRN番号と時刻用String
-                        String prn = String.format("G%2d", measurement.getSvid());
-                        satnumber = satnumber + 1;
-                        Prn.append(prn);
+
+                        //ここ
+                        final float TOLERANCE_MHZ = 100000000f;
+                        if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                            String prn = String.format("G%2d", measurement.getSvid());
+
+                            satnumber = satnumber + 1;
+                            Prn.append(prn);
+                        }
                         String PrmStrings = String.format("%14.3f%s%s", prm, " ", " ");
                         String DeltaRangeStrings = String.format("%14.3f%s%s", 0.0, " ", " ");
                         if (SettingsFragment.CarrierPhase == true) {
@@ -1401,7 +1412,7 @@ public class FileLogger implements GnssListener {
                         // dualcheck.add(measurement.getSvid());
 
 
-                        final float TOLERANCE_MHZ = 100000000f;                                                 //仮　GPSの周波数指定
+                                                                         //仮　GPSの周波数指定
                         if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
                             if (measurement.getSvid() == 3) {
                                 // ArrayList<String> L1carrier = new ArrayList<String>();
