@@ -42,7 +42,7 @@ public class FileLogger implements GnssListener {
     private static final String VERSION_TAG = "Version: ";
     private static final String FILE_VERSION = "1.4.0.0, Platform: N";
     private static final double GPS_L1_FREQ = 154.0 * 10.23e6;  //1575.42MHz
-    private static final double GPS_L5_FREQ=1176.45*10e6; //1176.45MHz
+    private static final double GPS_L5_FREQ=117.645*10e6; //1176.45MHz
     private static final double SPEED_OF_LIGHT = 299792458.0; //[m/s]
     private static final double GPS_L1_WAVELENGTH = SPEED_OF_LIGHT/GPS_L1_FREQ;
     private static final double GPS_L5_WAVELENGTH = SPEED_OF_LIGHT/GPS_L5_FREQ;
@@ -85,7 +85,7 @@ public class FileLogger implements GnssListener {
     private double gnsstimeclock_d;
     private int gnsstimeclock_e;
     private int gnsstimeclock_f;
-
+    final float TOLERANCE_MHZ = 100000000f;
     //GLONASS系の補正情報
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
     private int leapseconds = 18;
@@ -1162,10 +1162,17 @@ public class FileLogger implements GnssListener {
                         if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                             if (SettingsFragment.CarrierPhase == true) {
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-
-                                    L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
+                                    if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
+                                        L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
+                                    }else {
+                                        L1C = String.format("%14.3f%s%s", ADR / GPS_L5_WAVELENGTH, "1", " ");
+                                    }
                                 } else {
-                                    L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
+                                    if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
+                                        L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
+                                    }else{
+                                        L1C = String.format("%14.3f%s%s", ADR / GPS_L5_WAVELENGTH, " ", " ");
+                                    }
                                 }
                             }
                         }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
@@ -1333,7 +1340,7 @@ public class FileLogger implements GnssListener {
                         //GPSのPRN番号と時刻用String
 
                         //ここ
-                        final float TOLERANCE_MHZ = 100000000f;
+
                         if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
                             String prn = String.format("G%2d", measurement.getSvid());
 
@@ -1346,9 +1353,17 @@ public class FileLogger implements GnssListener {
                             double ADR = measurement.getAccumulatedDeltaRangeMeters();
                             if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                    DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
+                                    if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
+                                        DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
+                                    }else{
+                                        DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L5_WAVELENGTH, "1", " ");
+                                    }
                                 } else {
-                                    DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
+                                    if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
+                                        DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
+                                    }else{
+                                        DeltaRangeStrings = String.format("%14.3f%s%s", ADR / GPS_L5_WAVELENGTH, " ", " ");
+                                    }
                                 }
                             } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) {
                                 if (measurement.getSvid() <= 24) {
