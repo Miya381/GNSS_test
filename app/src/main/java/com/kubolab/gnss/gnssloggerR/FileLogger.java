@@ -1060,6 +1060,73 @@ public class FileLogger implements GnssListener {
 
         //RINEX303
         if(SettingsFragment.RINEX303){
+
+            //GPS衛星
+            String L5carrier_3 = "                 ";
+            String L5code_3 = "                        ";
+            String S5C_3 = "       ";
+            String L5carrier_6 = "                 ";
+            String L5code_6 = "                        ";
+            String S5C_6 = "       ";
+            String L5carrier_10 = "                 ";
+            String L5code_10 = "                        ";
+            String S5C_10 = "       ";
+            String L5carrier_24 = "                 ";
+            String L5code_24 = "                        ";
+            String S5C_24 = "       ";
+            String L5carrier_25 = "                 ";
+            String L5code_25 = "                        ";
+            String S5C_25 = "       ";
+            String L5carrier_26 = "                 ";
+            String L5code_26 = "                        ";
+            String S5C_26 = "       ";
+            String L5carrier_30 = "                 ";
+            String L5code_30 = "                        ";
+            String S5C_30 = "       ";
+            String L5carrier_32 = "                 ";
+            String L5code_32 = "                        ";
+            String S5C_32 = "       ";  //仮
+
+            // QZSS衛星
+            String QZSS_L1_1 = "                 ";
+            String QZSS_C1_1 = "                        ";
+            String QZS1_1 = "       ";
+            String QZSS_L1_2 = "                 ";
+            String QZSS_C1_2 = "                        ";
+            String QZS1_2 = "       ";
+            String QZSS_L1_3 = "                 ";
+            String QZSS_C1_3 = "                        ";
+            String QZS1_3 = "       ";
+
+            // Galileo衛星
+            String Galileo_L1_3 = "                 ";
+            String Galileo_C1_3 = "                        ";
+            String GalileoS1_3 = "       ";
+            String Galileo_L1_4 = "                 ";
+            String Galileo_C1_4 = "                        ";
+            String GalileoS1_4 = "       ";
+            String Galileo_L1_5 = "                 ";
+            String Galileo_C1_5 = "                        ";
+            String GalileoS1_5 = "       ";
+            String Galileo_L1_8 = "                 ";
+            String Galileo_C1_8 = "                        ";
+            String GalileoS1_8 = "       ";
+            String Galileo_L1_9 = "                 ";
+            String Galileo_C1_9 = "                        ";
+            String GalileoS1_9 = "       ";
+            String Galileo_L1_13 = "                 ";
+            String Galileo_C1_13 = "                        ";
+            String GalileoS1_13 = "       ";
+            String Galileo_L1_15 = "                 ";
+            String Galileo_C1_15 = "                        ";
+            String GalileoS1_15 = "       ";
+            String Galileo_L1_24 = "                 ";
+            String Galileo_C1_24 = "                        ";
+            String GalileoS1_24 = "       ";
+            String Galileo_L1_30 = "                 ";
+            String Galileo_C1_30 = "                        ";
+            String GalileoS1_30 = "       ";
+
             String OBSTime = "";
             GnssClock gnssClock = event.getClock();
             double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
@@ -1238,30 +1305,17 @@ public class FileLogger implements GnssListener {
 
                         //変更点
                         if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
-                            String L5carrier_3 = "                 ";
-                            String L5code_3 = "                        ";
-                            String S5C_3 = "       ";
-                            String L5carrier_10 = "                 ";
-                            String L5code_10 = "                        ";
-                            String S5C_10 = "       ";
-                            String L5carrier_24 = "                 ";
-                            String L5code_24 = "                        ";
-                            String S5C_24 = "       ";
-                            String L5carrier_25 = "                 ";
-                            String L5code_25 = "                        ";
-                            String S5C_25 = "       ";
-                            String L5carrier_26 = "                 ";
-                            String L5code_26 = "                        ";
-                            String S5C_26 = "       ";
-                            String L5carrier_32 = "                 ";
-                            String L5code_32 = "                        ";
-                            String S5C_32 = "       ";  //仮
 
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
                                 if (measurement.getSvid() == 3) {
                                     L5carrier_3 = L1C;
                                     L5code_3 = C1C;
                                     S5C_3 = D1C;
+                                }
+                                if (measurement.getSvid() == 6) {
+                                    L5carrier_6 = L1C;
+                                    L5code_6 = C1C;
+                                    S5C_6 = D1C;
                                 }
                                 if (measurement.getSvid() == 10) {
                                     L5carrier_10 = L1C;
@@ -1283,6 +1337,11 @@ public class FileLogger implements GnssListener {
                                     L5code_26 = C1C;
                                     S5C_26 = D1C;
                                 }
+                                if (measurement.getSvid() == 30) {
+                                    L5carrier_30 = L1C;
+                                    L5code_30 = C1C;
+                                    S5C_30 = D1C;
+                                }
                                 if (measurement.getSvid() == 32) {
                                     L5carrier_32 = L1C;
                                     L5code_32 = C1C;
@@ -1290,6 +1349,32 @@ public class FileLogger implements GnssListener {
                                 }
                             }
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+
+                                if (L5carrier_3 != null && measurement.getSvid() == 3) {
+                                    Measurements.append(prn +L5carrier_3 + L5code_3 + S5C_3 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (L5carrier_6 != null && measurement.getSvid() == 6) {
+                                    Measurements.append(prn +L5carrier_6 + L5code_6 + S5C_6 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (L5carrier_10 != null && measurement.getSvid() == 10) {
+                                    Measurements.append(prn +L5carrier_10 + L5code_10 + S5C_10 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (L5carrier_24 != null && measurement.getSvid() == 24) {
+                                    Measurements.append(prn +L5carrier_24 + L5code_24 + S5C_24 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (L5carrier_25 != null && measurement.getSvid() == 25) {
+                                    Measurements.append(prn +L5carrier_25 + L5code_25 + S5C_25 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (L5carrier_26 != null && measurement.getSvid() == 26) {
+                                    Measurements.append(prn +L5carrier_26 + L5code_26 + S5C_26 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (L5carrier_30 != null && measurement.getSvid() == 30) {
+                                    Measurements.append(prn +L5carrier_30 + L5code_30 + S5C_30 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (L5carrier_32 != null && measurement.getSvid() == 32) {
+                                    Measurements.append(prn +L5carrier_32 + L5code_32 + S5C_32 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                /*
                                 if (firstOBS) {
                                     Measurements.append(prn + L1C + C1C + D1C + L5carrier_3 + L5code_3 + S5C_3);
                                     firstOBS = false;
@@ -1325,20 +1410,12 @@ public class FileLogger implements GnssListener {
                                     firstOBS = false;
                                 } else {
                                     Measurements.append("\n" + prn + L1C + C1C + D1C + L5carrier_32 + L5code_32 + S5C_32);
-                                }
+                                } */
 
 
                             }
                         } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
-                            String QZSS_L1_1 = "                 ";
-                            String QZSS_C1_1 = "                        ";
-                            String QZS1_1 = "       ";
-                            String QZSS_L1_2 = "                 ";
-                            String QZSS_C1_2 = "                        ";
-                            String QZS1_2 = "       ";
-                            String QZSS_L1_3 = "                 ";
-                            String QZSS_C1_3 = "                        ";
-                            String QZS1_3 = "       ";
+
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
                                 if (measurement.getSvid() == 1) {
                                     QZSS_L1_1 = L1C;
@@ -1357,6 +1434,7 @@ public class FileLogger implements GnssListener {
                                 }
                             }
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                                /*
                                 if (firstOBS) {
                                     Measurements.append(prn + L1C + C1C + D1C + QZSS_L1_1 + QZSS_C1_1 + QZS1_1);
                                     firstOBS = false;
@@ -1375,42 +1453,27 @@ public class FileLogger implements GnssListener {
                                 } else {
                                     Measurements.append("\n" + prn + L1C + C1C + D1C + QZSS_L1_3 + QZSS_C1_3 + QZS1_3);
                                 }
-/*
-                                int checkflag = 1;
-                                if (QZSS_L1_1 != null && measurement.getSvid() == 1 && checkflag == 1) {
-                                    Measurements.append(QZSS_L1_1 + QZSS_C1_1 + QZS1_1 + L1C + C1C + '\n' + D1C + '\n');
-                                    checkflag = 0;
-                                }
-                                if (QZSS_L1_2 != null && measurement.getSvid() == 2 && checkflag == 1) {
-                                    Measurements.append(QZSS_L1_2 + QZSS_C1_2 + QZS1_2 + L1C + C1C + '\n' + D1C + '\n');
-                                    checkflag = 0;
-                                } //L1とL5を同時に書きたい　ofileの日付の横の重複もなくす　観測できていないところは空白にする
-                                if (QZSS_L1_3 != null && measurement.getSvid() == 3 && checkflag == 1) {
-                                    Measurements.append(QZS1_3 + QZSS_C1_3 + QZSS_L1_3 + L1C + C1C + '\n' + D1C + '\n');
-                                    checkflag = 0;
-                                }
                                 */
+
+                                if (QZSS_L1_1 != null && measurement.getSvid() == 1 ) {
+                                    Measurements.append(prn + QZSS_L1_1 + QZSS_C1_1 + QZS1_1 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (QZSS_L1_2 != null && measurement.getSvid() == 2 ) {
+                                    Measurements.append(prn + QZSS_L1_2 + QZSS_C1_2 + QZS1_2 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (QZSS_L1_3 != null && measurement.getSvid() == 3 ) {
+                                    Measurements.append(prn + QZS1_3 + QZSS_C1_3 + QZSS_L1_3 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+
                             }
                         } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO) {
-                            String Galileo_L1_4 = "                 ";
-                            String Galileo_C1_4 = "                        ";
-                            String GalileoS1_4 = "       ";
-                            String Galileo_L1_5 = "                 ";
-                            String Galileo_C1_5 = "                        ";
-                            String GalileoS1_5 = "       ";
-                            String Galileo_L1_9 = "                 ";
-                            String Galileo_C1_9 = "                        ";
-                            String GalileoS1_9 = "       ";
-                            String Galileo_L1_15 = "                 ";
-                            String Galileo_C1_15 = "                        ";
-                            String GalileoS1_15 = "       ";
-                            String Galileo_L1_24 = "                 ";
-                            String Galileo_C1_24 = "                        ";
-                            String GalileoS1_24 = "       ";
-                            String Galileo_L1_30 = "                 ";
-                            String Galileo_C1_30 = "                        ";
-                            String GalileoS1_30 = "       ";
+
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
+                                if (measurement.getSvid() == 3) {
+                                    Galileo_L1_3 = L1C;
+                                    Galileo_C1_3 = C1C;
+                                    GalileoS1_3 = D1C;
+                                }
                                 if (measurement.getSvid() == 4) {
                                     Galileo_L1_4 = L1C;
                                     Galileo_C1_4 = C1C;
@@ -1421,10 +1484,20 @@ public class FileLogger implements GnssListener {
                                     Galileo_C1_5 = C1C;
                                     GalileoS1_5 = D1C;
                                 }
+                                if (measurement.getSvid() == 8) {
+                                    Galileo_L1_8 = L1C;
+                                    Galileo_C1_8 = C1C;
+                                    GalileoS1_8 = D1C;
+                                }
                                 if (measurement.getSvid() == 9) {
                                     Galileo_L1_9 = L1C;
                                     Galileo_C1_9 = C1C;
                                     GalileoS1_9 = D1C;
+                                }
+                                if (measurement.getSvid() == 13) {
+                                    Galileo_L1_13 = L1C;
+                                    Galileo_C1_13 = C1C;
+                                    GalileoS1_13 = D1C;
                                 }
                                 if (measurement.getSvid() == 15) {
                                     Galileo_L1_15 = L1C;
@@ -1441,9 +1514,10 @@ public class FileLogger implements GnssListener {
                                     Galileo_C1_30 = C1C;
                                     GalileoS1_30 = D1C;
                                 }
-                            } else {
                             }
+
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                                /*
                                 if (firstOBS) {
                                     Measurements.append(prn + L1C + C1C + D1C + Galileo_L1_4 + Galileo_C1_4 + GalileoS1_4);
                                     firstOBS = false;
@@ -1480,33 +1554,35 @@ public class FileLogger implements GnssListener {
                                 } else {
                                     Measurements.append("\n" + prn + L1C + C1C + Galileo_L1_30 + Galileo_C1_30 + GalileoS1_30);
                                 }
-                                /*
-                                int checkflag = 1;
-                                if (Galileo_L1_4 != null && measurement.getSvid() == 4 && checkflag == 1) {
-                                    Measurements.append(Galileo_L1_4 + Galileo_C1_4 + GalileoS1_4 + L1C + C1C + '\n' + D1C + '\n');
-                                    checkflag = 0;
-                                }
-                                if (Galileo_L1_5 != null && measurement.getSvid() == 5 && checkflag == 1) {
-                                    Measurements.append(Galileo_L1_5 + Galileo_C1_5 + GalileoS1_5 + L1C + C1C + '\n' + D1C + '\n');
-                                    checkflag = 0;
-                                } //L1とL5を同時に書きたい　ofileの日付の横の重複もなくす　観測できていないところは空白にする
-                                if (Galileo_L1_9 != null && measurement.getSvid() == 9 && checkflag == 1) {
-                                    Measurements.append(Galileo_L1_9 + Galileo_C1_9 + GalileoS1_9 + L1C + C1C + '\n' + D1C + '\n');
-                                    checkflag = 0;
-                                }
-                                if (Galileo_L1_15 != null && measurement.getSvid() == 15 && checkflag == 1) {
-                                    Measurements.append(Galileo_L1_15 + Galileo_C1_15 + GalileoS1_15 + L1C + C1C + '\n' + D1C + '\n');
-                                    checkflag = 0;
-                                }
-                                if (Galileo_L1_24 != null && measurement.getSvid() == 24 && checkflag == 1) {
-                                    Measurements.append(Galileo_L1_24 + Galileo_C1_24 + GalileoS1_24 + L1C + C1C + '\n' + D1C + '\n');
-                                    checkflag = 0;
-                                } //L1とL5を同時に書きたい　ofileの日付の横の重複もなくす　観測できていないところは空白にする
-                                if (Galileo_L1_30 != null && measurement.getSvid() == 30 && checkflag == 1) {
-                                    Measurements.append(Galileo_L1_30 + Galileo_C1_30 + GalileoS1_30 + L1C + C1C + '\n' + D1C + '\n');
-                                    checkflag = 0;
-                                }
                                 */
+                                if (Galileo_L1_3 != null && measurement.getSvid() == 3 ) {
+                                    Measurements.append(prn + Galileo_L1_3 + Galileo_C1_3 + GalileoS1_3 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (Galileo_L1_4 != null && measurement.getSvid() == 4 ) {
+                                    Measurements.append(prn +Galileo_L1_4 + Galileo_C1_4 + GalileoS1_4 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (Galileo_L1_5 != null && measurement.getSvid() == 5) {
+                                    Measurements.append(prn +Galileo_L1_5 + Galileo_C1_5 + GalileoS1_5 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (Galileo_L1_8 != null && measurement.getSvid() == 8 ) {
+                                    Measurements.append(prn +Galileo_L1_8 + Galileo_C1_8 + GalileoS1_8 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (Galileo_L1_9 != null && measurement.getSvid() == 9 ) {
+                                    Measurements.append(prn +Galileo_L1_9 + Galileo_C1_9 + GalileoS1_9 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (Galileo_L1_13 != null && measurement.getSvid() == 13 ) {
+                                    Measurements.append(prn + Galileo_L1_13 + Galileo_C1_13 + GalileoS1_13 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (Galileo_L1_15 != null && measurement.getSvid() == 15 ) {
+                                    Measurements.append(prn +Galileo_L1_15 + Galileo_C1_15 + GalileoS1_15 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+                                if (Galileo_L1_24 != null && measurement.getSvid() == 24 ) {
+                                    Measurements.append(prn +Galileo_L1_24 + Galileo_C1_24 + GalileoS1_24 + L1C + C1C + '\n' + D1C + '\n');
+                                } //L1とL5を同時に書きたい　ofileの日付の横の重複もなくす　観測できていないところは空白にする
+                                if (Galileo_L1_30 != null && measurement.getSvid() == 30 ) {
+                                    Measurements.append(prn +Galileo_L1_30 + Galileo_C1_30 + GalileoS1_30 + L1C + C1C + '\n' + D1C + '\n');
+                                }
+
                             }
                         }
                     }
