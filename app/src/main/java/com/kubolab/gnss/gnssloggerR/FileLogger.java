@@ -1085,7 +1085,7 @@ public class FileLogger implements GnssListener {
             String S5C_30 = "       ";
             String L5carrier_32 = "                 ";
             String L5code_32 = "                        ";
-            String S5C_32 = "       ";  //仮
+            String S5C_32 = "       ";
 
             // QZSS衛星
             String QZSS_L1_1 = "                 ";
@@ -1417,17 +1417,17 @@ public class FileLogger implements GnssListener {
                         } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
 
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
-                                if (measurement.getSvid() == 1) {
+                                if (measurement.getSvid() == 1 + 192) {
                                     QZSS_L1_1 = L1C;
                                     QZSS_C1_1 = C1C;
                                     QZS1_1 = D1C;
                                 }
-                                if (measurement.getSvid() == 2) {
+                                if (measurement.getSvid() == 2 + 192) {
                                     QZSS_L1_2 = L1C;
                                     QZSS_C1_2 = C1C;
                                     QZS1_2 = D1C;
                                 }
-                                if (measurement.getSvid() == 3) {
+                                if (measurement.getSvid() == 3 + 192) {
                                     QZSS_L1_3 = L1C;
                                     QZSS_C1_3 = C1C;
                                     QZS1_3 = D1C;
@@ -1455,14 +1455,14 @@ public class FileLogger implements GnssListener {
                                 }
                                 */
 
-                                if (QZSS_L1_1 != null && measurement.getSvid() == 1 ) {
+                                if (QZSS_L1_1 != null && measurement.getSvid() == 1 + 192) {
                                     Measurements.append(prn + QZSS_L1_1 + QZSS_C1_1 + QZS1_1 + L1C + C1C + '\n' + D1C + '\n');
                                 }
-                                if (QZSS_L1_2 != null && measurement.getSvid() == 2 ) {
+                                if (QZSS_L1_2 != null && measurement.getSvid() == 2 + 192) {
                                     Measurements.append(prn + QZSS_L1_2 + QZSS_C1_2 + QZS1_2 + L1C + C1C + '\n' + D1C + '\n');
                                 }
-                                if (QZSS_L1_3 != null && measurement.getSvid() == 3 ) {
-                                    Measurements.append(prn + QZS1_3 + QZSS_C1_3 + QZSS_L1_3 + L1C + C1C + '\n' + D1C + '\n');
+                                if (QZSS_L1_3 != null && measurement.getSvid() == 3 + 192) {
+                                    Measurements.append(prn + QZSS_L1_3 + QZSS_C1_3 + QZS1_3 + L1C + C1C + '\n' + D1C + '\n');
                                 }
 
                             }
