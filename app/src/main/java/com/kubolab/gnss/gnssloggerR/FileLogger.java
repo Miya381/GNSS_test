@@ -1290,18 +1290,6 @@ public class FileLogger implements GnssListener {
 
                         String S1C = String.format("%14.3f%s%s", measurement.getCn0DbHz(), " ", " ");
 
-                        //Fix用チェック
-                        //String L5C = String.format("%14.3f%s%s", 0.0, " ", " ");
-                        //String C5C = String.format("%14.3f%s%s", 0.0, " ", " ");
-                        //String D5C = String.format("%14.3f%s%s", 0.0, " ", " ");
-                        //String S5C = String.format("%14.3f%s%s", 0.0, " ", " ");
-                        //if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
-                        //  L5C = L1C;
-                        //C5C = C1C;
-                        //D5C = D1C;
-                        //S5C = S1C;
-                        //
-                        // }
 
                         //変更点
                         if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
@@ -1374,44 +1362,6 @@ public class FileLogger implements GnssListener {
                                 if (L5carrier_32 != null && measurement.getSvid() == 32) {
                                     Measurements.append(prn +L5carrier_32 + L5code_32 + S5C_32 + L1C + C1C + '\n' + D1C + '\n');
                                 }
-                                /*
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + L5carrier_3 + L5code_3 + S5C_3);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + D1C + L5carrier_3 + L5code_3 + S5C_3);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + L5carrier_10 + L5code_10 + S5C_10);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + D1C + L5carrier_10 + L5code_10 + S5C_10);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + L5carrier_24 + L5code_24 + S5C_24);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + D1C + L5carrier_24 + L5code_24 + S5C_24);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + L5carrier_25 + L5code_25 + S5C_25);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + D1C + L5carrier_25 + L5code_25 + S5C_25);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + L5carrier_26 + L5code_26 + S5C_26);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + D1C + L5carrier_26 + L5code_26 + S5C_26);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + L5carrier_32 + L5code_32 + S5C_32);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + D1C + L5carrier_32 + L5code_32 + S5C_32);
-                                } */
-
 
                             }
                         } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
@@ -1434,26 +1384,6 @@ public class FileLogger implements GnssListener {
                                 }
                             }
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
-                                /*
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + QZSS_L1_1 + QZSS_C1_1 + QZS1_1);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + D1C + QZSS_L1_1 + QZSS_C1_1 + QZS1_1);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + QZSS_L1_2 + QZSS_C1_2 + QZS1_2);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + D1C + QZSS_L1_2 + QZSS_C1_2 + QZS1_2);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + QZSS_L1_3 + QZSS_C1_3 + QZS1_3);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + D1C + QZSS_L1_3 + QZSS_C1_3 + QZS1_3);
-                                }
-                                */
 
                                 if (QZSS_L1_1 != null && measurement.getSvid() == 1 + 192) {
                                     Measurements.append(prn + QZSS_L1_1 + QZSS_C1_1 + QZS1_1 + L1C + C1C + '\n' + D1C + '\n');
@@ -1517,44 +1447,7 @@ public class FileLogger implements GnssListener {
                             }
 
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
-                                /*
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + Galileo_L1_4 + Galileo_C1_4 + GalileoS1_4);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + Galileo_L1_4 + Galileo_C1_4 + GalileoS1_4);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + Galileo_L1_5 + Galileo_C1_5 + GalileoS1_5);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + Galileo_L1_5 + Galileo_C1_5 + GalileoS1_5);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + Galileo_L1_9 + Galileo_C1_9 + GalileoS1_9);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + Galileo_L1_9 + Galileo_C1_9 + GalileoS1_9);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + Galileo_L1_15 + Galileo_C1_15 + GalileoS1_15);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + Galileo_L1_15 + Galileo_C1_15 + GalileoS1_15);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + Galileo_L1_24 + Galileo_C1_24 + GalileoS1_24);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + Galileo_L1_24 + Galileo_C1_24 + GalileoS1_24);
-                                }
-                                if (firstOBS) {
-                                    Measurements.append(prn + L1C + C1C + D1C + Galileo_L1_30 + Galileo_C1_30 + GalileoS1_30);
-                                    firstOBS = false;
-                                } else {
-                                    Measurements.append("\n" + prn + L1C + C1C + Galileo_L1_30 + Galileo_C1_30 + GalileoS1_30);
-                                }
-                                */
+
                                 if (Galileo_L1_3 != null && measurement.getSvid() == 3 ) {
                                     Measurements.append(prn + Galileo_L1_3 + Galileo_C1_3 + GalileoS1_3 + L1C + C1C + '\n' + D1C + '\n');
                                 }
@@ -1587,12 +1480,8 @@ public class FileLogger implements GnssListener {
                         }
                     }
 
-
-
-
                     }
                 }
-
 
             mFileWriter.write(OBSTime + String.format("%3d", satnumber));
             mFileWriter.newLine();
