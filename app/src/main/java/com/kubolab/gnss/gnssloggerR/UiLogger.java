@@ -36,14 +36,18 @@ public class UiLogger implements GnssListener {
 
     private static final long EARTH_RADIUS_METERS = 6371000;
     private static final double GPS_L1_FREQ = 154.0 * 10.23e6;
+    private static final double GPS_L5_FREQ=117.645*10e6; //1176.45MHz
     private static final double SPEED_OF_LIGHT = 299792458.0; //[m/s]
     private static final double GPS_L1_WAVELENGTH = SPEED_OF_LIGHT/GPS_L1_FREQ;
+    private static final double GPS_L5_WAVELENGTH = SPEED_OF_LIGHT/GPS_L5_FREQ;
+
     private static final int USED_COLOR = Color.rgb(0x4a, 0x5f, 0x70);
     private double trueAzimuth;
     private double Declination;
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
     private int leapseconds = 18;
     private final Context mContext;
+    final float TOLERANCE_MHZ = 100000000f;
     //private double LAST_CARRIER_PHASE = 0;
     //private double DIFF_CARRIER_PHASE = 0;
     //private double SMOOTHED_PSEUDORANGE = 0.0;
@@ -496,7 +500,7 @@ public class UiLogger implements GnssListener {
         boolean CheckClockSync = false;
         for (GnssMeasurement measurement : event.getMeasurements()) {
         if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS && SettingsFragment.useQZ) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) && (SettingsFragment.useGL == true)) || ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO)&&(SettingsFragment.useGA)) || (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU && SettingsFragment.useBD)) {
-            double weekNumber = Math.floor(- (gnssClock.getFullBiasNanos() * 1e-9 / 604800));
+            double weekNumber = Math.floor(-(gnssClock.getFullBiasNanos() * 1e-9 / 604800));
             //Log.d("WeekNumber",String.valueOf(weekNumber));
             double weekNumberNanos = weekNumber * 604800 * 1e9;
             //Log.d("WeekNumberNanos",String.valueOf(weekNumberNanos));
@@ -505,24 +509,24 @@ public class UiLogger implements GnssListener {
             if (gnssClock.hasBiasNanos()) {
                 tRxNanos = tRxNanos - gnssClock.getBiasNanos();
             }
-            if (measurement.getTimeOffsetNanos() != 0){
+            if (measurement.getTimeOffsetNanos() != 0) {
                 tRxNanos = tRxNanos - measurement.getTimeOffsetNanos();
             }
-            double tRxSeconds = tRxNanos*1e-9;
-            double tTxSeconds = measurement.getReceivedSvTimeNanos()*1e-9;
-            if((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS)) {
+            double tRxSeconds = tRxNanos * 1e-9;
+            double tTxSeconds = measurement.getReceivedSvTimeNanos() * 1e-9;
+            if ((measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS)) {
                 double tRxSeconds_GLO = tRxSeconds % 86400;
                 double tTxSeconds_GLO = tTxSeconds - 10800 + leapseconds;
-                if(tTxSeconds_GLO < 0){
+                if (tTxSeconds_GLO < 0) {
                     tTxSeconds_GLO = tTxSeconds_GLO + 86400;
                 }
                 tRxSeconds = tRxSeconds_GLO;
                 tTxSeconds = tTxSeconds_GLO;
             }
-            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
+            if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU) {
                 double tRxSeconds_BDS = tRxSeconds;
                 double tTxSeconds_BDS = tTxSeconds + leapseconds - 4;
-                if(tTxSeconds_BDS > 604800){
+                if (tTxSeconds_BDS > 604800) {
                     tTxSeconds_BDS = tTxSeconds_BDS - 604800;
                 }
                 /*Log.i("PRN", String.format("%s%2d", getConstellationName(measurement.getConstellationType()), measurement.getSvid()));
@@ -558,31 +562,34 @@ public class UiLogger implements GnssListener {
             //Log.d("tRxSeconds",tRxStr);
             //Log.d("tTxSeconds",tTxStr);
             double prm = prSeconds * 2.99792458e8; //コード擬似距離
-            if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS){
-                //Log.d("QZSS","QZSS Detected");
-                array[arrayRow][0] = "J" + String.format("%02d  ",measurement.getSvid() - 192);
-            }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                array[arrayRow][0] = "R" + String.format("%02d  ",measurement.getSvid());
-            }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS){
-                array[arrayRow][0] = "G" + String.format("%02d  ",measurement.getSvid());
-            }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
-                array[arrayRow][0] = "E" + String.format("%02d  ",measurement.getSvid());
-            }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
-                array[arrayRow][0] = "C" + String.format("%02d  ",measurement.getSvid());
+            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
+                    //Log.d("QZSS","QZSS Detected");
+                    array[arrayRow][0] = "J" + String.format("%02d  ", measurement.getSvid() - 192);
+                } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) {
+                    array[arrayRow][0] = "R" + String.format("%02d  ", measurement.getSvid());
+                } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
+                    array[arrayRow][0] = "G" + String.format("%02d  ", measurement.getSvid());
+                } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO) {
+                    array[arrayRow][0] = "E" + String.format("%02d  ", measurement.getSvid());
+                } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU) {
+                    array[arrayRow][0] = "C" + String.format("%02d  ", measurement.getSvid());
+                }
             }
             //Log.d("STATE",String.valueOf(measurement.getState());
-            if(iRollover){
-                array[arrayRow][1] = "ROLLOVER_ERROR";
-                prm = 0.0;
-            }else if(prSeconds < 0 || prSeconds > 0.5){
-                array[arrayRow][1] = "INVALID_VALUE";
-                prm = 0.0;
-            }
-            else if(getStateName(measurement.getState()) == "1") {
-                array[arrayRow][1] = String.format("%14.3f", prm);
-                CheckClockSync = true;
-            }else {
-                array[arrayRow][1] = getStateName(measurement.getState());
+            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                if (iRollover) {
+                    array[arrayRow][1] = "ROLLOVER_ERROR";
+                    prm = 0.0;
+                } else if (prSeconds < 0 || prSeconds > 0.5) {
+                    array[arrayRow][1] = "INVALID_VALUE";
+                    prm = 0.0;
+                } else if (getStateName(measurement.getState()) == "1") {
+                    array[arrayRow][1] = String.format("%14.3f", prm);
+                    CheckClockSync = true;
+                } else {
+                    array[arrayRow][1] = getStateName(measurement.getState());
+                }
             }
             /*builder.append("GNSSClock = ").append(event.getClock().getTimeNanos()).append("\n");
             builder.append("Svid = ").append(measurement.getSvid()).append(", ");
@@ -591,89 +598,92 @@ public class UiLogger implements GnssListener {
             builder.append("tRxSeconds = ").append(tRxSeconds).append("\n");
             builder.append("tTxSeconds = ").append(tTxSeconds).append("\n");*/
             //builder.append("FullCarrierCycles = ").append(measurement.getCarrierCycles() + measurement.getCarrierPhase()).append("\n");
-            if(SettingsFragment.CarrierPhase == true) {
-                Log.i("Carrier Freq",String.valueOf(measurement.getCarrierFrequencyHz()));
-                Log.i("Carrier Frequ",String.valueOf(measurement.hasCarrierFrequencyHz()));
-                if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP){
-                  // 周波数　メモ  float abc=measurement.getCarrierFrequencyHz();
-                  //  array[arrayRow][2] = String.valueOf(abc);
-                    array[arrayRow][2]="Cycle slip";
-                }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_RESET) {
-                    array[arrayRow][2] = "RESET";
-                }else if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_UNKNOWN) {
-                    array[arrayRow][2] = "UNKNOWN";
-                }else{
-                    if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
-                        if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
-                            array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
-                        } else {
-                            array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GPS_L1_WAVELENGTH);
-                        }
-                    }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                        if(measurement.getSvid() <= 24) {
+            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                if (SettingsFragment.CarrierPhase == true) {
+                    Log.i("Carrier Freq", String.valueOf(measurement.getCarrierFrequencyHz()));
+                    Log.i("Carrier Frequ", String.valueOf(measurement.hasCarrierFrequencyHz()));
+                    if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
+                        // 周波数　メモ  float abc=measurement.getCarrierFrequencyHz();
+                        //  array[arrayRow][2] = String.valueOf(abc);
+                        array[arrayRow][2] = "Cycle slip";
+                    } else if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_RESET) {
+                        array[arrayRow][2] = "RESET";
+                    } else if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_UNKNOWN) {
+                        array[arrayRow][2] = "UNKNOWN";
+                    } else {
+                        if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                             if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
                                 array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
                             } else {
-                                array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()));
+                                array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GPS_L5_WAVELENGTH);
                             }
-                        }else {
-                            array[arrayRow][2] = "NOT_SUPPORTED";
-                        }
-                    }else if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
-                        if(measurement.getSvid() < 30) {
-                            if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
-                                array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
-                            } else {
-                                array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / BEIDOUWAVELENGTH(measurement.getSvid()));
-                            }
-                        }else {
-                            array[arrayRow][2] = "NOT_SUPPORTED";
-                        }
-                    }
-                }
-                int index = measurement.getSvid();
-                if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS){
-                    index = index + 64;
-                }
-                if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU){
-                    index = index + 200;
-                }
-                if(measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO){
-                    index = index + 235;
-                }
-                if(!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID){
-                    CURRENT_SMOOTHER_RATE[index] = 1.0;
-                }
-                if(SettingsFragment.usePseudorangeSmoother &&  prm != 0.0){
-                    if(index < 300) {
-                        if(SettingsFragment.usePseudorangeRate){
-                            LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
-                            array[arrayRow][1] = String.format("%14.3f[FIX_PR]", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
-                        }else {
-                            if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
-                                LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
-                                LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
-                                CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
-                                if (CURRENT_SMOOTHER_RATE[index] <= 0) {
-                                    CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
+                        } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) {
+                            if (measurement.getSvid() <= 24) {
+                                if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
+                                    array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
+                                } else {
+                                    array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / GLONASSG1WAVELENGTH(measurement.getSvid()));
                                 }
-                                array[arrayRow][1] = String.format("%14.3f[FIX_CF]", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                            } else {
+                                array[arrayRow][2] = "NOT_SUPPORTED";
+                            }
+                        } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU) {
+                            if (measurement.getSvid() < 30) {
+                                if (measurement.hasCarrierPhase() && measurement.hasCarrierCycles()) {
+                                    array[arrayRow][2] = String.format("%14.3f", measurement.getCarrierCycles() + measurement.getCarrierPhase());
+                                } else {
+                                    array[arrayRow][2] = String.format("%14.3f", measurement.getAccumulatedDeltaRangeMeters() / BEIDOUWAVELENGTH(measurement.getSvid()));
+                                }
+                            } else {
+                                array[arrayRow][2] = "NOT_SUPPORTED";
                             }
                         }
                     }
+                    int index = measurement.getSvid();
+                    if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) {
+                        index = index + 64;
+                    }
+                    if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU) {
+                        index = index + 200;
+                    }
+                    if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO) {
+                        index = index + 235;
+                    }
+                    if (!SettingsFragment.usePseudorangeRate && measurement.getAccumulatedDeltaRangeState() != GnssMeasurement.ADR_STATE_VALID) {
+                        CURRENT_SMOOTHER_RATE[index] = 1.0;
+                    }
+                    if (SettingsFragment.usePseudorangeSmoother && prm != 0.0) {
+                        if (index < 300) {
+                            if (SettingsFragment.usePseudorangeRate) {
+                                LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
+                                array[arrayRow][1] = String.format("%14.3f[FIX_PR]", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                            } else {
+                                if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID) {
+                                    LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
+                                    LAST_DELTARANGE[index] = measurement.getAccumulatedDeltaRangeMeters();
+                                    CURRENT_SMOOTHER_RATE[index] = CURRENT_SMOOTHER_RATE[index] - SMOOTHER_RATE;
+                                    if (CURRENT_SMOOTHER_RATE[index] <= 0) {
+                                        CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
+                                    }
+                                    array[arrayRow][1] = String.format("%14.3f[FIX_CF]", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    array[arrayRow][2] = "0";
                 }
-            }else{
-                array[arrayRow][2] = "0";
             }
             //array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
             //arrayRow++;
-            array[arrayRow][3] = getCarrierFrequencyLabel(
-                    measurement.getCarrierFrequencyHz()
-            );
-           // array[arrayRow][3] = String.format("%2.1f",measurement.getCarrierFrequencyHz()/1000000);
-            arrayRow++;
-           // array[arrayRow][4]=String.format("%-8.3f",measurement.getCarrierFrequencyHz()/1000000);
-           // arrayRow++;
+            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                //array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
+                //array[arrayRow][3] = String.format("%2.1f",measurement.getCarrierFrequencyHz()/1000000);
+                array[arrayRow][3] = getCarrierFrequencyLabel(measurement.getCarrierFrequencyHz()) ;
+                arrayRow++;
+                // array[arrayRow][4]=String.format("%-8.3f",measurement.getCarrierFrequencyHz()/1000000);
+                // arrayRow++;
+            }
         }
     }
     if(CheckClockSync){
