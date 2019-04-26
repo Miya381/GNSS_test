@@ -1062,97 +1062,97 @@ public class FileLogger implements GnssListener {
         if(SettingsFragment.RINEX303){
 
             //GPS衛星
-            String L5carrier_1 = "                 ";
-            String L5code_1 = "                        ";
-            String S5C_1 = "       ";
-            String L5carrier_3 = "                 ";
-            String L5code_3 = "                        ";
-            String S5C_3 = "       ";
-            String L5carrier_6 = "                 ";
-            String L5code_6 = "                        ";
-            String S5C_6 = "       ";
-            String L5carrier_8 = "                 ";
-            String L5code_8 = "                        ";
-            String S5C_8 = "       ";
-            String L5carrier_9 = "                 ";
-            String L5code_9 = "                        ";
-            String S5C_9 = "       ";
-            String L5carrier_10 = "                 ";
-            String L5code_10 = "                        ";
-            String S5C_10 = "       ";
-            String L5carrier_24 = "                 ";
-            String L5code_24 = "                        ";
-            String S5C_24 = "       ";
-            String L5carrier_25 = "                 ";
-            String L5code_25 = "                        ";
-            String S5C_25 = "       ";
-            String L5carrier_26 = "                 ";
-            String L5code_26 = "                        ";
-            String S5C_26 = "       ";
-            String L5carrier_30 = "                 ";
-            String L5code_30 = "                        ";
-            String S5C_30 = "       ";
-            String L5carrier_27 = "                 ";
-            String L5code_27 = "                        ";
-            String S5C_27 = "       ";
-            String L5carrier_32 = "                 ";
-            String L5code_32 = "                        ";
-            String S5C_32 = "       ";
+            String L5carrier_1 = "";
+            String L5code_1 = "";
+            String S5C_1 = "";
+            String L5carrier_3 = "";
+            String L5code_3 = "";
+            String S5C_3 = "";
+            String L5carrier_6 = "";
+            String L5code_6 = "";
+            String S5C_6 = "";
+            String L5carrier_8 = "";
+            String L5code_8 = "";
+            String S5C_8 = "";
+            String L5carrier_9 = "";
+            String L5code_9 = "";
+            String S5C_9 = "";
+            String L5carrier_10 = "";
+            String L5code_10 = "";
+            String S5C_10 = "";
+            String L5carrier_24 = "";
+            String L5code_24 = "";
+            String S5C_24 = "";
+            String L5carrier_25 = "";
+            String L5code_25 = "";
+            String S5C_25 = "";
+            String L5carrier_26 = "";
+            String L5code_26 = "";
+            String S5C_26 = "";
+            String L5carrier_30 = "";
+            String L5code_30 = "";
+            String S5C_30 = "";
+            String L5carrier_27 = "";
+            String L5code_27 = "";
+            String S5C_27 = "";
+            String L5carrier_32 = "";
+            String L5code_32 = "";
+            String S5C_32 = "";
 
             // QZSS衛星
-            String QZSS_L1_1 = "                 ";
-            String QZSS_C1_1 = "                        ";
-            String QZS1_1 = "       ";
-            String QZSS_L1_2 = "                 ";
-            String QZSS_C1_2 = "                        ";
-            String QZS1_2 = "       ";
-            String QZSS_L1_3 = "                 ";
-            String QZSS_C1_3 = "                        ";
-            String QZS1_3 = "       ";
+            String QZSS_L1_1 = "";
+            String QZSS_C1_1 = "";
+            String QZS1_1 = "";
+            String QZSS_L1_2 = "";
+            String QZSS_C1_2 = "";
+            String QZS1_2 = "";
+            String QZSS_L1_3 = "";
+            String QZSS_C1_3 = "";
+            String QZS1_3 = "";
 
             // Galileo衛星
-            String Galileo_L1_1 = "                 ";
-            String Galileo_C1_1 = "                        ";
-            String GalileoS1_1 = "       ";
-            String Galileo_L1_3 = "                 ";
-            String Galileo_C1_3 = "                        ";
-            String GalileoS1_3 = "       ";
-            String Galileo_L1_4 = "                 ";
-            String Galileo_C1_4 = "                        ";
-            String GalileoS1_4 = "       ";
-            String Galileo_L1_5 = "                 ";
-            String Galileo_C1_5 = "                        ";
-            String GalileoS1_5 = "       ";
-            String Galileo_L1_7 = "                 ";
-            String Galileo_C1_7 = "                        ";
-            String GalileoS1_7 = "       ";
-            String Galileo_L1_8 = "                 ";
-            String Galileo_C1_8 = "                        ";
-            String GalileoS1_8 = "       ";
-            String Galileo_L1_9 = "                 ";
-            String Galileo_C1_9 = "                        ";
-            String GalileoS1_9 = "       ";
-            String Galileo_L1_12 = "                 ";
-            String Galileo_C1_12 = "                        ";
-            String GalileoS1_12 = "       ";
-            String Galileo_L1_13 = "                 ";
-            String Galileo_C1_13 = "                        ";
-            String GalileoS1_13 = "       ";
-            String Galileo_L1_15 = "                 ";
-            String Galileo_C1_15 = "                        ";
-            String GalileoS1_15 = "       ";
-            String Galileo_L1_19 = "                 ";
-            String Galileo_C1_19 = "                        ";
-            String GalileoS1_19 = "       ";
-            String Galileo_L1_24 = "                 ";
-            String Galileo_C1_24 = "                        ";
-            String GalileoS1_24 = "       ";
-            String Galileo_L1_26 = "                 ";
-            String Galileo_C1_26 = "                        ";
-            String GalileoS1_26 = "       ";
-            String Galileo_L1_30 = "                 ";
-            String Galileo_C1_30 = "                        ";
-            String GalileoS1_30 = "       ";
+            String Galileo_L1_1 = "";
+            String Galileo_C1_1 = "";
+            String GalileoS1_1 = "";
+            String Galileo_L1_3 = "";
+            String Galileo_C1_3 = "";
+            String GalileoS1_3 = "";
+            String Galileo_L1_4 = "";
+            String Galileo_C1_4 = "";
+            String GalileoS1_4 = "";
+            String Galileo_L1_5 = "";
+            String Galileo_C1_5 = "";
+            String GalileoS1_5 = "";
+            String Galileo_L1_7 = "";
+            String Galileo_C1_7 = "";
+            String GalileoS1_7 = "";
+            String Galileo_L1_8 = "";
+            String Galileo_C1_8 = "";
+            String GalileoS1_8 = "";
+            String Galileo_L1_9 = "";
+            String Galileo_C1_9 = "";
+            String GalileoS1_9 = "";
+            String Galileo_L1_12 = "";
+            String Galileo_C1_12 = "";
+            String GalileoS1_12 = "";
+            String Galileo_L1_13 = "";
+            String Galileo_C1_13 = "";
+            String GalileoS1_13 = "";
+            String Galileo_L1_15 = "";
+            String Galileo_C1_15 = "";
+            String GalileoS1_15 = "";
+            String Galileo_L1_19 = "";
+            String Galileo_C1_19 = "";
+            String GalileoS1_19 = "";
+            String Galileo_L1_24 = "";
+            String Galileo_C1_24 = "";
+            String GalileoS1_24 = "";
+            String Galileo_L1_26 = "";
+            String Galileo_C1_26 = "";
+            String GalileoS1_26 = "";
+            String Galileo_L1_30 = "";
+            String Galileo_C1_30 = "";
+            String GalileoS1_30 = "";
 
             String OBSTime = "";
             GnssClock gnssClock = event.getClock();
@@ -1389,40 +1389,40 @@ public class FileLogger implements GnssListener {
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
 
                                 if (L5carrier_1 != null && measurement.getSvid() == 1) {
-                                    Measurements.append(prn+ L5code_1 + L5carrier_1 + S5C_1 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_1 + L5carrier_1 + S5C_1 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_3 != null && measurement.getSvid() == 3) {
-                                    Measurements.append(prn+ L5code_3 + L5carrier_3 + S5C_3 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_3 + L5carrier_3 + S5C_3 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_6 != null && measurement.getSvid() == 6) {
-                                    Measurements.append(prn+ L5code_6 + L5carrier_6 + S5C_6 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_6 + L5carrier_6 + S5C_6 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_8 != null && measurement.getSvid() == 8) {
-                                    Measurements.append(prn+ L5code_8 + L5carrier_8 + S5C_8 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_8 + L5carrier_8 + S5C_8 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_9 != null && measurement.getSvid() == 9) {
-                                    Measurements.append(prn+ L5code_9 + L5carrier_9 + S5C_9 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_9 + L5carrier_9 + S5C_9 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_10 != null && measurement.getSvid() == 10) {
-                                    Measurements.append(prn+ L5code_10 + L5carrier_10 + S5C_10 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_10 + L5carrier_10 + S5C_10 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_24 != null && measurement.getSvid() == 24) {
-                                    Measurements.append(prn+ L5code_24 + L5carrier_24 + S5C_24 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_24 + L5carrier_24 + S5C_24 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_25 != null && measurement.getSvid() == 25) {
-                                    Measurements.append(prn+ L5code_25 + L5carrier_25 + S5C_25 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_25 + L5carrier_25 + S5C_25 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_26 != null && measurement.getSvid() == 26) {
-                                    Measurements.append(prn+ L5code_26 + L5carrier_26 + S5C_26 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_26 + L5carrier_26 + S5C_26 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_27 != null && measurement.getSvid() == 27) {
-                                    Measurements.append(prn+ L5code_27 + L5carrier_27 + S5C_27 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_27 + L5carrier_27 + S5C_27 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_30 != null && measurement.getSvid() == 30) {
-                                    Measurements.append(prn+ L5code_30 + L5carrier_30 + S5C_30 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_30 + L5carrier_30 + S5C_30 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (L5carrier_32 != null && measurement.getSvid() == 32) {
-                                    Measurements.append(prn+ L5code_32 + L5carrier_32 + S5C_32 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ L5code_32 + L5carrier_32 + S5C_32 + C1C + L1C  + S1C +'\n' );
                                 }
 
                             }
@@ -1448,13 +1448,13 @@ public class FileLogger implements GnssListener {
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
 
                                 if (QZSS_L1_1 != null && measurement.getSvid() == 1 + 192) {
-                                    Measurements.append(prn+ QZSS_C1_1 + QZSS_L1_1 + QZS1_1 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ QZSS_C1_1 + QZSS_L1_1 + QZS1_1 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (QZSS_L1_2 != null && measurement.getSvid() == 2 + 192) {
-                                    Measurements.append(prn+ QZSS_C1_2 + QZSS_L1_2 + QZS1_2 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ QZSS_C1_2 + QZSS_L1_2 + QZS1_2 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (QZSS_L1_3 != null && measurement.getSvid() == 3 + 192) {
-                                    Measurements.append(prn+ QZSS_C1_3 + QZSS_L1_3 + QZS1_3 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ QZSS_C1_3 + QZSS_L1_3 + QZS1_3 + C1C + L1C  + S1C +'\n' );
                                 }
 
                             }
@@ -1537,46 +1537,46 @@ public class FileLogger implements GnssListener {
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
 
                                 if (Galileo_L1_1 != null && measurement.getSvid() == 1 ) {
-                                    Measurements.append(prn+ Galileo_C1_1 + Galileo_L1_1 + GalileoS1_1 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_1 + Galileo_L1_1 + GalileoS1_1 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_3 != null && measurement.getSvid() == 3 ) {
-                                    Measurements.append(prn+ Galileo_C1_3 + Galileo_L1_3 + GalileoS1_3 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_3 + Galileo_L1_3 + GalileoS1_3 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_4 != null && measurement.getSvid() == 4 ) {
-                                    Measurements.append(prn+ Galileo_C1_4 + Galileo_L1_4 + GalileoS1_4 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_4 + Galileo_L1_4 + GalileoS1_4 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_5 != null && measurement.getSvid() == 5) {
-                                    Measurements.append(prn+ Galileo_C1_5 + Galileo_L1_5 + GalileoS1_5 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_5 + Galileo_L1_5 + GalileoS1_5 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_7 != null && measurement.getSvid() == 7) {
-                                    Measurements.append(prn+ Galileo_C1_7 + Galileo_L1_7 + GalileoS1_7 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_7 + Galileo_L1_7 + GalileoS1_7 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_8 != null && measurement.getSvid() == 8 ) {
-                                    Measurements.append(prn+ Galileo_C1_8 + Galileo_L1_8 + GalileoS1_8 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_8 + Galileo_L1_8 + GalileoS1_8 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_9 != null && measurement.getSvid() == 9 ) {
-                                    Measurements.append(prn+ Galileo_C1_9 + Galileo_L1_9 + GalileoS1_9 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_9 + Galileo_L1_9 + GalileoS1_9 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_12 != null && measurement.getSvid() == 12 ) {
-                                    Measurements.append(prn+ Galileo_C1_12 + Galileo_L1_12 + GalileoS1_12 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_12 + Galileo_L1_12 + GalileoS1_12 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_13 != null && measurement.getSvid() == 13 ) {
-                                    Measurements.append(prn+ Galileo_C1_13 + Galileo_L1_13 + GalileoS1_13 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_13 + Galileo_L1_13 + GalileoS1_13 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_15 != null && measurement.getSvid() == 15 ) {
-                                    Measurements.append(prn+ Galileo_C1_15 + Galileo_L1_15 + GalileoS1_15 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_15 + Galileo_L1_15 + GalileoS1_15 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_19 != null && measurement.getSvid() == 19 ) {
-                                    Measurements.append(prn+ Galileo_C1_19 + Galileo_L1_19 + GalileoS1_19 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_19 + Galileo_L1_19 + GalileoS1_19 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_24 != null && measurement.getSvid() == 24 ) {
-                                    Measurements.append(prn+ Galileo_C1_24 + Galileo_L1_24 + GalileoS1_24 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_24 + Galileo_L1_24 + GalileoS1_24 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_26 != null && measurement.getSvid() == 26 ) {
-                                    Measurements.append(prn+ Galileo_C1_26 + Galileo_L1_26 + GalileoS1_26 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_26 + Galileo_L1_26 + GalileoS1_26 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_30 != null && measurement.getSvid() == 30 ) {
-                                    Measurements.append(prn+ Galileo_C1_30 + Galileo_L1_30 + GalileoS1_30 + C1C + L1C  +'\n' + S1C + '\n');
+                                    Measurements.append(prn+ Galileo_C1_30 + Galileo_L1_30 + GalileoS1_30 + C1C + L1C  + S1C +'\n' );
                                 }
 
                             }
@@ -1600,24 +1600,24 @@ public class FileLogger implements GnssListener {
                 mFileAccAzWriter.newLine();
             }
         }else {
-            String L1carrier_3="                 ";
-            String L1code_3="                        ";
-            String S5_3="       ";
-            String L1carrier_10="                 ";
-            String L1code_10="                        ";
-            String S5_10="       ";
-            String L1carrier_24="                 ";
-            String L1code_24="                        ";
-            String S5_24="       ";
-            String L1carrier_25="                 ";
-            String L1code_25="                        ";
-            String S5_25="       ";
-            String L1carrier_26="                 ";
-            String L1code_26="                        ";
-            String S5_26="       ";
-            String L1carrier_32="                 ";
-            String L1code_32="                        ";
-            String S5_32="       ";  //仮
+            String L1carrier_3="";
+            String L1code_3="";
+            String S5_3="";
+            String L1carrier_10="";
+            String L1code_10="";
+            String S5_10="";
+            String L1carrier_24="";
+            String L1code_24="";
+            String S5_24="";
+            String L1carrier_25="";
+            String L1code_25="";
+            String S5_25="";
+            String L1carrier_26="";
+            String L1code_26="";
+            String S5_26="";
+            String L1carrier_32="";
+            String L1code_32="";
+            String S5_32="";  //仮
             for (GnssMeasurement measurement : event.getMeasurements()) {
                 if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
                     GnssClock gnssClock = event.getClock();
@@ -1814,36 +1814,36 @@ public class FileLogger implements GnssListener {
                             }else{}
                             //   if(Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(),1176450000f, TOLERANCE_MHZ))
                             if (SettingsFragment.CarrierPhase) {
-                                //Measurements.append(DeltaRangeStrings + PrmStrings + DbHz + '\n');  //oFileの書き出し　コード擬似距離など
+                                //Measurements.append(DeltaRangeStrings + PrmStrings + DbHz );  //oFileの書き出し　コード擬似距離など
 
                             } else {
-                                //Measurements.append(PrmStrings + DbHz + '\n');   //oFileの書き出し　コード擬似距離など
+                                //Measurements.append(PrmStrings + DbHz );   //oFileの書き出し　コード擬似距離など
                             }
                         } if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
 
                             int checkflag = 1;
                             if (L1carrier_3 != null && measurement.getSvid() == 3 && checkflag == 1) {
-                                Measurements.append(L1carrier_3 + L1code_3 + S5_3 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                Measurements.append(L1carrier_3 + L1code_3 + S5_3 + DeltaRangeStrings + PrmStrings  + DbHz );
                                 checkflag = 0;
                             }
                             if (L1carrier_10 != null && measurement.getSvid() == 10 && checkflag == 1) {
-                                Measurements.append(L1carrier_10 + L1code_10 + S5_10 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                Measurements.append(L1carrier_10 + L1code_10 + S5_10 + DeltaRangeStrings + PrmStrings  + DbHz );
                                 checkflag = 0;
                             } //L1とL5を同時に書きたい　ofileの日付の横の重複もなくす　観測できていないところは空白にする
                             if (L1carrier_24 != null && measurement.getSvid() == 24 && checkflag == 1) {
-                                Measurements.append(L1carrier_24 + L1code_24 + S5_24 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                Measurements.append(L1carrier_24 + L1code_24 + S5_24 + DeltaRangeStrings + PrmStrings  + DbHz );
                                 checkflag = 0;
                             }
                             if (L1carrier_25 != null && measurement.getSvid() == 25 && checkflag == 1) {
-                                Measurements.append(L1carrier_25 + L1code_25 + S5_25 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                Measurements.append(L1carrier_25 + L1code_25 + S5_25 + DeltaRangeStrings + PrmStrings  + DbHz );
                                 checkflag = 0;
                             }
                             if (L1carrier_26 != null && measurement.getSvid() == 26 && checkflag == 1) {
-                                Measurements.append(L1carrier_26 + L1code_26 + S5_26 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                Measurements.append(L1carrier_26 + L1code_26 + S5_26 + DeltaRangeStrings + PrmStrings  + DbHz );
                                 checkflag = 0;
                             }
                             if (L1carrier_32 != null && measurement.getSvid() == 32 && checkflag == 1) {
-                                Measurements.append(L1carrier_32 + L1code_32 + S5_32 + DeltaRangeStrings + PrmStrings + '\n' + DbHz + '\n');
+                                Measurements.append(L1carrier_32 + L1code_32 + S5_32 + DeltaRangeStrings + PrmStrings  + DbHz );
                                 checkflag = 0;
                             }
                         }
