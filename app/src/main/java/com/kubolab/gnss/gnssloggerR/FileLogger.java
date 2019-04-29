@@ -346,7 +346,7 @@ public class FileLogger implements GnssListener {
                         currentFileWriter.write("     0                                                      RCV CLOCK OFFS APPL ");
                     currentFileWriter.newLine();
                     if(SettingsFragment.CarrierPhase){
-                        currentFileWriter.write("G    6 L1C C1C S1C L5X C5X S5X                              SYS / # / OBS TYPES ");
+                        currentFileWriter.write("G    6 C1C L1C S1C C5X L5X S5X                              SYS / # / OBS TYPES ");
                         currentFileWriter.newLine();
                     }else {
                         currentFileWriter.write("G    4 C1C S1C C5X S5X                                      SYS / # / OBS TYPES ");
@@ -363,7 +363,7 @@ public class FileLogger implements GnssListener {
                     }
                     if(SettingsFragment.useQZ){
                         if(SettingsFragment.CarrierPhase){
-                            currentFileWriter.write("J    6 L1C C1C S1C L5X C5X S5X                              SYS / # / OBS TYPES ");
+                            currentFileWriter.write("J    6 C1C L1C S1C C5X L5X S5X                              SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }else {
                             currentFileWriter.write("J    4 C1C S1C C5X S5X                                      SYS / # / OBS TYPES ");
@@ -372,10 +372,10 @@ public class FileLogger implements GnssListener {
                     }
                     if(SettingsFragment.useGA){
                         if(SettingsFragment.CarrierPhase){
-                            currentFileWriter.write("E    6 L1X C1X S1X L5X C5X S5X                              SYS / # / OBS TYPES ");
+                            currentFileWriter.write("E    6 C1C L1C S1C C5X L5X S5X                              SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }else {
-                            currentFileWriter.write("E    4 C1C S1C C5C S5C                                      SYS / # / OBS TYPES ");
+                            currentFileWriter.write("E    4 C1C S1C C5X S5X                                      SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }
                     }
