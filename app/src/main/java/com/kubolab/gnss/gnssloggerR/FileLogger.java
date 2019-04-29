@@ -1065,6 +1065,9 @@ public class FileLogger implements GnssListener {
             String L5carrier_1 = "";
             String L5code_1 = "";
             String S5C_1 = "";
+            String L5carrier_2 = "";
+            String L5code_2 = "";
+            String S5C_2 = "";
             String L5carrier_3 = "";
             String L5code_3 = "";
             String S5C_3 = "";
@@ -1114,6 +1117,9 @@ public class FileLogger implements GnssListener {
             String Galileo_L1_1 = "";
             String Galileo_C1_1 = "";
             String GalileoS1_1 = "";
+            String Galileo_L1_2 = "";
+            String Galileo_C1_2 = "";
+            String GalileoS1_2 = "";
             String Galileo_L1_3 = "";
             String Galileo_C1_3 = "";
             String GalileoS1_3 = "";
@@ -1123,6 +1129,9 @@ public class FileLogger implements GnssListener {
             String Galileo_L1_5 = "";
             String Galileo_C1_5 = "";
             String GalileoS1_5 = "";
+            String Galileo_L1_6 = "";
+            String Galileo_C1_6 = "";
+            String GalileoS1_6 = "";
             String Galileo_L1_7 = "";
             String Galileo_C1_7 = "";
             String GalileoS1_7 = "";
@@ -1132,12 +1141,21 @@ public class FileLogger implements GnssListener {
             String Galileo_L1_9 = "";
             String Galileo_C1_9 = "";
             String GalileoS1_9 = "";
+            String Galileo_L1_10 = "";
+            String Galileo_C1_10 = "";
+            String GalileoS1_10 = "";
+            String Galileo_L1_11 = "";
+            String Galileo_C1_11 = "";
+            String GalileoS1_11 = "";
             String Galileo_L1_12 = "";
             String Galileo_C1_12 = "";
             String GalileoS1_12 = "";
             String Galileo_L1_13 = "";
             String Galileo_C1_13 = "";
             String GalileoS1_13 = "";
+            String Galileo_L1_14 = "";
+            String Galileo_C1_14 = "";
+            String GalileoS1_14 = "";
             String Galileo_L1_15 = "";
             String Galileo_C1_15 = "";
             String GalileoS1_15 = "";
@@ -1147,6 +1165,9 @@ public class FileLogger implements GnssListener {
             String Galileo_L1_24 = "";
             String Galileo_C1_24 = "";
             String GalileoS1_24 = "";
+            String Galileo_L1_25 = "";
+            String Galileo_C1_25 = "";
+            String GalileoS1_25 = "";
             String Galileo_L1_26 = "";
             String Galileo_C1_26 = "";
             String GalileoS1_26 = "";
@@ -1482,6 +1503,11 @@ public class FileLogger implements GnssListener {
                                     Galileo_C1_5 = C1C;
                                     GalileoS1_5 = S1C;
                                 }
+                                if (measurement.getSvid() == 6) {
+                                    Galileo_L1_6 = L1C;
+                                    Galileo_C1_6 = C1C;
+                                    GalileoS1_6= S1C;
+                                }
                                 if (measurement.getSvid() == 7) {
                                     Galileo_L1_7 = L1C;
                                     Galileo_C1_7 = C1C;
@@ -1497,6 +1523,16 @@ public class FileLogger implements GnssListener {
                                     Galileo_C1_9 = C1C;
                                     GalileoS1_9 = S1C;
                                 }
+                                if (measurement.getSvid() == 10) {
+                                    Galileo_L1_10 = L1C;
+                                    Galileo_C1_10 = C1C;
+                                    GalileoS1_10 = S1C;
+                                }
+                                if (measurement.getSvid() == 11) {
+                                    Galileo_L1_11 = L1C;
+                                    Galileo_C1_11 = C1C;
+                                    GalileoS1_11 = S1C;
+                                }
                                 if (measurement.getSvid() == 12) {
                                     Galileo_L1_12 = L1C;
                                     Galileo_C1_12 = C1C;
@@ -1506,6 +1542,11 @@ public class FileLogger implements GnssListener {
                                     Galileo_L1_13 = L1C;
                                     Galileo_C1_13 = C1C;
                                     GalileoS1_13 = S1C;
+                                }
+                                if (measurement.getSvid() == 14) {
+                                    Galileo_L1_14 = L1C;
+                                    Galileo_C1_14 = C1C;
+                                    GalileoS1_14 = S1C;
                                 }
                                 if (measurement.getSvid() == 15) {
                                     Galileo_L1_15 = L1C;
@@ -1521,6 +1562,11 @@ public class FileLogger implements GnssListener {
                                     Galileo_L1_24 = L1C;
                                     Galileo_C1_24 = C1C;
                                     GalileoS1_24 = S1C;
+                                }
+                                if (measurement.getSvid() == 25) {
+                                    Galileo_L1_25 = L1C;
+                                    Galileo_C1_25 = C1C;
+                                    GalileoS1_25 = S1C;
                                 }
                                 if (measurement.getSvid() == 26) {
                                     Galileo_L1_26 = L1C;
@@ -1548,6 +1594,9 @@ public class FileLogger implements GnssListener {
                                 if (Galileo_L1_5 != null && measurement.getSvid() == 5) {
                                     Measurements.append(prn+ Galileo_C1_5 + Galileo_L1_5 + GalileoS1_5 + C1C + L1C  + S1C +'\n' );
                                 }
+                                if (Galileo_L1_6 != null && measurement.getSvid() == 6) {
+                                    Measurements.append(prn+ Galileo_C1_6 + Galileo_L1_6 + GalileoS1_6 + C1C + L1C  + S1C +'\n' );
+                                }
                                 if (Galileo_L1_7 != null && measurement.getSvid() == 7) {
                                     Measurements.append(prn+ Galileo_C1_7 + Galileo_L1_7 + GalileoS1_7 + C1C + L1C  + S1C +'\n' );
                                 }
@@ -1557,11 +1606,20 @@ public class FileLogger implements GnssListener {
                                 if (Galileo_L1_9 != null && measurement.getSvid() == 9 ) {
                                     Measurements.append(prn+ Galileo_C1_9 + Galileo_L1_9 + GalileoS1_9 + C1C + L1C  + S1C +'\n' );
                                 }
+                                if (Galileo_L1_10 != null && measurement.getSvid() == 10) {
+                                    Measurements.append(prn+ Galileo_C1_10 + Galileo_L1_10 + GalileoS1_10 + C1C + L1C  + S1C +'\n' );
+                                }
+                                if (Galileo_L1_11 != null && measurement.getSvid() == 11 ) {
+                                    Measurements.append(prn+ Galileo_C1_11 + Galileo_L1_11 + GalileoS1_11 + C1C + L1C  + S1C +'\n' );
+                                }
                                 if (Galileo_L1_12 != null && measurement.getSvid() == 12 ) {
                                     Measurements.append(prn+ Galileo_C1_12 + Galileo_L1_12 + GalileoS1_12 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_13 != null && measurement.getSvid() == 13 ) {
                                     Measurements.append(prn+ Galileo_C1_13 + Galileo_L1_13 + GalileoS1_13 + C1C + L1C  + S1C +'\n' );
+                                }
+                                if (Galileo_L1_14 != null && measurement.getSvid() == 14) {
+                                    Measurements.append(prn+ Galileo_C1_14 + Galileo_L1_14 + GalileoS1_14 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_15 != null && measurement.getSvid() == 15 ) {
                                     Measurements.append(prn+ Galileo_C1_15 + Galileo_L1_15 + GalileoS1_15 + C1C + L1C  + S1C +'\n' );
@@ -1571,6 +1629,9 @@ public class FileLogger implements GnssListener {
                                 }
                                 if (Galileo_L1_24 != null && measurement.getSvid() == 24 ) {
                                     Measurements.append(prn+ Galileo_C1_24 + Galileo_L1_24 + GalileoS1_24 + C1C + L1C  + S1C +'\n' );
+                                }
+                                if (Galileo_L1_25 != null && measurement.getSvid() == 25 ) {
+                                    Measurements.append(prn+ Galileo_C1_25 + Galileo_L1_25 + GalileoS1_25 + C1C + L1C  + S1C +'\n' );
                                 }
                                 if (Galileo_L1_26 != null && measurement.getSvid() == 26 ) {
                                     Measurements.append(prn+ Galileo_C1_26 + Galileo_L1_26 + GalileoS1_26 + C1C + L1C  + S1C +'\n' );
