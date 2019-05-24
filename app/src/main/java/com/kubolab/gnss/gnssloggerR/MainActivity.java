@@ -24,7 +24,7 @@ import android.view.View;
 
 /** The activity for the application. */
 public class MainActivity extends AppCompatActivity {
-    //てすと
+
     private static final int LOCATION_REQUEST_ID = 1;
     private static final String[] REQUIRED_PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.BODY_SENSORS

@@ -14,6 +14,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import android.os.SystemClock;
 import com.kubolab.gnss.gnssloggerR.LoggerFragment.UIFragmentComponent;
@@ -34,7 +36,6 @@ import java.util.Calendar;
 
 public class FileLogger implements GnssListener {
 
-    //ホンダ
     private static final String TAG = "FileLogger";
     private static final String ERROR_WRITING_FILE = "Problem writing to file.";
     private static final String COMMENT_START = "# ";
@@ -495,7 +496,7 @@ public class FileLogger implements GnssListener {
             }
         }
 
-        //NMEA
+        //NMEAファイル
         synchronized (mFileNmeaLock){
                 File baseNmeaDirectory;
                 String state = Environment.getExternalStorageState();
@@ -561,7 +562,7 @@ public class FileLogger implements GnssListener {
                     }
                 }
         }
-        //RINEXNAV
+        //Nファイル書き出し
         if(SettingsFragment.RINEXNAVLOG) {
             synchronized (mFileNavLock) {
                 File baseNmeaDirectory;
@@ -599,8 +600,6 @@ public class FileLogger implements GnssListener {
                     logException("Count not initialize file: " + currentFileNavPath, e);
                     return;
                 }
-
-                // NMEAファイルへのヘッダ書き出し
 /*
                 try {
                     currentFileNmeaWriter.write("NMEA");
@@ -641,7 +640,7 @@ public class FileLogger implements GnssListener {
             }
         }
 
-    }
+    } // 各ファイル編集
 
     /**
      * Send the current log via email or other options selected from a pop menu shown to the user. A
@@ -766,7 +765,7 @@ public class FileLogger implements GnssListener {
         }
         //Log.i("progress","dismiss");
         //mUiComponent.ShowProgressWindow(false);
-    }
+    } //各ファイル保存
 
     @Override
     public void onProviderEnabled(String provider) {}
@@ -837,6 +836,7 @@ public class FileLogger implements GnssListener {
                 Arrays.fill(LAST_SMOOTHED_PSEUDORANGE,0.0);
                 SettingsFragment.SMOOTHER_RATE_RESET_FLAG_FILE = false;
             }
+
             for (GnssMeasurement measurement : event.getMeasurements()) {
                 try {
                     if(firsttime == true && measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS){
@@ -874,11 +874,11 @@ public class FileLogger implements GnssListener {
 
                         }
 
-                        double prm = prSeconds * 2.99792458e8;
-                        //コード擬似距離の計算
+                        double prm = prSeconds * 2.99792458e8;  //コード擬似距離の計算
                         if (iRollover == false && prm > 0 && prSeconds < 0.5) {
                             if (SettingsFragment.RINEX303) {
                                 mFileWriter.write(String.format("  %4d    %2d    %2d    %2d    %2d   %10.7f     GPS         TIME OF FIRST OBS   ", value.Y, value.M, value.D, value.h, value.m, value.s));
+                                //mFileWriter.write(String.format("  %4d    %2d    %2d    %2d    %2d   %10.7f     GPS         TIME OF END OBS     ", value.Y, value.M, value.D, value.h, value.m, value.s));
                                 mFileWriter.newLine();
                                 mFileWriter.write(" 24 R01  1 R02 -4 R03  5 R04  6 R05  1 R06 -4 R07  5 R08  6 GLONASS SLOT / FRQ #");
                                 mFileWriter.newLine();
@@ -897,13 +897,14 @@ public class FileLogger implements GnssListener {
                                 mFileWriter.newLine();
                             }
                             //FullBiasNanosを固定する.
-                            if(gnssClock.hasBiasNanos()) {
+                            if (gnssClock.hasBiasNanos()) {
                                 constFullBiasNanos = gnssClock.getFullBiasNanos() + gnssClock.getBiasNanos();
-                            }else {
+                            } else {
                                 constFullBiasNanos = gnssClock.getFullBiasNanos();
                             }
                             firsttime = false;
-                        }
+
+                         }
                     }
                     else{
 
@@ -927,7 +928,7 @@ public class FileLogger implements GnssListener {
 
         }
         firstOBSforAcc = true;
-    }
+    }  //伝搬時間の計算、oファイルヘッダ下部
 
     @Override
     public void onGnssMeasurementsStatusChanged(int status) {}
@@ -958,6 +959,8 @@ public class FileLogger implements GnssListener {
             }
         }
     }
+
+
     public void onSensorListener(String listener,float azimuth,float accZ,float altitude){
         synchronized (mFileAccAzLock) {
             if (mFileAccAzWriter == null || SettingsFragment.ResearchMode == false || !SettingsFragment.EnableSensorLog) {
@@ -1683,7 +1686,7 @@ public class FileLogger implements GnssListener {
                 mFileAccAzWriter.write(SensorStream);
                 mFileAccAzWriter.newLine();
             }
-        }else {
+        }else {                                                                                         // RINEX 2.11
             String L1carrier_3="";
             String L1code_3="";
             String S5_3="";
@@ -1953,11 +1956,7 @@ public class FileLogger implements GnssListener {
                 mFileAccAzWriter.newLine();
             }
         }
-    }
-
-
-
-
+    } // oファイル中身
 
     private void logException(String errorMessage, Exception e) {
         Log.e(GnssContainer.TAG + TAG, errorMessage, e);
@@ -1996,6 +1995,7 @@ public class FileLogger implements GnssListener {
             return pathname.length() < MINIMUM_USABLE_FILE_SIZE_BYTES;
         }
     }
+
     private double GLONASSG1WAVELENGTH(int svid){
         return SPEED_OF_LIGHT/((1602 + GLONASSFREQ[svid - 1] * 0.5625) * 10e5);
     }

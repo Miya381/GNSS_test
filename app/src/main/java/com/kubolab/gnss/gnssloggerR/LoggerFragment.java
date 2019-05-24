@@ -28,11 +28,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kubolab.gnss.gnssloggerR.FileLogger;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.zip.CheckedOutputStream;
+
 
 /**  The UI fragment that hosts a logging view. */
 public class LoggerFragment extends Fragment {
@@ -88,6 +91,7 @@ public class LoggerFragment extends Fragment {
     TextView mTextView[][] = new TextView[MaxSatelliteIndex][4];
 
     private final UIFragmentComponent mUiComponent = new UIFragmentComponent();
+    private CheckedOutputStream mFileWriter;
 
     public void setUILogger(UiLogger value) {
         mUiLogger = value;
