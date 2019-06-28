@@ -12,8 +12,8 @@
         android:id="@+id/linearLayout7"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -91,6 +91,53 @@
                     app:layout_constraintTop_toTopOf="@+id/textView21" />
 
                 <TextView
+                    android:id="@+id/ObType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="Observation Type"
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+                <TextView
+                    android:id="@+id/DualFreq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Dual Frequency Observation"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ObType" />
+
+                <CheckBox
+                    android:id="@+id/DualButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="15dp"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/DualFreq"
+                    app:layout_constraintStart_toStartOf="@+id/RINEXMODE303"
+                    app:layout_constraintTop_toTopOf="@+id/DualFreq" />
+
+                <TextView
+                    android:id="@+id/ObTypeDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="Using L1 and L5 band"
+                    android:textSize="12sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/DualFreq" />
+
+
+                <TextView
                     android:id="@+id/textView32"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,7 +148,7 @@
                     android:textStyle="bold"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView21" />
+                    app:layout_constraintTop_toBottomOf="@+id/DualFreq" />
 
                 <TextView
                     android:id="@+id/textView31"
@@ -119,8 +166,8 @@
                     android:id="@+id/RINEXMODE211"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginEnd="15dp"
                     android:checked="true"
                     android:text="2.11"
                     android:textSize="16sp"
@@ -203,8 +250,8 @@
                     android:id="@+id/checkBoxPseSmoother"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="46dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginEnd="46dp"
                     android:checked="false"
                     app:layout_constraintBottom_toBottomOf="@+id/usesmoother"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -922,9 +969,9 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="6dp"
                     android:gravity="end|bottom"
                     android:text="@string/app_version"
                     android:textStyle="italic|bold"
@@ -953,8 +1000,10 @@
                     app:layout_constraintTop_toTopOf="@+id/textView54" />
 
 
+
+
             </android.support.constraint.ConstraintLayout>
-           </ScrollView>
+        </ScrollView>
     </LinearLayout>
 
 

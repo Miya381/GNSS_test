@@ -61,6 +61,9 @@ private TextView mAccSpecView;
     public static String FILE_PREFIXNAV = "/" + SAVE_LOCATION + "/RINEXNAV";
     public static String FILE_NAME = "AndroidOBS";
 
+    public static boolean useDualFreq = false;
+
+
     public static boolean CarrierPhase = false;
     public static boolean useQZ = false;
     public static boolean useGL = false;
@@ -176,6 +179,9 @@ private TextView mAccSpecView;
         final CheckBox PseudorangeSmoother = (CheckBox) view.findViewById(R.id.checkBoxPseSmoother);
         PseudorangeSmoother.setEnabled(false);
         final CheckBox CarrierPhaseChkBox = (CheckBox) view.findViewById(R.id.checkBox);
+
+        final CheckBox useDualF = (CheckBox) view.findViewById(R.id.DualButton);                     // 2周波観測
+
         final CheckBox useQZSS = (CheckBox) view.findViewById(R.id.useQZS);
         final CheckBox useGLO = (CheckBox) view.findViewById(R.id.useGLO);
         final CheckBox useGAL = (CheckBox) view.findViewById(R.id.useGAL);
@@ -229,6 +235,14 @@ private TextView mAccSpecView;
                 }
             }
         });
+
+        useDualF.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                useDualFreq = useDualF.isChecked();
+            }
+
+        });                                                                                           //2周波観測
 
         useQZSS.setChecked(false);
         useQZSS.setOnClickListener(new View.OnClickListener(){
