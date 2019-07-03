@@ -68,27 +68,27 @@ public class LoggerFragment extends Fragment {
     private TextView EditTimer;
 
     //表用ID
-    int Rid[][]={{R.id.textView1_1,R.id.textView1_2,R.id.textView1_3,R.id.textView1_4},{R.id.textView2_1,R.id.textView2_2,R.id.textView2_3,R.id.textView2_4},
-            {R.id.textView3_1,R.id.textView3_2,R.id.textView3_3,R.id.textView3_4},{R.id.textView4_1,R.id.textView4_2,R.id.textView4_3,R.id.textView4_4},
-            {R.id.textView5_1,R.id.textView5_2,R.id.textView5_3,R.id.textView5_4},{R.id.textView6_1,R.id.textView6_2,R.id.textView6_3,R.id.textView6_4},
-            {R.id.textView7_1,R.id.textView7_2,R.id.textView7_3,R.id.textView7_4},{R.id.textView8_1,R.id.textView8_2,R.id.textView8_3,R.id.textView8_4},
-            {R.id.textView9_1,R.id.textView9_2,R.id.textView9_3,R.id.textView9_4},{R.id.textView10_1,R.id.textView10_2,R.id.textView10_3,R.id.textView10_4},
-            {R.id.textView11_1,R.id.textView11_2,R.id.textView11_3,R.id.textView11_4},{R.id.textView12_1,R.id.textView12_2,R.id.textView12_3,R.id.textView12_4},
-            {R.id.textView13_1,R.id.textView13_2,R.id.textView13_3,R.id.textView13_4},{R.id.textView14_1,R.id.textView14_2,R.id.textView14_3,R.id.textView14_4},
-            {R.id.textView15_1,R.id.textView15_2,R.id.textView15_3,R.id.textView15_4},{R.id.textView16_1,R.id.textView16_2,R.id.textView16_3,R.id.textView16_4},
-            {R.id.textView17_1,R.id.textView17_2,R.id.textView17_3,R.id.textView17_4},{R.id.textView18_1,R.id.textView18_2,R.id.textView18_3,R.id.textView18_4},
-            {R.id.textView19_1,R.id.textView19_2,R.id.textView19_3,R.id.textView19_4},{R.id.textView20_1,R.id.textView20_2,R.id.textView20_3,R.id.textView20_4},
-            {R.id.textView21_1,R.id.textView21_2,R.id.textView21_3,R.id.textView21_4},{R.id.textView22_1,R.id.textView22_2,R.id.textView22_3,R.id.textView22_4},
-            {R.id.textView23_1,R.id.textView23_2,R.id.textView23_3,R.id.textView23_4},{R.id.textView24_1,R.id.textView24_2,R.id.textView24_3,R.id.textView24_4},
-            {R.id.textView25_1,R.id.textView25_2,R.id.textView25_3,R.id.textView25_4},{R.id.textView26_1,R.id.textView26_2,R.id.textView26_3,R.id.textView26_4},
-            {R.id.textView27_1,R.id.textView27_2,R.id.textView27_3,R.id.textView27_4},{R.id.textView28_1,R.id.textView28_2,R.id.textView28_3,R.id.textView28_4},
-            {R.id.textView29_1,R.id.textView29_2,R.id.textView29_3,R.id.textView29_4},{R.id.textView30_1,R.id.textView30_2,R.id.textView30_3,R.id.textView30_4},
-            {R.id.textView31_1,R.id.textView31_2,R.id.textView31_3,R.id.textView31_4},{R.id.textView32_1,R.id.textView32_2,R.id.textView32_3,R.id.textView32_4},
-            {R.id.textView33_1,R.id.textView33_2,R.id.textView33_3,R.id.textView33_4},{R.id.textView34_1,R.id.textView34_2,R.id.textView34_3,R.id.textView34_4},
-            {R.id.textView35_1,R.id.textView35_2,R.id.textView35_3,R.id.textView35_4},{R.id.textView36_1,R.id.textView36_2,R.id.textView36_3,R.id.textView36_4}};
+    int Rid[][]={{R.id.textView1_1,R.id.textView1_2,R.id.textView1_3,R.id.textView1_4,R.id.textView1_5},{R.id.textView2_1,R.id.textView2_2,R.id.textView2_3,R.id.textView2_4,R.id.textView2_5},
+            {R.id.textView3_1,R.id.textView3_2,R.id.textView3_3,R.id.textView3_4,R.id.textView3_5},{R.id.textView4_1,R.id.textView4_2,R.id.textView4_3,R.id.textView4_4,R.id.textView4_5},
+            {R.id.textView5_1,R.id.textView5_2,R.id.textView5_3,R.id.textView5_4,R.id.textView5_5},{R.id.textView6_1,R.id.textView6_2,R.id.textView6_3,R.id.textView6_4,R.id.textView6_5},
+            {R.id.textView7_1,R.id.textView7_2,R.id.textView7_3,R.id.textView7_4,R.id.textView7_5},{R.id.textView8_1,R.id.textView8_2,R.id.textView8_3,R.id.textView8_4,R.id.textView8_5},
+            {R.id.textView9_1,R.id.textView9_2,R.id.textView9_3,R.id.textView9_4,R.id.textView9_5},{R.id.textView10_1,R.id.textView10_2,R.id.textView10_3,R.id.textView10_4,R.id.textView10_5},
+            {R.id.textView11_1,R.id.textView11_2,R.id.textView11_3,R.id.textView11_4,R.id.textView11_5},{R.id.textView12_1,R.id.textView12_2,R.id.textView12_3,R.id.textView12_4,R.id.textView12_5},
+            {R.id.textView13_1,R.id.textView13_2,R.id.textView13_3,R.id.textView13_4,R.id.textView13_5},{R.id.textView14_1,R.id.textView14_2,R.id.textView14_3,R.id.textView14_4,R.id.textView14_5},
+            {R.id.textView15_1,R.id.textView15_2,R.id.textView15_3,R.id.textView15_4,R.id.textView15_5},{R.id.textView16_1,R.id.textView16_2,R.id.textView16_3,R.id.textView16_4,R.id.textView16_5},
+            {R.id.textView17_1,R.id.textView17_2,R.id.textView17_3,R.id.textView17_4,R.id.textView17_5},{R.id.textView18_1,R.id.textView18_2,R.id.textView18_3,R.id.textView18_4,R.id.textView18_5},
+            {R.id.textView19_1,R.id.textView19_2,R.id.textView19_3,R.id.textView19_4,R.id.textView19_5},{R.id.textView20_1,R.id.textView20_2,R.id.textView20_3,R.id.textView20_4,R.id.textView20_5},
+            {R.id.textView21_1,R.id.textView21_2,R.id.textView21_3,R.id.textView21_4,R.id.textView21_5},{R.id.textView22_1,R.id.textView22_2,R.id.textView22_3,R.id.textView22_4,R.id.textView22_5},
+            {R.id.textView23_1,R.id.textView23_2,R.id.textView23_3,R.id.textView23_4,R.id.textView23_5},{R.id.textView24_1,R.id.textView24_2,R.id.textView24_3,R.id.textView24_4,R.id.textView24_5},
+            {R.id.textView25_1,R.id.textView25_2,R.id.textView25_3,R.id.textView25_4,R.id.textView25_5},{R.id.textView26_1,R.id.textView26_2,R.id.textView26_3,R.id.textView26_4,R.id.textView26_5},
+            {R.id.textView27_1,R.id.textView27_2,R.id.textView27_3,R.id.textView27_4,R.id.textView27_5},{R.id.textView28_1,R.id.textView28_2,R.id.textView28_3,R.id.textView28_4,R.id.textView28_5},
+            {R.id.textView29_1,R.id.textView29_2,R.id.textView29_3,R.id.textView29_4,R.id.textView29_5},{R.id.textView30_1,R.id.textView30_2,R.id.textView30_3,R.id.textView30_4,R.id.textView30_5},
+            {R.id.textView31_1,R.id.textView31_2,R.id.textView31_3,R.id.textView31_4,R.id.textView31_5},{R.id.textView32_1,R.id.textView32_2,R.id.textView32_3,R.id.textView32_4,R.id.textView32_5},
+            {R.id.textView33_1,R.id.textView33_2,R.id.textView33_3,R.id.textView33_4,R.id.textView33_5},{R.id.textView34_1,R.id.textView34_2,R.id.textView34_3,R.id.textView34_4,R.id.textView34_5},
+            {R.id.textView35_1,R.id.textView35_2,R.id.textView35_3,R.id.textView35_4,R.id.textView35_5},{R.id.textView36_1,R.id.textView36_2,R.id.textView36_3,R.id.textView36_4,R.id.textView36_5}};
 
     int MaxSatelliteIndex = 36;
-    TextView mTextView[][] = new TextView[MaxSatelliteIndex][4];
+    TextView mTextView[][] = new TextView[MaxSatelliteIndex][5];
 
     private final UIFragmentComponent mUiComponent = new UIFragmentComponent();
     private CheckedOutputStream mFileWriter;
@@ -181,7 +181,7 @@ public class LoggerFragment extends Fragment {
         mTable = (ViewGroup) view.findViewById(R.id.TableLayout);
         //表の初期化
         for(int i = 0;i < MaxSatelliteIndex;i++){
-            for(int j = 0;j < 4;j++){
+            for(int j = 0;j < 5;j++){
                 Log.d("Array", i + "," + j);
                 mTextView[i][j]=(TextView) view.findViewById(Rid[i][j]);
                 //Log.d("Array", i + "," + j);
@@ -371,7 +371,7 @@ public class LoggerFragment extends Fragment {
                                 }
                             }
                             for(int i = 0;i < MaxSatelliteIndex;i++){
-                                for(int j = 0;j < 4;j++){
+                                for(int j = 0;j < 5;j++){
                                     if(j == 2){
                                         if(array[i][j] == "0") {
                                             mTextView[i][j].setTextColor(Color.parseColor("#FF9900"));

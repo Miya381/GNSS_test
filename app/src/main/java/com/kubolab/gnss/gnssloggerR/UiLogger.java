@@ -473,7 +473,7 @@ public class UiLogger implements GnssListener {
     }
 
     private String[][] gnssMessageToString(GnssMeasurementsEvent event, GnssClock gnssClock){
-        String[][] array = new String[MaxSatelliteIndex][4];
+        String[][] array = new String[MaxSatelliteIndex][5];
         //builder.append("GNSSClock = ").append(event.getClock().toString()).append("\n");
         //double GPSWeek = Math.floor((double) (gnssClock.getTimeNanos()) * 1e-9 / 604800);
         //long GPSWeekNanos = (long) GPSWeek * (long) (604800 * 1e9);
@@ -677,17 +677,21 @@ public class UiLogger implements GnssListener {
                         array[arrayRow][2] = "0";
                     }
                 }
+                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                    array[arrayRow][3] = String.format("%2.1f", measurement.getCn0DbHz());
+                }
 
                 //array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
                 //arrayRow++;
                 if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
                     //array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
                     //array[arrayRow][3] = String.format("%2.1f",measurement.getCarrierFrequencyHz()/1000000);
-                    array[arrayRow][3] = getCarrierFrequencyLabel(measurement.getCarrierFrequencyHz());
+                    array[arrayRow][4] = getCarrierFrequencyLabel(measurement.getCarrierFrequencyHz());
                     arrayRow++;
                     // array[arrayRow][4]=String.format("%-8.3f",measurement.getCarrierFrequencyHz()/1000000);
                     // arrayRow++;
                 }
+
             }
             else{
                 if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
@@ -795,6 +799,9 @@ public class UiLogger implements GnssListener {
                         array[arrayRow][2] = "0";
                     }
                     array[arrayRow][3] = String.format("%2.1f", measurement.getCn0DbHz());
+
+                    array[arrayRow][4] = getCarrierFrequencyLabel(measurement.getCarrierFrequencyHz());
+
                     arrayRow++;
                 }
             }

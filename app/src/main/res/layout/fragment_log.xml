@@ -44,7 +44,7 @@
 
             <TextView
                 android:id="@+id/textView29"
-                android:layout_width="131dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pseudorange[m]" />
 
@@ -52,7 +52,13 @@
                 android:id="@+id/textView30"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CarrierPhase  [cycles]" />
+                android:text="CarrierPhase[cycles]" />
+
+            <TextView
+                android:id="@+id/textCn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cn[Hz]   " />
 
             <TextView
                 android:id="@+id/textView34"
@@ -75,7 +81,7 @@
 
         <LinearLayout
             android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
@@ -99,22 +105,27 @@
 
                     <TextView
                         android:id="@+id/textView1_1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="27dp"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/textView1_2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="68dp"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/textView1_3"
-                        android:layout_width="wrap_content"
+                        android:layout_width="105dp"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/textView1_4"
-                        android:layout_width="wrap_content"
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView1_5"
+                        android:layout_width="20dp"
                         android:layout_height="wrap_content" />
 
                 </TableRow>
@@ -140,6 +151,11 @@
 
                     <TextView
                         android:id="@+id/textView2_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView2_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -169,6 +185,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView3_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -192,6 +213,11 @@
 
                     <TextView
                         android:id="@+id/textView4_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView4_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -221,6 +247,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView5_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -244,6 +275,11 @@
 
                     <TextView
                         android:id="@+id/textView6_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView6_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -273,6 +309,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView7_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -296,6 +337,11 @@
 
                     <TextView
                         android:id="@+id/textView8_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView8_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -325,6 +371,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView9_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -348,6 +399,11 @@
 
                     <TextView
                         android:id="@+id/textView10_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView10_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -377,6 +433,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView11_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -400,6 +461,11 @@
 
                     <TextView
                         android:id="@+id/textView12_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView12_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -429,6 +495,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView13_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -452,6 +523,11 @@
 
                     <TextView
                         android:id="@+id/textView14_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView14_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -481,6 +557,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView15_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -504,6 +585,11 @@
 
                     <TextView
                         android:id="@+id/textView16_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView16_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -533,6 +619,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView17_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -556,6 +647,11 @@
 
                     <TextView
                         android:id="@+id/textView18_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView18_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -585,6 +681,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView19_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -608,6 +709,11 @@
 
                     <TextView
                         android:id="@+id/textView20_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView20_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -637,6 +743,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView21_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -660,6 +771,11 @@
 
                     <TextView
                         android:id="@+id/textView22_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView22_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -689,6 +805,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView23_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -712,6 +833,11 @@
 
                     <TextView
                         android:id="@+id/textView24_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView24_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -741,6 +867,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView25_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+
                 </TableRow>
 
                 <TableRow
@@ -764,6 +896,11 @@
 
                     <TextView
                         android:id="@+id/textView26_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView26_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -793,6 +930,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView27_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -816,6 +958,11 @@
 
                     <TextView
                         android:id="@+id/textView28_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView28_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -845,6 +992,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView29_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -868,6 +1020,11 @@
 
                     <TextView
                         android:id="@+id/textView30_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView30_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -897,6 +1054,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView31_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -920,6 +1082,11 @@
 
                     <TextView
                         android:id="@+id/textView32_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView32_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -949,6 +1116,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView33_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -972,6 +1144,11 @@
 
                     <TextView
                         android:id="@+id/textView34_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView34_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -1001,6 +1178,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <TextView
+                        android:id="@+id/textView35_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </TableRow>
 
                 <TableRow
@@ -1024,6 +1206,11 @@
 
                     <TextView
                         android:id="@+id/textView36_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textView36_5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
