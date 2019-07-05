@@ -35,8 +35,8 @@ import java.util.List;
 public class UiLogger implements GnssListener {
 
     private static final long EARTH_RADIUS_METERS = 6371000;
-    private static final double GPS_L1_FREQ = 154.0 * 10.23e6;
-    private static final double GPS_L5_FREQ=117.645*10e6; //1176.45MHz
+    private static final double GPS_L1_FREQ = 1575.42 * 10e6;  //1575.42MHz
+    private static final double GPS_L5_FREQ=1176.45*10e6; //1176.45MHz
     private static final double SPEED_OF_LIGHT = 299792458.0; //[m/s]
     private static final double GPS_L1_WAVELENGTH = SPEED_OF_LIGHT/GPS_L1_FREQ;
     private static final double GPS_L5_WAVELENGTH = SPEED_OF_LIGHT/GPS_L5_FREQ;

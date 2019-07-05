@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Dual_freq-G-J-E-.iml" filepath="$PROJECT_DIR$/Dual_freq-G-J-E-.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GNSSLogger_dual.iml" filepath="$PROJECT_DIR$/GNSSLogger_dual.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
