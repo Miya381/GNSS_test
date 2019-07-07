@@ -35,8 +35,8 @@ import java.util.List;
 public class UiLogger implements GnssListener {
 
     private static final long EARTH_RADIUS_METERS = 6371000;
-    private static final double GPS_L1_FREQ = 1575.42 * 10e6;  //1575.42MHz
-    private static final double GPS_L5_FREQ=1176.45*10e6; //1176.45MHz
+    private static final double GPS_L1_FREQ = 154.0 * 10.23e6;  //1575.42MHz
+    private static final double GPS_L5_FREQ=115.0 * 10.23e6; //1176.45MHz
     private static final double SPEED_OF_LIGHT = 299792458.0; //[m/s]
     private static final double GPS_L1_WAVELENGTH = SPEED_OF_LIGHT/GPS_L1_FREQ;
     private static final double GPS_L5_WAVELENGTH = SPEED_OF_LIGHT/GPS_L5_FREQ;
@@ -47,7 +47,7 @@ public class UiLogger implements GnssListener {
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
     private int leapseconds = 18;
     private final Context mContext;
-    final float TOLERANCE_MHZ = 100000000f;
+    final float TOLERANCE_MHZ = 1e8f;
     //private double LAST_CARRIER_PHASE = 0;
     //private double DIFF_CARRIER_PHASE = 0;
     //private double SMOOTHED_PSEUDORANGE = 0.0;
@@ -564,7 +564,7 @@ public class UiLogger implements GnssListener {
             double prm = prSeconds * 2.99792458e8; //コード擬似距離
 
             if (SettingsFragment.useDualFreq) {
-                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6f, TOLERANCE_MHZ)) {
                     if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                         //Log.d("QZSS","QZSS Detected");
                         array[arrayRow][0] = "J" + String.format("%02d  ", measurement.getSvid() - 192);
@@ -579,7 +579,7 @@ public class UiLogger implements GnssListener {
                     }
                 }
                 //Log.d("STATE",String.valueOf(measurement.getState());
-                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6f, TOLERANCE_MHZ)) {
                     if (iRollover) {
                         array[arrayRow][1] = "ROLLOVER_ERROR";
                         prm = 0.0;
@@ -601,7 +601,7 @@ public class UiLogger implements GnssListener {
             builder.append("tTxSeconds = ").append(tTxSeconds).append("\n");*/
                 //builder.append("FullCarrierCycles = ").append(measurement.getCarrierCycles() + measurement.getCarrierPhase()).append("\n");
 
-                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6f, TOLERANCE_MHZ)) {
                     if (SettingsFragment.CarrierPhase == true) {
                         Log.i("Carrier Freq", String.valueOf(measurement.getCarrierFrequencyHz()));
                         Log.i("Carrier Frequ", String.valueOf(measurement.hasCarrierFrequencyHz()));
@@ -677,13 +677,13 @@ public class UiLogger implements GnssListener {
                         array[arrayRow][2] = "0";
                     }
                 }
-                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6f, TOLERANCE_MHZ)) {
                     array[arrayRow][3] = String.format("%2.1f", measurement.getCn0DbHz());
                 }
 
                 //array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
                 //arrayRow++;
-                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176450000f, TOLERANCE_MHZ)) {
+                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6f, TOLERANCE_MHZ)) {
                     //array[arrayRow][3] = String.format("%2.1f",measurement.getCn0DbHz());
                     //array[arrayRow][3] = String.format("%2.1f",measurement.getCarrierFrequencyHz()/1000000);
                     array[arrayRow][4] = getCarrierFrequencyLabel(measurement.getCarrierFrequencyHz());
@@ -694,7 +694,7 @@ public class UiLogger implements GnssListener {
 
             }
             else{
-                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1575420000f, TOLERANCE_MHZ)) {
+                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 154.0 * 10.23e6f, TOLERANCE_MHZ)) {
                     if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                         //Log.d("QZSS","QZSS Detected");
                         array[arrayRow][0] = "J" + String.format("%02d  ", measurement.getSvid() - 192);
@@ -817,7 +817,7 @@ public class UiLogger implements GnssListener {
     public static String getCarrierFrequencyLabel(float carrierFrequencyhz) {
         final float TOLERANCE_MHZ = 100000000f;
 
-        if  (Mathutil.fuzzyEquals(carrierFrequencyhz, 1575420000f, TOLERANCE_MHZ)) {
+        if  (Mathutil.fuzzyEquals(carrierFrequencyhz, 154.0 * 10.23e6f, TOLERANCE_MHZ)) {
 
             return "L1";
         } //else if (Mathutil.fuzzyEquals(carrierFrequencyMhz, 1176.45f, TOLERANCE_MHZ)) {

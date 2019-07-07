@@ -43,7 +43,7 @@ public class FileLogger implements GnssListener {
     private static final String VERSION_TAG = "Version: ";
     private static final String FILE_VERSION = "1.4.0.0, Platform: N";
     private static final double GPS_L1_FREQ = 154.0 * 10.23e6;  //1575.42MHz
-    private static final double GPS_L5_FREQ=1176.45*10e6; //1176.45MHz
+    private static final double GPS_L5_FREQ=115.0 * 10.23e6; //1176.45MHz
     private static final double SPEED_OF_LIGHT = 299792458.0; //[m/s]
     private static final double GPS_L1_WAVELENGTH = SPEED_OF_LIGHT/GPS_L1_FREQ;
     private static final double GPS_L5_WAVELENGTH = SPEED_OF_LIGHT/GPS_L5_FREQ;
@@ -86,7 +86,7 @@ public class FileLogger implements GnssListener {
     private double gnsstimeclock_d;
     private int gnsstimeclock_e;
     private int gnsstimeclock_f;
-    final float TOLERANCE_MHZ = 100000000f;
+    final float TOLERANCE_MHZ = 1e8f;
     //GLONASS系の補正情報
     private int[] GLONASSFREQ = {1,-4,5,6,1,-4,5,6,-2,-7,0,-1,-2,-7,0,-1,4,-3,3,2,4,-3,3,2};
     private int leapseconds = 18;
@@ -348,27 +348,27 @@ public class FileLogger implements GnssListener {
                         currentFileWriter.write("     0                                                      RCV CLOCK OFFS APPL ");
                     currentFileWriter.newLine();
                     if(SettingsFragment.CarrierPhase){
-                        currentFileWriter.write("G    6 Code CarrierPhase S1C C5X L5X S5X                              SYS / # / OBS TYPES ");
+                        currentFileWriter.write("G    6 C1C L1C S1C C5X L5X S5X                              SYS / # / OBS TYPES ");
                         currentFileWriter.newLine();
                     }else {
-                        currentFileWriter.write("G    4 Code S1C C5X S5X                                      SYS / # / OBS TYPES ");
+                        currentFileWriter.write("G    4 C1C S1C C5X S5X                                      SYS / # / OBS TYPES ");
                         currentFileWriter.newLine();
                     }
                     if(SettingsFragment.useGL){
                         if(SettingsFragment.CarrierPhase){
-                            currentFileWriter.write("R    4 CarrierPhase Code D1C S1C                                      SYS / # / OBS TYPES ");
+                            currentFileWriter.write("R    4 L1C C1C D1C S1C                                      SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }else {
-                            currentFileWriter.write("R    3 Code D1C S1C                                          SYS / # / OBS TYPES ");
+                            currentFileWriter.write("R    3 C1C D1C S1C                                          SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }
                     }
                     if(SettingsFragment.useQZ){
                         if(SettingsFragment.CarrierPhase){
-                            currentFileWriter.write("J    6 Code CarrierPhase S1C C5X L5X S5X                              SYS / # / OBS TYPES ");
+                            currentFileWriter.write("J    6 C1C L1C S1C C5X L5X S5X                              SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }else {
-                            currentFileWriter.write("J    4 Code S1C C5X S5X                                      SYS / # / OBS TYPES ");
+                            currentFileWriter.write("J    4 C1C S1C C5X S5X                                      SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }
                     }
@@ -377,7 +377,7 @@ public class FileLogger implements GnssListener {
                             currentFileWriter.write("E    6 C1X L1X S1X C5X L5X S5X                              SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }else {
-                            currentFileWriter.write("E    4 Code S1C C5X S5X                                      SYS / # / OBS TYPES ");
+                            currentFileWriter.write("E    4 C1C S1C C5X S5X                                      SYS / # / OBS TYPES ");
                             currentFileWriter.newLine();
                         }
                     }
@@ -1286,7 +1286,7 @@ public class FileLogger implements GnssListener {
                             }
                             //GPSのPRN番号と時刻用String
                             String prn = "";
-                            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176.45*10e6, TOLERANCE_MHZ)) {
+                            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6, TOLERANCE_MHZ)) {
                                 if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS) {
                                     prn = String.format("G%02d", measurement.getSvid());
                                 } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) {
@@ -1303,8 +1303,8 @@ public class FileLogger implements GnssListener {
                             }
                             //Measurements.append(prn);
 
-                            String Code = String.format("%14.3f%s%s", prm, " ", " ");
-                            String CarrierPhase = String.format("%14.3f%s%s", 0.0, " ", " ");
+                            String C1C = String.format("%14.3f%s%s", prm, " ", " ");
+                            String L1C = String.format("%14.3f%s%s", 0.0, " ", " ");
 
                             //搬送波の謎バイアスを補正したい
                             double ADR = measurement.getAccumulatedDeltaRangeMeters();
@@ -1312,31 +1312,31 @@ public class FileLogger implements GnssListener {
                                 if (SettingsFragment.CarrierPhase == true) {
                                     if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
                                         if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 154.0 * 10.23e6, TOLERANCE_MHZ)) {
-                                            CarrierPhase = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
+                                            L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
                                         } else {
-                                            CarrierPhase = String.format("%14.3f%s%s", ADR / GPS_L5_WAVELENGTH, "1", " ");
+                                            L1C = String.format("%14.3f%s%s", ADR / GPS_L5_WAVELENGTH, "1", " ");
                                         }
                                     } else {
                                         if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 154.0 * 10.23e6, TOLERANCE_MHZ)) {
-                                            CarrierPhase = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
+                                            L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
                                         } else {
-                                            CarrierPhase = String.format("%14.3f%s%s", ADR / GPS_L5_WAVELENGTH, " ", " ");
+                                            L1C = String.format("%14.3f%s%s", ADR / GPS_L5_WAVELENGTH, " ", " ");
                                         }
                                     }
                                 }
                             } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) {
                                 if (measurement.getSvid() <= 24) {
                                     if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                        CarrierPhase = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
+                                        L1C = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
                                     } else {
-                                        CarrierPhase = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
+                                        L1C = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
                                     }
                                 }
                             } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU) {
                                 if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                    CarrierPhase = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), "1", " ");
+                                    L1C = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), "1", " ");
                                 } else {
-                                    CarrierPhase = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), " ", " ");
+                                    L1C = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), " ", " ");
                                 }
                             }
                             int index = measurement.getSvid();
@@ -1357,7 +1357,7 @@ public class FileLogger implements GnssListener {
                                 if (index < 300) {
                                     if (SettingsFragment.usePseudorangeRate) {
                                         LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
-                                        Code = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                        C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
                                     } else {
                                         if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID) {
                                             LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
@@ -1366,7 +1366,7 @@ public class FileLogger implements GnssListener {
                                             if (CURRENT_SMOOTHER_RATE[index] <= 0) {
                                                 CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
                                             }
-                                            Code = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                            C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
                                         }
                                     }
                                 }
@@ -1381,104 +1381,104 @@ public class FileLogger implements GnssListener {
 
                                 if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 154.0 * 10.23e6, TOLERANCE_MHZ)) {
                                     if (measurement.getSvid() == 1) {
-                                        L5carrier_1 = CarrierPhase;
-                                        L5code_1 = Code;
+                                        L5carrier_1 = L1C;
+                                        L5code_1 = C1C;
                                         S5C_1 = S1C;
                                     }
                                     if (measurement.getSvid() == 3) {
-                                        L5carrier_3 = CarrierPhase;
-                                        L5code_3 = Code;
+                                        L5carrier_3 = L1C;
+                                        L5code_3 = C1C;
                                         S5C_3 = S1C;
                                     }
                                     if (measurement.getSvid() == 6) {
-                                        L5carrier_6 = CarrierPhase;
-                                        L5code_6 = Code;
+                                        L5carrier_6 = L1C;
+                                        L5code_6 = C1C;
                                         S5C_6 = S1C;
                                     }
                                     if (measurement.getSvid() == 8) {
-                                        L5carrier_8 = CarrierPhase;
-                                        L5code_8 = Code;
+                                        L5carrier_8 = L1C;
+                                        L5code_8 = C1C;
                                         S5C_8 = S1C;
                                     }
                                     if (measurement.getSvid() == 9) {
-                                        L5carrier_9 = CarrierPhase;
-                                        L5code_9 = Code;
+                                        L5carrier_9 = L1C;
+                                        L5code_9 = C1C;
                                         S5C_9 = S1C;
                                     }
                                     if (measurement.getSvid() == 10) {
-                                        L5carrier_10 = CarrierPhase;
-                                        L5code_10 = Code;
+                                        L5carrier_10 = L1C;
+                                        L5code_10 = C1C;
                                         S5C_10 = S1C;
                                     }
 
                                     if (measurement.getSvid() == 24) {
-                                        L5carrier_24 = CarrierPhase;
-                                        L5code_24 = Code;
+                                        L5carrier_24 = L1C;
+                                        L5code_24 = C1C;
                                         S5C_24 = S1C;
                                     }
                                     if (measurement.getSvid() == 25) {
-                                        L5carrier_25 = CarrierPhase;
-                                        L5code_25 = Code;
+                                        L5carrier_25 = L1C;
+                                        L5code_25 = C1C;
                                         S5C_25 = S1C;
                                     }
                                     if (measurement.getSvid() == 26) {
-                                        L5carrier_26 = CarrierPhase;
-                                        L5code_26 = Code;
+                                        L5carrier_26 = L1C;
+                                        L5code_26 = C1C;
                                         S5C_26 = S1C;
                                     }
                                     if (measurement.getSvid() == 27) {
-                                        L5carrier_27 = CarrierPhase;
-                                        L5code_27 = Code;
+                                        L5carrier_27 = L1C;
+                                        L5code_27 = C1C;
                                         S5C_27 = S1C;
                                     }
                                     if (measurement.getSvid() == 30) {
-                                        L5carrier_30 = CarrierPhase;
-                                        L5code_30 = Code;
+                                        L5carrier_30 = L1C;
+                                        L5code_30 = C1C;
                                         S5C_30 = S1C;
                                     }
                                     if (measurement.getSvid() == 32) {
-                                        L5carrier_32 = CarrierPhase;
-                                        L5code_32 = Code;
+                                        L5carrier_32 = L1C;
+                                        L5code_32 = C1C;
                                         S5C_32 = S1C;
                                     }
                                 }
-                                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176.45*10e6, TOLERANCE_MHZ)) {
+                                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6, TOLERANCE_MHZ)) {
 
                                     if (L5carrier_1 != null && measurement.getSvid() == 1) {
-                                        Measurements.append(prn + L5code_1 + L5carrier_1 + S5C_1 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_1 + L5carrier_1 + S5C_1 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_3 != null && measurement.getSvid() == 3) {
-                                        Measurements.append(prn + L5code_3 + L5carrier_3 + S5C_3 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_3 + L5carrier_3 + S5C_3 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_6 != null && measurement.getSvid() == 6) {
-                                        Measurements.append(prn + L5code_6 + L5carrier_6 + S5C_6 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_6 + L5carrier_6 + S5C_6 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_8 != null && measurement.getSvid() == 8) {
-                                        Measurements.append(prn + L5code_8 + L5carrier_8 + S5C_8 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_8 + L5carrier_8 + S5C_8 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_9 != null && measurement.getSvid() == 9) {
-                                        Measurements.append(prn + L5code_9 + L5carrier_9 + S5C_9 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_9 + L5carrier_9 + S5C_9 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_10 != null && measurement.getSvid() == 10) {
-                                        Measurements.append(prn + L5code_10 + L5carrier_10 + S5C_10 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_10 + L5carrier_10 + S5C_10 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_24 != null && measurement.getSvid() == 24) {
-                                        Measurements.append(prn + L5code_24 + L5carrier_24 + S5C_24 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_24 + L5carrier_24 + S5C_24 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_25 != null && measurement.getSvid() == 25) {
-                                        Measurements.append(prn + L5code_25 + L5carrier_25 + S5C_25 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_25 + L5carrier_25 + S5C_25 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_26 != null && measurement.getSvid() == 26) {
-                                        Measurements.append(prn + L5code_26 + L5carrier_26 + S5C_26 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_26 + L5carrier_26 + S5C_26 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_27 != null && measurement.getSvid() == 27) {
-                                        Measurements.append(prn + L5code_27 + L5carrier_27 + S5C_27 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_27 + L5carrier_27 + S5C_27 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_30 != null && measurement.getSvid() == 30) {
-                                        Measurements.append(prn + L5code_30 + L5carrier_30 + S5C_30 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_30 + L5carrier_30 + S5C_30 + C1C + L1C + S1C + '\n');
                                     }
                                     if (L5carrier_32 != null && measurement.getSvid() == 32) {
-                                        Measurements.append(prn + L5code_32 + L5carrier_32 + S5C_32 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + L5code_32 + L5carrier_32 + S5C_32 + C1C + L1C + S1C + '\n');
                                     }
 
                                 }
@@ -1486,39 +1486,39 @@ public class FileLogger implements GnssListener {
 
                                 if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 154.0 * 10.23e6, TOLERANCE_MHZ)) {
                                     if (measurement.getSvid() == 1 + 192) {
-                                        QZSS_L1_1 = CarrierPhase;
-                                        QZSS_C1_1 = Code;
+                                        QZSS_L1_1 = L1C;
+                                        QZSS_C1_1 = C1C;
                                         QZS1_1 = S1C;
                                     }
                                     if (measurement.getSvid() == 2 + 192) {
-                                        QZSS_L1_2 = CarrierPhase;
-                                        QZSS_C1_2 = Code;
+                                        QZSS_L1_2 = L1C;
+                                        QZSS_C1_2 = C1C;
                                         QZS1_2 = S1C;
                                     }
                                     if (measurement.getSvid() == 3 + 192) {
-                                        QZSS_L1_3 = CarrierPhase;
-                                        QZSS_C1_3 = Code;
+                                        QZSS_L1_3 = L1C;
+                                        QZSS_C1_3 = C1C;
                                         QZS1_3 = S1C;
                                     }
                                     if (measurement.getSvid() == 4 + 192) {
-                                        QZSS_L1_4 = CarrierPhase;
-                                        QZSS_C1_4 = Code;
+                                        QZSS_L1_4 = L1C;
+                                        QZSS_C1_4 = C1C;
                                         QZS1_4 = S1C;
                                     }
                                 }
-                                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176.45*10e6, TOLERANCE_MHZ)) {
+                                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6, TOLERANCE_MHZ)) {
 
                                     if (QZSS_L1_1 != null && measurement.getSvid() == 1 + 192) {
-                                        Measurements.append(prn + QZSS_C1_1 + QZSS_L1_1 + QZS1_1 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + QZSS_C1_1 + QZSS_L1_1 + QZS1_1 + C1C + L1C + S1C + '\n');
                                     }
                                     if (QZSS_L1_2 != null && measurement.getSvid() == 2 + 192) {
-                                        Measurements.append(prn + QZSS_C1_2 + QZSS_L1_2 + QZS1_2 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + QZSS_C1_2 + QZSS_L1_2 + QZS1_2 + C1C + L1C + S1C + '\n');
                                     }
                                     if (QZSS_L1_3 != null && measurement.getSvid() == 3 + 192) {
-                                        Measurements.append(prn + QZSS_C1_3 + QZSS_L1_3 + QZS1_3 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + QZSS_C1_3 + QZSS_L1_3 + QZS1_3 + C1C + L1C + S1C + '\n');
                                     }
                                     if (QZSS_L1_4 != null && measurement.getSvid() == 4 + 192) {
-                                        Measurements.append(prn + QZSS_C1_4 + QZSS_L1_4 + QZS1_4 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + QZSS_C1_4 + QZSS_L1_4 + QZS1_4 + C1C + L1C + S1C + '\n');
                                     }
 
                                 }
@@ -1527,232 +1527,232 @@ public class FileLogger implements GnssListener {
                                 if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 154.0 * 10.23e6, TOLERANCE_MHZ)) {
 
                                     if (measurement.getSvid() == 1) {
-                                        Galileo_L1_1 = CarrierPhase;
-                                        Galileo_C1_1 = Code;
+                                        Galileo_L1_1 = L1C;
+                                        Galileo_C1_1 = C1C;
                                         GalileoS1_1 = S1C;
                                     }
                                     if (measurement.getSvid() == 2) {
-                                        Galileo_L1_2 = CarrierPhase;
-                                        Galileo_C1_2 = Code;
+                                        Galileo_L1_2 = L1C;
+                                        Galileo_C1_2 = C1C;
                                         GalileoS1_2 = S1C;
                                     }
                                     if (measurement.getSvid() == 3) {
-                                        Galileo_L1_3 = CarrierPhase;
-                                        Galileo_C1_3 = Code;
+                                        Galileo_L1_3 = L1C;
+                                        Galileo_C1_3 = C1C;
                                         GalileoS1_3 = S1C;
                                     }
                                     if (measurement.getSvid() == 4) {
-                                        Galileo_L1_4 = CarrierPhase;
-                                        Galileo_C1_4 = Code;
+                                        Galileo_L1_4 = L1C;
+                                        Galileo_C1_4 = C1C;
                                         GalileoS1_4 = S1C;
                                     }
                                     if (measurement.getSvid() == 5) {
-                                        Galileo_L1_5 = CarrierPhase;
-                                        Galileo_C1_5 = Code;
+                                        Galileo_L1_5 = L1C;
+                                        Galileo_C1_5 = C1C;
                                         GalileoS1_5 = S1C;
                                     }
                                     if (measurement.getSvid() == 6) {
-                                        Galileo_L1_6 = CarrierPhase;
-                                        Galileo_C1_6 = Code;
+                                        Galileo_L1_6 = L1C;
+                                        Galileo_C1_6 = C1C;
                                         GalileoS1_6 = S1C;
                                     }
                                     if (measurement.getSvid() == 7) {
-                                        Galileo_L1_7 = CarrierPhase;
-                                        Galileo_C1_7 = Code;
+                                        Galileo_L1_7 = L1C;
+                                        Galileo_C1_7 = C1C;
                                         GalileoS1_7 = S1C;
                                     }
                                     if (measurement.getSvid() == 8) {
-                                        Galileo_L1_8 = CarrierPhase;
-                                        Galileo_C1_8 = Code;
+                                        Galileo_L1_8 = L1C;
+                                        Galileo_C1_8 = C1C;
                                         GalileoS1_8 = S1C;
                                     }
                                     if (measurement.getSvid() == 9) {
-                                        Galileo_L1_9 = CarrierPhase;
-                                        Galileo_C1_9 = Code;
+                                        Galileo_L1_9 = L1C;
+                                        Galileo_C1_9 = C1C;
                                         GalileoS1_9 = S1C;
                                     }
                                     if (measurement.getSvid() == 10) {
-                                        Galileo_L1_10 = CarrierPhase;
-                                        Galileo_C1_10 = Code;
+                                        Galileo_L1_10 = L1C;
+                                        Galileo_C1_10 = C1C;
                                         GalileoS1_10 = S1C;
                                     }
                                     if (measurement.getSvid() == 11) {
-                                        Galileo_L1_11 = CarrierPhase;
-                                        Galileo_C1_11 = Code;
+                                        Galileo_L1_11 = L1C;
+                                        Galileo_C1_11 = C1C;
                                         GalileoS1_11 = S1C;
                                     }
                                     if (measurement.getSvid() == 12) {
-                                        Galileo_L1_12 = CarrierPhase;
-                                        Galileo_C1_12 = Code;
+                                        Galileo_L1_12 = L1C;
+                                        Galileo_C1_12 = C1C;
                                         GalileoS1_12 = S1C;
                                     }
                                     if (measurement.getSvid() == 13) {
-                                        Galileo_L1_13 = CarrierPhase;
-                                        Galileo_C1_13 = Code;
+                                        Galileo_L1_13 = L1C;
+                                        Galileo_C1_13 = C1C;
                                         GalileoS1_13 = S1C;
                                     }
                                     if (measurement.getSvid() == 14) {
-                                        Galileo_L1_14 = CarrierPhase;
-                                        Galileo_C1_14 = Code;
+                                        Galileo_L1_14 = L1C;
+                                        Galileo_C1_14 = C1C;
                                         GalileoS1_14 = S1C;
                                     }
                                     if (measurement.getSvid() == 15) {
-                                        Galileo_L1_15 = CarrierPhase;
-                                        Galileo_C1_15 = Code;
+                                        Galileo_L1_15 = L1C;
+                                        Galileo_C1_15 = C1C;
                                         GalileoS1_15 = S1C;
                                     }
                                     if (measurement.getSvid() == 18) {
-                                        Galileo_L1_18 = CarrierPhase;
-                                        Galileo_C1_18 = Code;
+                                        Galileo_L1_18 = L1C;
+                                        Galileo_C1_18 = C1C;
                                         GalileoS1_18 = S1C;
                                     }
                                     if (measurement.getSvid() == 19) {
-                                        Galileo_L1_19 = CarrierPhase;
-                                        Galileo_C1_19 = Code;
+                                        Galileo_L1_19 = L1C;
+                                        Galileo_C1_19 = C1C;
                                         GalileoS1_19 = S1C;
                                     }
                                     if (measurement.getSvid() == 20) {
-                                        Galileo_L1_20 = CarrierPhase;
-                                        Galileo_C1_20 = Code;
+                                        Galileo_L1_20 = L1C;
+                                        Galileo_C1_20 = C1C;
                                         GalileoS1_20 = S1C;
                                     }
                                     if (measurement.getSvid() == 21) {
-                                        Galileo_L1_21 = CarrierPhase;
-                                        Galileo_C1_21 = Code;
+                                        Galileo_L1_21 = L1C;
+                                        Galileo_C1_21 = C1C;
                                         GalileoS1_21 = S1C;
                                     }
                                     if (measurement.getSvid() == 22) {
-                                        Galileo_L1_22 = CarrierPhase;
-                                        Galileo_C1_22 = Code;
+                                        Galileo_L1_22 = L1C;
+                                        Galileo_C1_22 = C1C;
                                         GalileoS1_22 = S1C;
                                     }
                                     if (measurement.getSvid() == 24) {
-                                        Galileo_L1_24 = CarrierPhase;
-                                        Galileo_C1_24 = Code;
+                                        Galileo_L1_24 = L1C;
+                                        Galileo_C1_24 = C1C;
                                         GalileoS1_24 = S1C;
                                     }
                                     if (measurement.getSvid() == 25) {
-                                        Galileo_L1_25 = CarrierPhase;
-                                        Galileo_C1_25 = Code;
+                                        Galileo_L1_25 = L1C;
+                                        Galileo_C1_25 = C1C;
                                         GalileoS1_25 = S1C;
                                     }
                                     if (measurement.getSvid() == 26) {
-                                        Galileo_L1_26 = CarrierPhase;
-                                        Galileo_C1_26 = Code;
+                                        Galileo_L1_26 = L1C;
+                                        Galileo_C1_26 = C1C;
                                         GalileoS1_26 = S1C;
                                     }
                                     if (measurement.getSvid() == 27) {
-                                        Galileo_L1_27 = CarrierPhase;
-                                        Galileo_C1_27 = Code;
+                                        Galileo_L1_27 = L1C;
+                                        Galileo_C1_27 = C1C;
                                         GalileoS1_27 = S1C;
                                     }
                                     if (measurement.getSvid() == 30) {
-                                        Galileo_L1_30 = CarrierPhase;
-                                        Galileo_C1_30 = Code;
+                                        Galileo_L1_30 = L1C;
+                                        Galileo_C1_30 = C1C;
                                         GalileoS1_30 = S1C;
                                     }
                                     if (measurement.getSvid() == 31) {
-                                        Galileo_L1_31 = CarrierPhase;
-                                        Galileo_C1_31 = Code;
+                                        Galileo_L1_31 = L1C;
+                                        Galileo_C1_31 = C1C;
                                         GalileoS1_31 = S1C;
                                     }
                                     if (measurement.getSvid() == 33) {
-                                        Galileo_L1_33 = CarrierPhase;
-                                        Galileo_C1_33 = Code;
+                                        Galileo_L1_33 = L1C;
+                                        Galileo_C1_33 = C1C;
                                         GalileoS1_33 = S1C;
                                     }
                                     if (measurement.getSvid() == 36) {
-                                        Galileo_L1_36 = CarrierPhase;
-                                        Galileo_C1_36 = Code;
+                                        Galileo_L1_36 = L1C;
+                                        Galileo_C1_36 = C1C;
                                         GalileoS1_36 = S1C;
                                     }
                                 }
 
-                                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176.45*10e6, TOLERANCE_MHZ)) {
+                                if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6, TOLERANCE_MHZ)) {
 
                                     if (Galileo_L1_1 != null && measurement.getSvid() == 1) {
-                                        Measurements.append(prn + Galileo_C1_1 + Galileo_L1_1 + GalileoS1_1 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_1 + Galileo_L1_1 + GalileoS1_1 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_2 != null && measurement.getSvid() == 2) {
-                                        Measurements.append(prn + Galileo_C1_2 + Galileo_L1_2 + GalileoS1_2 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_2 + Galileo_L1_2 + GalileoS1_2 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_3 != null && measurement.getSvid() == 3) {
-                                        Measurements.append(prn + Galileo_C1_3 + Galileo_L1_3 + GalileoS1_3 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_3 + Galileo_L1_3 + GalileoS1_3 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_4 != null && measurement.getSvid() == 4) {
-                                        Measurements.append(prn + Galileo_C1_4 + Galileo_L1_4 + GalileoS1_4 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_4 + Galileo_L1_4 + GalileoS1_4 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_5 != null && measurement.getSvid() == 5) {
-                                        Measurements.append(prn + Galileo_C1_5 + Galileo_L1_5 + GalileoS1_5 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_5 + Galileo_L1_5 + GalileoS1_5 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_6 != null && measurement.getSvid() == 6) {
-                                        Measurements.append(prn + Galileo_C1_6 + Galileo_L1_6 + GalileoS1_6 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_6 + Galileo_L1_6 + GalileoS1_6 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_7 != null && measurement.getSvid() == 7) {
-                                        Measurements.append(prn + Galileo_C1_7 + Galileo_L1_7 + GalileoS1_7 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_7 + Galileo_L1_7 + GalileoS1_7 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_8 != null && measurement.getSvid() == 8) {
-                                        Measurements.append(prn + Galileo_C1_8 + Galileo_L1_8 + GalileoS1_8 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_8 + Galileo_L1_8 + GalileoS1_8 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_9 != null && measurement.getSvid() == 9) {
-                                        Measurements.append(prn + Galileo_C1_9 + Galileo_L1_9 + GalileoS1_9 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_9 + Galileo_L1_9 + GalileoS1_9 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_10 != null && measurement.getSvid() == 10) {
-                                        Measurements.append(prn + Galileo_C1_10 + Galileo_L1_10 + GalileoS1_10 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_10 + Galileo_L1_10 + GalileoS1_10 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_11 != null && measurement.getSvid() == 11) {
-                                        Measurements.append(prn + Galileo_C1_11 + Galileo_L1_11 + GalileoS1_11 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_11 + Galileo_L1_11 + GalileoS1_11 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_12 != null && measurement.getSvid() == 12) {
-                                        Measurements.append(prn + Galileo_C1_12 + Galileo_L1_12 + GalileoS1_12 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_12 + Galileo_L1_12 + GalileoS1_12 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_13 != null && measurement.getSvid() == 13) {
-                                        Measurements.append(prn + Galileo_C1_13 + Galileo_L1_13 + GalileoS1_13 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_13 + Galileo_L1_13 + GalileoS1_13 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_14 != null && measurement.getSvid() == 14) {
-                                        Measurements.append(prn + Galileo_C1_14 + Galileo_L1_14 + GalileoS1_14 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_14 + Galileo_L1_14 + GalileoS1_14 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_15 != null && measurement.getSvid() == 15) {
-                                        Measurements.append(prn + Galileo_C1_15 + Galileo_L1_15 + GalileoS1_15 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_15 + Galileo_L1_15 + GalileoS1_15 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_18 != null && measurement.getSvid() == 18) {
-                                        Measurements.append(prn + Galileo_C1_18 + Galileo_L1_18 + GalileoS1_18 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_18 + Galileo_L1_18 + GalileoS1_18 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_19 != null && measurement.getSvid() == 19) {
-                                        Measurements.append(prn + Galileo_C1_19 + Galileo_L1_19 + GalileoS1_19 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_19 + Galileo_L1_19 + GalileoS1_19 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_20 != null && measurement.getSvid() == 20) {
-                                        Measurements.append(prn + Galileo_C1_20 + Galileo_L1_20 + GalileoS1_20 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_20 + Galileo_L1_20 + GalileoS1_20 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_21 != null && measurement.getSvid() == 21) {
-                                        Measurements.append(prn + Galileo_C1_21 + Galileo_L1_21 + GalileoS1_21 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_21 + Galileo_L1_21 + GalileoS1_21 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_22 != null && measurement.getSvid() == 22) {
-                                        Measurements.append(prn + Galileo_C1_22 + Galileo_L1_22 + GalileoS1_22 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_22 + Galileo_L1_22 + GalileoS1_22 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_24 != null && measurement.getSvid() == 24) {
-                                        Measurements.append(prn + Galileo_C1_24 + Galileo_L1_24 + GalileoS1_24 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_24 + Galileo_L1_24 + GalileoS1_24 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_25 != null && measurement.getSvid() == 25) {
-                                        Measurements.append(prn + Galileo_C1_25 + Galileo_L1_25 + GalileoS1_25 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_25 + Galileo_L1_25 + GalileoS1_25 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_26 != null && measurement.getSvid() == 26) {
-                                        Measurements.append(prn + Galileo_C1_26 + Galileo_L1_26 + GalileoS1_26 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_26 + Galileo_L1_26 + GalileoS1_26 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_27 != null && measurement.getSvid() == 27) {
-                                        Measurements.append(prn + Galileo_C1_27 + Galileo_L1_27 + GalileoS1_27 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_27 + Galileo_L1_27 + GalileoS1_27 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_30 != null && measurement.getSvid() == 30) {
-                                        Measurements.append(prn + Galileo_C1_30 + Galileo_L1_30 + GalileoS1_30 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_30 + Galileo_L1_30 + GalileoS1_30 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_31 != null && measurement.getSvid() == 31) {
-                                        Measurements.append(prn + Galileo_C1_31 + Galileo_L1_31 + GalileoS1_31 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_31 + Galileo_L1_31 + GalileoS1_31 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_33 != null && measurement.getSvid() == 33) {
-                                        Measurements.append(prn + Galileo_C1_33 + Galileo_L1_33 + GalileoS1_33 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_33 + Galileo_L1_33 + GalileoS1_33 + C1C + L1C + S1C + '\n');
                                     }
                                     if (Galileo_L1_36 != null && measurement.getSvid() == 36) {
-                                        Measurements.append(prn + Galileo_C1_36 + Galileo_L1_36 + GalileoS1_36 + Code + CarrierPhase + S1C + '\n');
+                                        Measurements.append(prn + Galileo_C1_36 + Galileo_L1_36 + GalileoS1_36 + C1C + L1C + S1C + '\n');
                                     }
 
                                 }
@@ -1859,7 +1859,7 @@ public class FileLogger implements GnssListener {
 
                             //ここ
 
-                            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176.45*10e6, TOLERANCE_MHZ)) {
+                            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6, TOLERANCE_MHZ)) {
                                 String prn = String.format("G%2d", measurement.getSvid());
 
                                 satnumber = satnumber + 1;
@@ -1990,7 +1990,7 @@ public class FileLogger implements GnssListener {
                                     S5_32 = DbHz;
                                 } else {
                                 }
-                                //   if(Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(),1176.45*10e6, TOLERANCE_MHZ))
+                                //   if(Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(),115.0 * 10.23e6, TOLERANCE_MHZ))
                                 if (SettingsFragment.CarrierPhase) {
                                     //Measurements.append(DeltaRangeStrings + PrmStrings + DbHz );  //oFileの書き出し　コード擬似距離など
 
@@ -1998,7 +1998,7 @@ public class FileLogger implements GnssListener {
                                     //Measurements.append(PrmStrings + DbHz );   //oFileの書き出し　コード擬似距離など
                                 }
                             }
-                            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 1176.45*10e6, TOLERANCE_MHZ)) {
+                            if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 115.0 * 10.23e6, TOLERANCE_MHZ)) {
 
                                 int checkflag = 1;
                                 if (L1carrier_3 != null && measurement.getSvid() == 3 && checkflag == 1) {
@@ -2147,32 +2147,32 @@ public class FileLogger implements GnssListener {
                             }
 
                             //Measurements.append(prn);
-                            String Code = String.format("%14.3f%s%s", prm, " ", " ");
-                            String CarrierPhase = String.format("%14.3f%s%s", 0.0, " ", " ");
+                            String C1C = String.format("%14.3f%s%s", prm, " ", " ");
+                            String L1C = String.format("%14.3f%s%s", 0.0, " ", " ");
                             //搬送波の謎バイアスを補正したい
                             double ADR = measurement.getAccumulatedDeltaRangeMeters();
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 154.0 * 10.23e6, TOLERANCE_MHZ)) {
                                 if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GPS || measurement.getConstellationType() == GnssStatus.CONSTELLATION_GALILEO || measurement.getConstellationType() == GnssStatus.CONSTELLATION_QZSS) {
                                     if (SettingsFragment.CarrierPhase == true) {
                                         if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                            CarrierPhase = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
+                                            L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, "1", " ");
                                         } else {
-                                            CarrierPhase = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
+                                            L1C = String.format("%14.3f%s%s", ADR / GPS_L1_WAVELENGTH, " ", " ");
                                         }
                                     }
                                 } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_GLONASS) {
                                     if (measurement.getSvid() <= 24) {
                                         if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                            CarrierPhase = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
+                                            L1C = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), "1", " ");
                                         } else {
-                                            CarrierPhase = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
+                                            L1C = String.format("%14.3f%s%s", ADR / GLONASSG1WAVELENGTH(measurement.getSvid()), " ", " ");
                                         }
                                     }
                                 } else if (measurement.getConstellationType() == GnssStatus.CONSTELLATION_BEIDOU) {
                                     if (measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_CYCLE_SLIP) {
-                                        CarrierPhase = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), "1", " ");
+                                        L1C = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), "1", " ");
                                     } else {
-                                        CarrierPhase = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), " ", " ");
+                                        L1C = String.format("%14.3f%s%s", ADR / BEIDOUWAVELENGTH(measurement.getSvid()), " ", " ");
                                     }
                                 }
                             }
@@ -2195,7 +2195,7 @@ public class FileLogger implements GnssListener {
                                 if(index < 300) {
                                     if(SettingsFragment.usePseudorangeRate){
                                         LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getPseudorangeRateMetersPerSecond());
-                                        Code = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                        C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
                                     }else {
                                         if(measurement.getAccumulatedDeltaRangeState() == GnssMeasurement.ADR_STATE_VALID){
                                             LAST_SMOOTHED_PSEUDORANGE[index] = CURRENT_SMOOTHER_RATE[index] * prm + (1 - CURRENT_SMOOTHER_RATE[index]) * (LAST_SMOOTHED_PSEUDORANGE[index] + measurement.getAccumulatedDeltaRangeMeters() - LAST_DELTARANGE[index]);
@@ -2204,7 +2204,7 @@ public class FileLogger implements GnssListener {
                                             if (CURRENT_SMOOTHER_RATE[index] <= 0) {
                                                 CURRENT_SMOOTHER_RATE[index] = SMOOTHER_RATE;
                                             }
-                                            Code = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
+                                            C1C = String.format("%14.3f%s%s", LAST_SMOOTHED_PSEUDORANGE[index], " ", " ");
                                         }
                                     }
                                 }
@@ -2215,17 +2215,17 @@ public class FileLogger implements GnssListener {
                             if (Mathutil.fuzzyEquals(measurement.getCarrierFrequencyHz(), 154.0 * 10.23e6, TOLERANCE_MHZ)) {
                                 if (SettingsFragment.CarrierPhase) {
                                     if (firstOBS) {
-                                        Measurements.append(prn + CarrierPhase + Code  + S1C);
+                                        Measurements.append(prn + L1C + C1C  + S1C);
                                         firstOBS = false;
                                     } else {
-                                        Measurements.append("\n" + prn + CarrierPhase + Code  + S1C);
+                                        Measurements.append("\n" + prn + L1C + C1C  + S1C);
                                     }
                                 } else {
                                     if (firstOBS) {
-                                        Measurements.append(prn + Code  + S1C);
+                                        Measurements.append(prn + C1C  + S1C);
                                         firstOBS = false;
                                     } else {
-                                        Measurements.append("\n" + prn + Code + S1C);
+                                        Measurements.append("\n" + prn + C1C + S1C);
                                     }
                                 }
                             }
