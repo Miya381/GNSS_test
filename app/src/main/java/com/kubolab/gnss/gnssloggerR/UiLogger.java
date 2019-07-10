@@ -28,9 +28,10 @@ import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
  * A class representing a UI logger for the application. Its responsibility is show information in
- * the UI.
+ * the UI.carrier
  */
 public class UiLogger implements GnssListener {
 
